@@ -28,7 +28,7 @@ class TimeTableBox extends StatelessWidget {
         children: <Widget>[
           headerContainer(
             title: subject.name,
-            icon: Icons.edit,
+            icon: Icons.edit_note,
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(14.0, 14.0, 14.0, 0.0),

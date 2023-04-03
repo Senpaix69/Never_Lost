@@ -177,6 +177,8 @@ class _AddSubjectState extends State<AddSubject> {
                         height: 10.0,
                       ),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Expanded(
                             child: formText(
@@ -207,6 +209,8 @@ class _AddSubjectState extends State<AddSubject> {
                         height: 10.0,
                       ),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Expanded(
                             child: DropdownButtonFormField<String>(

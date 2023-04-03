@@ -34,7 +34,6 @@ class _DayTimeListState extends State<DayTimeList> {
   Widget build(BuildContext context) {
     return ListView.builder(
       controller: _listController,
-      reverse: true,
       shrinkWrap: true,
       itemCount: _filteredDays.length,
       itemBuilder: (BuildContext context, int index) {
@@ -46,11 +45,12 @@ class _DayTimeListState extends State<DayTimeList> {
 
   Widget _buildItem(DayTime day, int index) {
     bool isAdding = widget.callBack != null;
+    String alpha = String.fromCharCode('A'.codeUnitAt(0) + index);
     return ListTile(
       leading: Padding(
         padding: const EdgeInsets.symmetric(vertical: 15.0),
         child: Text(
-          isAdding ? day.roomNo : "Slot",
+          isAdding ? day.roomNo : "Slot $alpha",
           style: TextStyle(
             color: Colors.amber,
             fontWeight: FontWeight.bold,
@@ -73,12 +73,7 @@ class _DayTimeListState extends State<DayTimeList> {
       ),
       trailing: widget.callBack != null
           ? IconButton(
-              onPressed: () {
-                widget.callBack!(index);
-                setState(() {
-                  _filteredDays.removeAt(index);
-                });
-              },
+              onPressed: () => widget.callBack!(index),
               icon: Icon(
                 Icons.delete,
                 color: Colors.grey[200],

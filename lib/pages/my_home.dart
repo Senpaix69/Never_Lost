@@ -12,7 +12,7 @@ class MyHome extends StatefulWidget {
   State<MyHome> createState() => _MyHomeState();
 }
 
-class _MyHomeState extends State<MyHome> with AutomaticKeepAliveClientMixin {
+class _MyHomeState extends State<MyHome> {
   late final DatabaseService _database;
   final int _today = DateTime.now().weekday - 1;
   int _currentPage = DateTime.now().weekday - 1;
@@ -31,9 +31,6 @@ class _MyHomeState extends State<MyHome> with AutomaticKeepAliveClientMixin {
   }
 
   @override
-  bool get wantKeepAlive => true;
-
-  @override
   void initState() {
     _database = DatabaseService();
     _database.open();
@@ -42,13 +39,13 @@ class _MyHomeState extends State<MyHome> with AutomaticKeepAliveClientMixin {
 
   @override
   void dispose() {
+    _pageController.dispose();
     _database.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
       backgroundColor: Colors.grey[900],
       appBar: AppBar(
@@ -135,6 +132,7 @@ class _MyHomeState extends State<MyHome> with AutomaticKeepAliveClientMixin {
                       .where((timeTable) => timeTable.dayTime
                           .any((dayTime) => dayTime.day == currentDay))
                       .toList();
+
                   if (filteredTimeTables.isEmpty) {
                     return noTimeTableAdded();
                   }
