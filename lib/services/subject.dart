@@ -6,9 +6,11 @@ class Subject {
   final int? id;
   final String name;
   final String professorName;
+  final String section;
 
   const Subject({
     this.id,
+    required this.section,
     required this.name,
     required this.professorName,
   });
@@ -17,11 +19,13 @@ class Subject {
     int? id,
     String? name,
     String? roomNo,
+    String? section,
     String? professorName,
   }) {
     return Subject(
       id: id ?? this.id,
       name: name ?? this.name,
+      section: section ?? this.section,
       professorName: professorName ?? this.professorName,
     );
   }
@@ -30,6 +34,7 @@ class Subject {
     return {
       subIdColumn: id,
       subNameColumn: name,
+      subSectionColumn: section,
       subProfessorNameColumn: professorName,
     };
   }
@@ -37,6 +42,7 @@ class Subject {
   factory Subject.fromMap(Map<String, dynamic> map) {
     return Subject(
       id: map[subIdColumn],
+      section: map[subSectionColumn],
       name: map[subNameColumn],
       professorName: map[subProfessorNameColumn],
     );
@@ -44,6 +50,6 @@ class Subject {
 
   @override
   String toString() {
-    return 'Subject, id: $id, name: $name, professorName: $professorName';
+    return 'Subject, id: $id, section: $section, name: $name, professorName: $professorName';
   }
 }

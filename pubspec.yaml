@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   sqflite: ^2.2.6
   path: ^1.8.2
+  flutter_material_pickers: ^3.3.0
 
 dev_dependencies:
   flutter_test:

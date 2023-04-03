@@ -33,7 +33,6 @@ class DatabaseService {
   }
 
   Future<void> _initDatabase() async {
-    print("object");
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'subject.db');
 

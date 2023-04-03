@@ -31,14 +31,39 @@ class TimeTableBox extends StatelessWidget {
             icon: Icons.edit,
           ),
           Padding(
-            padding: const EdgeInsets.all(14.0),
-            child: Text(
-              "Professor: ${subject.professorName}",
-              style: TextStyle(
-                color: Colors.grey[200],
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-              ),
+            padding: const EdgeInsets.fromLTRB(14.0, 14.0, 14.0, 0.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  "Professor: ${subject.professorName}",
+                  style: TextStyle(
+                    color: Colors.grey[200],
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(
+                  height: 8.0,
+                ),
+                Text(
+                  "Section: ${subject.section}",
+                  style: TextStyle(
+                    color: Colors.grey[400],
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(
+                  height: 20.0,
+                ),
+                Divider(
+                  height: 0.0,
+                  color: Colors.grey[800],
+                  thickness: 2.0,
+                )
+              ],
             ),
           ),
           DayTimeList(

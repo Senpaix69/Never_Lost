@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_material_pickers/helpers/show_time_picker.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/daytime.dart';
 import 'package:my_timetable/services/subject.dart';
@@ -23,6 +24,7 @@ class _AddSubjectState extends State<AddSubject> {
   late final TextEditingController _subjectName;
   late final TextEditingController _startTime;
   late final TextEditingController _roomNo;
+  late final TextEditingController _section;
   late final TextEditingController _endTime;
   late final TextEditingController _day;
   bool _isSaving = false;
@@ -32,10 +34,12 @@ class _AddSubjectState extends State<AddSubject> {
     _professorName = TextEditingController();
     _subjectName = TextEditingController();
     _startTime = TextEditingController();
-    _roomNo = TextEditingController();
     _endTime = TextEditingController();
+    _section = TextEditingController();
+    _roomNo = TextEditingController();
     _day = TextEditingController();
     _database = DatabaseService();
+    _day.text = "Sunday";
     super.initState();
   }
 
@@ -45,6 +49,7 @@ class _AddSubjectState extends State<AddSubject> {
     _subjectName.dispose();
     _startTime.dispose();
     _endTime.dispose();
+    _section.dispose();
     _roomNo.dispose();
     _day.dispose();
     super.dispose();
@@ -65,10 +70,20 @@ class _AddSubjectState extends State<AddSubject> {
     }
   }
 
+  void _showTimePicker({required TextEditingController controller}) {
+    showMaterialTimePicker(
+      context: context,
+      selectedTime: TimeOfDay.now(),
+      onChanged: (value) {
+        setState(() {
+          controller.text = value.format(context);
+        });
+      },
+    );
+  }
+
   Future<void> saveTimeTable() async {
-    if (_professorName.text.isEmpty || _subjectName.text.isEmpty) {
-      errorDialogue(
-          context, "Subject Name and Professor Name can not be empty");
+    if (!_formKey.currentState!.validate()) {
       return;
     } else if (_days.isEmpty) {
       errorDialogue(context, "You need to enter timings");
@@ -77,6 +92,7 @@ class _AddSubjectState extends State<AddSubject> {
     setState(() => _isSaving = true);
     Subject sub = Subject(
       name: _subjectName.text,
+      section: _section.text,
       professorName: _professorName.text,
     );
     await _database.insertTimeTable(daytimes: _days, subject: sub);
@@ -136,6 +152,15 @@ class _AddSubjectState extends State<AddSubject> {
                           validator: textValidate,
                         ),
                         const SizedBox(
+                          height: 10.0,
+                        ),
+                        formText(
+                          prefix: Icons.pending,
+                          hint: "Enter Section",
+                          controller: _section,
+                          validator: textValidate,
+                        ),
+                        const SizedBox(
                           height: 20.0,
                         ),
                       ],
@@ -158,7 +183,9 @@ class _AddSubjectState extends State<AddSubject> {
                               prefix: Icons.timer,
                               hint: "1:00 AM",
                               controller: _startTime,
-                              validator: validateTime,
+                              validator: textValidate,
+                              onTap: () =>
+                                  _showTimePicker(controller: _startTime),
                             ),
                           ),
                           const SizedBox(
@@ -169,7 +196,9 @@ class _AddSubjectState extends State<AddSubject> {
                               prefix: Icons.timer,
                               hint: "12:00 PM",
                               controller: _endTime,
-                              validator: validateTime,
+                              onTap: () =>
+                                  _showTimePicker(controller: _endTime),
+                              validator: textValidate,
                             ),
                           ),
                         ],
@@ -180,11 +209,27 @@ class _AddSubjectState extends State<AddSubject> {
                       Row(
                         children: <Widget>[
                           Expanded(
-                            child: formText(
-                              prefix: Icons.weekend,
-                              hint: "WeekDay",
-                              controller: _day,
-                              validator: dayValidate,
+                            child: DropdownButtonFormField<String>(
+                              value: _day.text,
+                              onChanged: (value) {
+                                setState(() {
+                                  _day.text = value!;
+                                });
+                              },
+                              dropdownColor: Colors.grey[700],
+                              style: const TextStyle(color: Colors.white),
+                              decoration: decorationFormField(
+                                  Icons.weekend, "Select Day"),
+                              items: weekdays
+                                  .map<DropdownMenuItem<String>>((weekday) {
+                                return DropdownMenuItem<String>(
+                                  alignment: Alignment.center,
+                                  value: weekday,
+                                  child: Text(
+                                    weekday,
+                                  ),
+                                );
+                              }).toList(),
                             ),
                           ),
                           const SizedBox(
@@ -195,7 +240,7 @@ class _AddSubjectState extends State<AddSubject> {
                               prefix: Icons.room,
                               hint: "Room No",
                               controller: _roomNo,
-                              validator: roomValidate,
+                              validator: textValidate,
                             ),
                           ),
                         ],
@@ -242,13 +287,13 @@ class _AddSubjectState extends State<AddSubject> {
                         icon: Icons.calendar_month,
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10.0, vertical: 5.0),
+                        padding: const EdgeInsets.all(6.0),
                         child: Column(
                           children: <Widget>[
                             _days.isEmpty
                                 ? Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 25.0),
                                     child: Center(
                                       child: Text(
                                         "Add Time First",
@@ -284,6 +329,7 @@ class _AddSubjectState extends State<AddSubject> {
   TextFormField formText({
     required String hint,
     required IconData prefix,
+    VoidCallback? onTap,
     required TextEditingController controller,
     required String? Function(String?)? validator,
   }) {
@@ -292,6 +338,8 @@ class _AddSubjectState extends State<AddSubject> {
       enableSuggestions: false,
       controller: controller,
       autocorrect: false,
+      readOnly: onTap != null,
+      onTap: onTap,
       cursorColor: Colors.amber[200],
       style: const TextStyle(color: Colors.white),
       decoration: decorationFormField(prefix, hint),

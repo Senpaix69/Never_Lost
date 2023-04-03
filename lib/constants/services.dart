@@ -2,11 +2,13 @@
 const subTable = "subject";
 const subIdColumn = "sub_id";
 const subNameColumn = "sub_name";
+const subSectionColumn = 'sub_section';
 const subProfessorNameColumn = "sub_professorName";
 const createSubTable = '''
 CREATE TABLE IF NOT EXISTS "subject" (
   "sub_id" INTEGER NOT NULL,
   "sub_name" TEXT NOT NULL, 
+  "sub_section" TEXT NOT NULL,
   "sub_professorName" TEXT NOT NULL,
   PRIMARY KEY("sub_id" AUTOINCREMENT)
   );

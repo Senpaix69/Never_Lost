@@ -5,15 +5,33 @@ Future<void> errorDialogue(BuildContext context, String message) {
     context: context,
     builder: (context) {
       return AlertDialog(
-          title: const Text("Error"),
-          content: Text(message),
-          actions: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+        backgroundColor: Colors.grey[800],
+        title: const Text("Error", style: TextStyle(color: Colors.white)),
+        content: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Text(
+            message,
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 255, 191, 0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
               child: const Text('OK'),
               onPressed: () => Navigator.of(context).pop(false),
             ),
-          ]);
+          ),
+        ],
+      );
     },
   );
 }
@@ -24,18 +42,26 @@ Future<bool> confirmDialogue(
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: Colors.grey[200],
-          title: const Text("Sign out"),
+          backgroundColor: Colors.grey[800],
+          title: const Text("Sign out", style: TextStyle(color: Colors.white)),
           content: Text(message),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
               child: const Text("Cancel"),
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
-              child: const Text('Confirm'),
-              onPressed: () => Navigator.of(context).pop(true),
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 255, 191, 0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: const Text('Confirm'),
+                onPressed: () => Navigator.of(context).pop(false),
+              ),
             ),
           ],
         );

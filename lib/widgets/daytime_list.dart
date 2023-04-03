@@ -45,20 +45,21 @@ class _DayTimeListState extends State<DayTimeList> {
   }
 
   Widget _buildItem(DayTime day, int index) {
+    bool isAdding = widget.callBack != null;
     return ListTile(
-      leading: const Padding(
-        padding: EdgeInsets.symmetric(vertical: 15.0),
+      leading: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 15.0),
         child: Text(
-          "Slot",
+          isAdding ? day.roomNo : "Slot",
           style: TextStyle(
             color: Colors.amber,
             fontWeight: FontWeight.bold,
-            fontSize: 18.0,
+            fontSize: isAdding ? 14.0 : 18.0,
           ),
         ),
       ),
       title: Text(
-        day.roomNo,
+        isAdding ? day.day : day.roomNo,
         style: const TextStyle(
           color: Colors.amber,
           fontWeight: FontWeight.bold,
