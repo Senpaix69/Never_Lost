@@ -275,7 +275,7 @@ class _AddSubjectState extends State<AddSubject> {
                   ),
                 ),
                 Container(
-                  margin: const EdgeInsets.symmetric(vertical: 6.0),
+                  margin: const EdgeInsets.only(top: 20.0),
                   decoration: BoxDecoration(
                     color: Colors.white.withAlpha(30),
                     borderRadius: BorderRadius.circular(10.0),
