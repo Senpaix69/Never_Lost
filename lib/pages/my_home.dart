@@ -3,7 +3,6 @@ import 'package:my_timetable/pages/add_subject.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/utils.dart' show weekdays;
 import 'package:my_timetable/widgets/animate_route.dart' show SlideRightRoute;
-import 'package:my_timetable/widgets/styles.dart';
 import 'package:my_timetable/widgets/timetable_box.dart';
 
 class MyHome extends StatefulWidget {
@@ -17,7 +16,6 @@ class _MyHomeState extends State<MyHome> with AutomaticKeepAliveClientMixin {
   late final DatabaseService _database;
   final int _today = DateTime.now().weekday - 1;
   int _currentPage = DateTime.now().weekday - 1;
-  final PageStorageBucket _bucket = PageStorageBucket();
   final PageController _pageController =
       PageController(initialPage: DateTime.now().weekday - 1);
 
@@ -125,6 +123,7 @@ class _MyHomeState extends State<MyHome> with AutomaticKeepAliveClientMixin {
               }
               final timeTables = snapshot.data!;
               return PageView.builder(
+                physics: const BouncingScrollPhysics(),
                 itemCount: weekdays.length,
                 controller: _pageController,
                 onPageChanged: (value) => setState(() {
@@ -136,22 +135,24 @@ class _MyHomeState extends State<MyHome> with AutomaticKeepAliveClientMixin {
                       .where((timeTable) => timeTable.dayTime
                           .any((dayTime) => dayTime.day == currentDay))
                       .toList();
-                  return PageStorage(
-                    bucket: _bucket,
-                    key: ValueKey(currentDay),
-                    child: Container(
-                      margin: const EdgeInsets.all(6.0),
-                      padding: const EdgeInsets.all(6.0),
-                      decoration: null,
-                      child: ListView.builder(
-                        physics: const AlwaysScrollableScrollPhysics(
-                            parent: BouncingScrollPhysics()),
-                        itemCount: filteredTimeTables.length,
-                        itemBuilder: (context, index) {
-                          final timeTable = filteredTimeTables[index];
-                          return TimeTableBox(timeTable: timeTable);
-                        },
-                      ),
+                  if (filteredTimeTables.isEmpty) {
+                    return noTimeTableAdded();
+                  }
+                  return Container(
+                    margin: const EdgeInsets.all(6.0),
+                    padding: const EdgeInsets.all(6.0),
+                    decoration: null,
+                    child: ListView.builder(
+                      physics: const AlwaysScrollableScrollPhysics(
+                          parent: BouncingScrollPhysics()),
+                      itemCount: filteredTimeTables.length,
+                      itemBuilder: (context, index) {
+                        final timeTable = filteredTimeTables[index];
+                        return TimeTableBox(
+                          timeTable: timeTable,
+                          currentDay: weekdays[_currentPage],
+                        );
+                      },
                     ),
                   );
                 },

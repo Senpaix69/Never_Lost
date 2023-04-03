@@ -3,6 +3,7 @@ import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/daytime.dart';
 import 'package:my_timetable/services/subject.dart';
 import 'package:my_timetable/utils.dart';
+import 'package:my_timetable/widgets/daytime_list.dart';
 import 'package:my_timetable/widgets/dialog_boxs.dart';
 import 'package:my_timetable/widgets/styles.dart';
 
@@ -18,7 +19,6 @@ class _AddSubjectState extends State<AddSubject> {
   final List<DayTime> _days = <DayTime>[];
 
   late final DatabaseService _database;
-  late final ScrollController _scrollController;
   late final TextEditingController _professorName;
   late final TextEditingController _subjectName;
   late final TextEditingController _startTime;
@@ -29,7 +29,6 @@ class _AddSubjectState extends State<AddSubject> {
 
   @override
   void initState() {
-    _scrollController = ScrollController();
     _professorName = TextEditingController();
     _subjectName = TextEditingController();
     _startTime = TextEditingController();
@@ -42,7 +41,6 @@ class _AddSubjectState extends State<AddSubject> {
 
   @override
   void dispose() {
-    _scrollController.dispose();
     _professorName.dispose();
     _subjectName.dispose();
     _startTime.dispose();
@@ -64,13 +62,6 @@ class _AddSubjectState extends State<AddSubject> {
           ),
         ),
       );
-      Future.delayed(const Duration(milliseconds: 100), () {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      });
     }
   }
 
@@ -239,105 +230,46 @@ class _AddSubjectState extends State<AddSubject> {
                   ),
                 ),
                 Container(
-                  margin: const EdgeInsets.only(top: 20.0),
+                  margin: const EdgeInsets.symmetric(vertical: 6.0),
                   decoration: BoxDecoration(
-                    color: Colors.grey[800],
+                    color: Colors.white.withAlpha(30),
                     borderRadius: BorderRadius.circular(10.0),
                   ),
-                  height: 330, // set a fixed height here
                   child: Column(
                     children: <Widget>[
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[850],
-                          borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(10.0),
-                              topRight: Radius.circular(10.0)),
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            myText(text: "Timings"),
-                            const SizedBox(
-                              width: 10.0,
-                            ),
-                            const Icon(
-                              Icons.calendar_today,
-                              color: Colors.amber,
-                            ),
-                          ],
-                        ),
+                      headerContainer(
+                        title: "Timings",
+                        icon: Icons.calendar_month,
                       ),
-                      _days.isEmpty
-                          ? const Flexible(
-                              child: Center(
-                                child: Text(
-                                  "Add Time First",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    letterSpacing: 1.0,
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            )
-                          : Flexible(
-                              child: ListView.separated(
-                                controller: _scrollController,
-                                physics: const BouncingScrollPhysics(),
-                                reverse: true,
-                                shrinkWrap: true,
-                                itemCount: _days.length,
-                                separatorBuilder:
-                                    (BuildContext context, int index) {
-                                  return const Divider(
-                                    color: Colors.grey,
-                                    height: 1,
-                                  );
-                                },
-                                itemBuilder: (BuildContext context, int index) {
-                                  final DayTime day = _days[index];
-                                  return ListTile(
-                                    leading: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 20.0),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 5.0),
+                        child: Column(
+                          children: <Widget>[
+                            _days.isEmpty
+                                ? Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Center(
                                       child: Text(
-                                        day.roomNo,
-                                        style: const TextStyle(
-                                          color: Colors.amber,
+                                        "Add Time First",
+                                        style: TextStyle(
+                                          color: Colors.grey[400],
+                                          letterSpacing: 1.0,
+                                          fontSize: 16.0,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ),
-                                    title: Text(
-                                      day.day,
-                                      style: const TextStyle(
-                                        color: Colors.amber,
-                                      ),
+                                  )
+                                : DayTimeList(
+                                    callBack: (index) => setState(
+                                      () => _days.removeAt(index),
                                     ),
-                                    subtitle: Text(
-                                      '${day.startTime} - ${day.endTime}',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    trailing: IconButton(
-                                      onPressed: () => setState(
-                                        () => _days.removeAt(index),
-                                      ),
-                                      icon: Icon(
-                                        Icons.delete,
-                                        color: Colors.grey[200],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
+                                    days: _days,
+                                  ),
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -345,22 +277,6 @@ class _AddSubjectState extends State<AddSubject> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Text myText({
-    required String text,
-    Color color = Colors.amber,
-    double size = 18.0,
-  }) {
-    return Text(
-      text,
-      style: TextStyle(
-        color: color,
-        fontSize: size,
-        fontWeight: FontWeight.bold,
-        letterSpacing: 1.0,
       ),
     );
   }

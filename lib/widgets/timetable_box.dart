@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:my_timetable/widgets/daytime_list.dart';
+import 'package:my_timetable/widgets/styles.dart' show headerContainer;
 
 class TimeTableBox extends StatelessWidget {
   final dynamic timeTable;
+  final String currentDay;
 
   const TimeTableBox({
     Key? key,
     required this.timeTable,
+    required this.currentDay,
   }) : super(key: key);
 
   @override
@@ -14,50 +18,33 @@ class TimeTableBox extends StatelessWidget {
     final dayTimes = timeTable.dayTime;
 
     return Container(
-      padding: const EdgeInsets.all(8.0),
-      margin: const EdgeInsets.all(6.0),
+      margin: const EdgeInsets.symmetric(vertical: 6.0),
       decoration: BoxDecoration(
         color: Colors.white.withAlpha(30),
         borderRadius: BorderRadius.circular(10.0),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            subject.name,
-            style: const TextStyle(
-              fontSize: 24.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+        children: <Widget>[
+          headerContainer(
+            title: subject.name,
+            icon: Icons.edit,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(14.0),
+            child: Text(
+              "Professor: ${subject.professorName}",
+              style: TextStyle(
+                color: Colors.grey[200],
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-          const SizedBox(height: 8.0),
-          Text(
-            subject.professorName,
-            style: const TextStyle(
-              fontSize: 16.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 16.0),
-          const Text(
-            'Day/Times:',
-            style: TextStyle(
-              fontSize: 16.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 8.0),
-          ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: dayTimes.length,
-            itemBuilder: (context, index) {
-              final dayTime = dayTimes[index];
-              return Text(dayTime.toString());
-            },
+          DayTimeList(
+            days: dayTimes,
+            callBack: null,
+            currentDay: currentDay,
           ),
         ],
       ),
