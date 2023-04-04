@@ -31,3 +31,19 @@ bool isNextSlot(String startTime) {
 
   return dateTimeStartTime.isAfter(dateTimeCurrentTime);
 }
+
+void sortTimeTables(List<dynamic> timeTables) {
+  for (final timeTable in timeTables) {
+    final dayTimes = timeTable.dayTime;
+    dayTimes.sort((a, b) {
+      final timeA = DateFormat('hh:mm a').parse(a.startTime);
+      final timeB = DateFormat('hh:mm a').parse(b.startTime);
+      return timeA.compareTo(timeB);
+    });
+  }
+  timeTables.sort((a, b) {
+    final timeA = DateFormat('hh:mm a').parse(a.dayTime[0].startTime);
+    final timeB = DateFormat('hh:mm a').parse(b.dayTime[0].startTime);
+    return timeA.compareTo(timeB);
+  });
+}

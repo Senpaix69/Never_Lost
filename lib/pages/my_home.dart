@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_timetable/pages/add_subject.dart';
 import 'package:my_timetable/services/database.dart';
-import 'package:my_timetable/utils.dart' show isNextSlot, weekdays;
+import 'package:my_timetable/utils.dart'
+    show isNextSlot, sortTimeTables, weekdays;
 import 'package:my_timetable/widgets/animate_route.dart' show SlideRightRoute;
 import 'package:my_timetable/widgets/timetable_box.dart';
 
@@ -53,23 +54,13 @@ class _MyHomeState extends State<MyHome> {
         if (dayTimes[i].day == currentDay) {
           bool isSlot = isNextSlot(dayTimes[i].startTime);
           if (isSlot) {
+            dayTimes.map((dayTime) => dayTime.copyWith(nextSlot: false));
             dayTimes[i] = dayTimes[i].copyWith(nextSlot: true);
             return;
           }
         }
       }
     }
-  }
-
-  void sortTimeTables(List<dynamic> timeTables) {
-    for (final timeTable in timeTables) {
-      final dayTimes = timeTable.dayTime;
-      dayTimes
-          .sort((a, b) => (a.startTime as Comparable).compareTo(b.startTime));
-    }
-
-    timeTables.sort(
-        (a, b) => a.dayTime[0].startTime.compareTo(b.dayTime[0].startTime));
   }
 
   @override
