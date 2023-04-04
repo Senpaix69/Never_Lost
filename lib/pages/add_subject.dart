@@ -21,37 +21,50 @@ class _AddSubjectState extends State<AddSubject> {
 
   late final DatabaseService _database;
   late final TextEditingController _professorName;
-  late final TextEditingController _facultyOffice;
+  late final TextEditingController _professorEmail;
+  late final TextEditingController _startFacultyTime;
+  late final TextEditingController _endFacultyTime;
+  late final TextEditingController _startSlotTime;
+  late final TextEditingController _facultyRoomNo;
+  late final TextEditingController _facultyDay;
   late final TextEditingController _subjectName;
-  late final TextEditingController _startTime;
+  late final TextEditingController _endSlotTime;
   late final TextEditingController _roomNo;
   late final TextEditingController _section;
-  late final TextEditingController _endTime;
   late final TextEditingController _day;
   bool _isSaving = false;
 
   @override
   void initState() {
+    _professorEmail = TextEditingController();
+    _startFacultyTime = TextEditingController();
+    _endFacultyTime = TextEditingController();
     _professorName = TextEditingController();
-    _facultyOffice = TextEditingController();
+    _startSlotTime = TextEditingController();
+    _facultyRoomNo = TextEditingController();
+    _endSlotTime = TextEditingController();
     _subjectName = TextEditingController();
-    _startTime = TextEditingController();
-    _endTime = TextEditingController();
+    _facultyDay = TextEditingController();
     _section = TextEditingController();
     _roomNo = TextEditingController();
     _day = TextEditingController();
     _database = DatabaseService();
+    _facultyDay.text = "Sunday";
     _day.text = "Sunday";
     super.initState();
   }
 
   @override
   void dispose() {
+    _professorEmail.dispose();
+    _startFacultyTime.dispose();
+    _endFacultyTime.dispose();
+    _facultyRoomNo.dispose();
     _professorName.dispose();
-    _facultyOffice.dispose();
+    _startSlotTime.dispose();
     _subjectName.dispose();
-    _startTime.dispose();
-    _endTime.dispose();
+    _endSlotTime.dispose();
+    _facultyDay.dispose();
     _section.dispose();
     _roomNo.dispose();
     _day.dispose();
@@ -65,8 +78,8 @@ class _AddSubjectState extends State<AddSubject> {
           DayTime(
             day: _day.text,
             roomNo: _roomNo.text,
-            startTime: _startTime.text,
-            endTime: _endTime.text,
+            startTime: _startSlotTime.text,
+            endTime: _endSlotTime.text,
           ),
         ),
       );
@@ -135,22 +148,13 @@ class _AddSubjectState extends State<AddSubject> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        myText(text: "Details"),
-                        const SizedBox(
-                          height: 10.0,
-                        ),
-                        formText(
-                          prefix: Icons.person,
-                          hint: "Enter Professor Name",
-                          controller: _professorName,
-                          validator: textValidate,
-                        ),
+                        myText(text: "Subject Details"),
                         const SizedBox(
                           height: 10.0,
                         ),
                         formText(
                           prefix: Icons.subject,
-                          hint: "Enter Subject Name",
+                          hint: "Subject name",
                           controller: _subjectName,
                           validator: textValidate,
                         ),
@@ -159,12 +163,62 @@ class _AddSubjectState extends State<AddSubject> {
                         ),
                         formText(
                           prefix: Icons.pending,
-                          hint: "Enter Section",
+                          hint: "Section",
                           controller: _section,
                           validator: textValidate,
                         ),
+                        Divider(
+                          height: 40.0,
+                          color: Colors.cyan[900],
+                        ),
+                        myText(text: "Professor Details"),
                         const SizedBox(
-                          height: 20.0,
+                          height: 10.0,
+                        ),
+                        formText(
+                          prefix: Icons.person,
+                          hint: "Professor name",
+                          controller: _professorName,
+                          validator: textValidate,
+                        ),
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                        formText(
+                          prefix: Icons.email,
+                          hint: "Professor email (Optional)",
+                          controller: _professorEmail,
+                          validator: null,
+                        ),
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                        Text(
+                          "Enter Office Timing (Optional)",
+                          style: TextStyle(
+                            color: Colors.grey[200],
+                            fontSize: 12.0,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                        timingsField(
+                          sTime: _startFacultyTime,
+                          eTime: _endFacultyTime,
+                          validation: false,
+                        ),
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                        roomAndDay(
+                          day: _facultyDay,
+                          room: _facultyRoomNo,
+                          validation: false,
+                        ),
+                        Divider(
+                          height: 40.0,
+                          color: Colors.cyan[900],
                         ),
                       ],
                     ),
@@ -175,83 +229,15 @@ class _AddSubjectState extends State<AddSubject> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      myText(text: "Day and Time"),
+                      myText(text: "Subject Timings *"),
                       const SizedBox(
                         height: 10.0,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Expanded(
-                            child: formText(
-                              prefix: Icons.timer,
-                              hint: "1:00 AM",
-                              controller: _startTime,
-                              validator: textValidate,
-                              onTap: () =>
-                                  _showTimePicker(controller: _startTime),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 10.0,
-                          ),
-                          Expanded(
-                            child: formText(
-                              prefix: Icons.timer,
-                              hint: "12:00 PM",
-                              controller: _endTime,
-                              onTap: () =>
-                                  _showTimePicker(controller: _endTime),
-                              validator: textValidate,
-                            ),
-                          ),
-                        ],
-                      ),
+                      timingsField(sTime: _startSlotTime, eTime: _endSlotTime),
                       const SizedBox(
                         height: 10.0,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Expanded(
-                            child: DropdownButtonFormField<String>(
-                              value: _day.text,
-                              onChanged: (value) {
-                                setState(() {
-                                  _day.text = value!;
-                                });
-                              },
-                              dropdownColor: Colors.grey[700],
-                              style: const TextStyle(color: Colors.white),
-                              decoration: decorationFormField(
-                                  Icons.weekend, "Select Day"),
-                              items: weekdays
-                                  .map<DropdownMenuItem<String>>((weekday) {
-                                return DropdownMenuItem<String>(
-                                  alignment: Alignment.center,
-                                  value: weekday,
-                                  child: Text(
-                                    weekday,
-                                  ),
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 10.0,
-                          ),
-                          Expanded(
-                            child: formText(
-                              prefix: Icons.room,
-                              hint: "Room No",
-                              controller: _roomNo,
-                              validator: textValidate,
-                            ),
-                          ),
-                        ],
-                      ),
+                      roomAndDay(day: _day, room: _roomNo),
                       const SizedBox(
                         height: 10.0,
                       ),
@@ -330,6 +316,86 @@ class _AddSubjectState extends State<AddSubject> {
           ),
         ),
       ),
+    );
+  }
+
+  Row roomAndDay({
+    required TextEditingController day,
+    required TextEditingController room,
+    bool validation = true,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Expanded(
+          child: DropdownButtonFormField<String>(
+            value: day.text,
+            onChanged: (value) {
+              setState(() {
+                day.text = value!;
+              });
+            },
+            dropdownColor: Colors.grey[700],
+            style: const TextStyle(color: Colors.white),
+            decoration: decorationFormField(Icons.weekend, "Select Day"),
+            items: weekdays.map<DropdownMenuItem<String>>((weekday) {
+              return DropdownMenuItem<String>(
+                alignment: Alignment.center,
+                value: weekday,
+                child: Text(
+                  weekday,
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+        const SizedBox(
+          width: 10.0,
+        ),
+        Expanded(
+          child: formText(
+            prefix: Icons.room,
+            hint: "Room No",
+            controller: room,
+            validator: validation ? textValidate : null,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Row timingsField({
+    required TextEditingController sTime,
+    required TextEditingController eTime,
+    bool validation = true,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Expanded(
+          child: formText(
+            prefix: Icons.timer,
+            hint: "1:00 AM",
+            controller: sTime,
+            validator: validation ? textValidate : null,
+            onTap: () => _showTimePicker(controller: sTime),
+          ),
+        ),
+        const SizedBox(
+          width: 10.0,
+        ),
+        Expanded(
+          child: formText(
+            prefix: Icons.timer,
+            hint: "12:00 PM",
+            controller: eTime,
+            onTap: () => _showTimePicker(controller: eTime),
+            validator: validation ? textValidate : null,
+          ),
+        ),
+      ],
     );
   }
 

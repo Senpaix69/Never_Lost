@@ -5,8 +5,8 @@ import 'package:my_timetable/constants/services.dart';
 class Subject {
   final int? id;
   final String name;
-  final String professorName;
   final String section;
+  final String professorName;
 
   const Subject({
     this.id,
