@@ -26,11 +26,13 @@ class _DayTimeListState extends State<DayTimeList> {
     _filteredDays = widget.currentDay == null
         ? widget.days
         : widget.days.where((day) => day.day == widget.currentDay).toList();
+    _filteredDays.sort((a, b) => a.startTime.compareTo(b.startTime));
   }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       itemCount: _filteredDays.length,
       itemBuilder: (BuildContext context, int index) {
@@ -78,7 +80,12 @@ class _DayTimeListState extends State<DayTimeList> {
               highlightColor: Colors.transparent,
               splashColor: Colors.transparent,
             )
-          : null,
+          : day.nextSlot
+              ? const Text(
+                  "Next",
+                  style: TextStyle(color: Colors.white),
+                )
+              : null,
     );
   }
 }

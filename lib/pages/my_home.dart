@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_timetable/pages/add_subject.dart';
 import 'package:my_timetable/services/database.dart';
-import 'package:my_timetable/utils.dart' show weekdays;
+import 'package:my_timetable/utils.dart' show isNextSlot, weekdays;
 import 'package:my_timetable/widgets/animate_route.dart' show SlideRightRoute;
 import 'package:my_timetable/widgets/timetable_box.dart';
 
@@ -14,24 +14,55 @@ class MyHome extends StatefulWidget {
 
 class _MyHomeState extends State<MyHome> {
   late final DatabaseService _database;
+  late final PageController _pageController;
   final int _today = DateTime.now().weekday - 1;
   int _currentPage = DateTime.now().weekday - 1;
-  final PageController _pageController =
-      PageController(initialPage: DateTime.now().weekday - 1);
+  int _previousPage = 0;
+  bool _isPageChanging = false;
 
   void handlePage(int increment) {
+    if (_isPageChanging) {
+      return;
+    }
     setState(() {
-      _currentPage = (_currentPage + increment) % weekdays.length;
+      _isPageChanging = true;
+      _previousPage = _currentPage;
+      int newPage = _currentPage + increment;
+      _currentPage = (newPage >= weekdays.length) || (newPage < 0)
+          ? _currentPage
+          : newPage;
     });
-    _pageController.animateToPage(
-      _currentPage,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.ease,
-    );
+    if (_previousPage != _currentPage) {
+      _pageController.animateToPage(
+        _currentPage,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.ease,
+      );
+    }
+    Future.delayed(const Duration(milliseconds: 500), () {
+      _isPageChanging = false;
+    });
+  }
+
+  void setNextSlot(List<dynamic> timeTables) {
+    String currentDay = weekdays[_currentPage];
+    for (final timeTable in timeTables) {
+      final dayTimes = timeTable.dayTime;
+      for (int i = 0; i < dayTimes.length; i++) {
+        if (dayTimes[i].day == currentDay) {
+          bool isSlot = isNextSlot(dayTimes[i].startTime);
+          if (isSlot) {
+            dayTimes[i] = dayTimes[i].copyWith(nextSlot: true);
+            return;
+          }
+        }
+      }
+    }
   }
 
   @override
   void initState() {
+    _pageController = PageController(initialPage: DateTime.now().weekday - 1);
     _database = DatabaseService();
     _database.open();
     super.initState();
@@ -121,19 +152,19 @@ class _MyHomeState extends State<MyHome> {
               }
               final timeTables = snapshot.data!;
               return PageView.builder(
-                physics: const BouncingScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 itemCount: weekdays.length,
                 controller: _pageController,
-                onPageChanged: (value) => setState(() {
+                onPageChanged: (value) {
                   _currentPage = value;
-                }),
+                },
                 itemBuilder: (context, ind) {
                   final currentDay = weekdays[ind];
                   final filteredTimeTables = timeTables
                       .where((timeTable) => timeTable.dayTime
                           .any((dayTime) => dayTime.day == currentDay))
                       .toList();
-
+                  setNextSlot(filteredTimeTables);
                   if (filteredTimeTables.isEmpty) {
                     return noTimeTableAdded();
                   }
