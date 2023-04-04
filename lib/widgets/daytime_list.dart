@@ -81,9 +81,19 @@ class _DayTimeListState extends State<DayTimeList> {
               splashColor: Colors.transparent,
             )
           : day.nextSlot
-              ? const Text(
-                  "Next",
-                  style: TextStyle(color: Colors.white),
+              ? TextButton.icon(
+                  label: const Text(
+                    "Next",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.scatter_plot,
+                    color: Colors.white,
+                  ),
                 )
               : null,
     );

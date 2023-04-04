@@ -160,10 +160,12 @@ class _MyHomeState extends State<MyHome> {
                 },
                 itemBuilder: (context, ind) {
                   final currentDay = weekdays[ind];
-                  final filteredTimeTables = timeTables
-                      .where((timeTable) => timeTable.dayTime
-                          .any((dayTime) => dayTime.day == currentDay))
-                      .toList();
+                  final filteredTimeTables = List.from(timeTables);
+                  filteredTimeTables.retainWhere((timeTable) => timeTable
+                      .dayTime
+                      .any((dayTime) => dayTime.day == currentDay));
+                  filteredTimeTables.sort((a, b) =>
+                      b.dayTime[0].startTime.compareTo(a.dayTime[0].startTime));
                   setNextSlot(filteredTimeTables);
                   if (filteredTimeTables.isEmpty) {
                     return noTimeTableAdded();
