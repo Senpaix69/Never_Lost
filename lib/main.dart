@@ -7,7 +7,7 @@ void main() {
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "Timetable",
+      title: "Never Lost",
       home: const MyHome(),
       routes: {
         home: (context) => const MyHome(),

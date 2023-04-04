@@ -8,7 +8,7 @@ InputDecoration decorationFormField(prefixIcon, hintText) {
       color: Colors.grey[400],
     ),
     filled: true,
-    fillColor: Colors.grey[800],
+    fillColor: Colors.cyan.withAlpha(40),
     border: const OutlineInputBorder(
       borderRadius: BorderRadius.all(
         Radius.circular(8.0),
@@ -20,13 +20,13 @@ InputDecoration decorationFormField(prefixIcon, hintText) {
 
 Text myText({
   required String text,
-  Color color = Colors.amber,
-  double size = 18.0,
+  Color? color,
+  double size = 16.0,
 }) {
   return Text(
     text,
     style: TextStyle(
-      color: color,
+      color: color ?? Colors.white,
       fontSize: size,
       fontWeight: FontWeight.bold,
       letterSpacing: 1.0,
@@ -39,7 +39,7 @@ Container headerContainer({required String title, required IconData icon}) {
     padding: const EdgeInsets.symmetric(vertical: 8.0),
     width: double.infinity,
     decoration: BoxDecoration(
-      color: Colors.grey[850],
+      color: Colors.cyan[900],
       borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
     ),
@@ -54,7 +54,7 @@ Container headerContainer({required String title, required IconData icon}) {
           ),
           Icon(
             icon,
-            color: Colors.amber,
+            color: Colors.white,
           ),
         ],
       ),

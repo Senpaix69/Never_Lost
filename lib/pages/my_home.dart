@@ -47,9 +47,9 @@ class _MyHomeState extends State<MyHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[900],
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.grey[850],
+        backgroundColor: Colors.cyan[900],
         title: const Text("Time Table"),
         elevation: 0.0,
         actions: <Widget>[
@@ -77,28 +77,29 @@ class _MyHomeState extends State<MyHome> {
                     padding: EdgeInsets.zero,
                     iconSize: 40.0,
                     onPressed: () => handlePage(-1),
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.arrow_left,
-                      color: Colors.white,
+                      color: Colors.cyan[800],
                     ),
                   ),
                   Text(
                     weekdays[_currentPage],
                     style: TextStyle(
-                      letterSpacing: 2.0,
-                      color:
-                          _today == _currentPage ? Colors.amber : Colors.white,
+                      letterSpacing: 1.0,
+                      color: _today == _currentPage
+                          ? Colors.cyan[600]
+                          : Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                      fontSize: 20,
                     ),
                   ),
                   IconButton(
                     onPressed: () => handlePage(1),
                     padding: EdgeInsets.zero,
                     iconSize: 40.0,
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.arrow_right,
-                      color: Colors.white,
+                      color: Colors.cyan[800],
                     ),
                   ),
                 ],
@@ -112,7 +113,7 @@ class _MyHomeState extends State<MyHome> {
               if (snapshot.connectionState == ConnectionState.done) {
                 return const Center(
                   child: CircularProgressIndicator(
-                    color: Colors.amber,
+                    color: Colors.cyan,
                   ),
                 );
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -168,19 +169,19 @@ Center noTimeTableAdded() {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: const <Widget>[
+      children: <Widget>[
         Icon(
           Icons.calendar_today,
           size: 80.0,
-          color: Colors.grey,
+          color: Colors.grey[300],
         ),
-        SizedBox(
+        const SizedBox(
           height: 15.0,
         ),
         Text(
           "No TimeTable Added Yet",
           style: TextStyle(
-            color: Colors.grey,
+            color: Colors.grey[300],
             letterSpacing: 1.0,
             fontWeight: FontWeight.bold,
           ),

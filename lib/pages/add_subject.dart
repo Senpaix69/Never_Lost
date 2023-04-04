@@ -21,6 +21,7 @@ class _AddSubjectState extends State<AddSubject> {
 
   late final DatabaseService _database;
   late final TextEditingController _professorName;
+  late final TextEditingController _facultyOffice;
   late final TextEditingController _subjectName;
   late final TextEditingController _startTime;
   late final TextEditingController _roomNo;
@@ -32,6 +33,7 @@ class _AddSubjectState extends State<AddSubject> {
   @override
   void initState() {
     _professorName = TextEditingController();
+    _facultyOffice = TextEditingController();
     _subjectName = TextEditingController();
     _startTime = TextEditingController();
     _endTime = TextEditingController();
@@ -46,6 +48,7 @@ class _AddSubjectState extends State<AddSubject> {
   @override
   void dispose() {
     _professorName.dispose();
+    _facultyOffice.dispose();
     _subjectName.dispose();
     _startTime.dispose();
     _endTime.dispose();
@@ -104,7 +107,7 @@ class _AddSubjectState extends State<AddSubject> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[900],
+      backgroundColor: Colors.black,
       appBar: myAppBar(),
       body: Container(
         padding: const EdgeInsets.all(20.0),
@@ -255,7 +258,7 @@ class _AddSubjectState extends State<AddSubject> {
                       Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: Colors.amber.withAlpha(200),
+                          color: Colors.cyan[900],
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         child: TextButton.icon(
@@ -281,7 +284,7 @@ class _AddSubjectState extends State<AddSubject> {
                 Container(
                   margin: const EdgeInsets.only(top: 20.0),
                   decoration: BoxDecoration(
-                    color: Colors.white.withAlpha(30),
+                    color: Colors.cyan.withAlpha(40),
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   child: Column(
@@ -353,7 +356,7 @@ class _AddSubjectState extends State<AddSubject> {
 
   AppBar myAppBar() {
     return AppBar(
-      backgroundColor: Colors.grey[850],
+      backgroundColor: Colors.cyan[900],
       title: const Text("Add Timetable"),
       actions: <Widget>[
         _isSaving

@@ -52,7 +52,7 @@ class _DayTimeListState extends State<DayTimeList> {
         child: Text(
           isAdding ? day.roomNo : "Slot $alpha",
           style: TextStyle(
-            color: Colors.amber,
+            color: Colors.cyan[800],
             fontWeight: FontWeight.bold,
             fontSize: isAdding ? 14.0 : 18.0,
           ),
@@ -61,7 +61,7 @@ class _DayTimeListState extends State<DayTimeList> {
       title: Text(
         isAdding ? day.day : day.roomNo,
         style: const TextStyle(
-          color: Colors.amber,
+          color: Colors.white,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -74,9 +74,9 @@ class _DayTimeListState extends State<DayTimeList> {
       trailing: widget.callBack != null
           ? IconButton(
               onPressed: () => widget.callBack!(index),
-              icon: Icon(
+              icon: const Icon(
                 Icons.delete,
-                color: Colors.grey[200],
+                color: Colors.red,
               ),
               highlightColor: Colors.transparent,
               splashColor: Colors.transparent,

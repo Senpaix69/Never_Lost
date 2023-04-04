@@ -20,7 +20,7 @@ class TimeTableBox extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 6.0),
       decoration: BoxDecoration(
-        color: Colors.white.withAlpha(30),
+        color: Colors.cyan.withAlpha(40),
         borderRadius: BorderRadius.circular(10.0),
       ),
       child: Column(
@@ -38,9 +38,9 @@ class TimeTableBox extends StatelessWidget {
               children: [
                 Text(
                   "Professor: ${subject.professorName}",
-                  style: TextStyle(
-                    color: Colors.grey[200],
-                    fontSize: 16.0,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -49,9 +49,9 @@ class TimeTableBox extends StatelessWidget {
                 ),
                 Text(
                   "Section: ${subject.section}",
-                  style: TextStyle(
-                    color: Colors.grey[400],
-                    fontSize: 14.0,
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 12.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -60,7 +60,7 @@ class TimeTableBox extends StatelessWidget {
                 ),
                 Divider(
                   height: 0.0,
-                  color: Colors.grey[800],
+                  color: Colors.cyan[900],
                   thickness: 2.0,
                 )
               ],
