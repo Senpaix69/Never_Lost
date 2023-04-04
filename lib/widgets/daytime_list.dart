@@ -18,7 +18,6 @@ class DayTimeList extends StatefulWidget {
 }
 
 class _DayTimeListState extends State<DayTimeList> {
-  late ScrollController _listController;
   List<DayTime> _filteredDays = [];
 
   @override
@@ -27,13 +26,11 @@ class _DayTimeListState extends State<DayTimeList> {
     _filteredDays = widget.currentDay == null
         ? widget.days
         : widget.days.where((day) => day.day == widget.currentDay).toList();
-    _listController = ScrollController();
   }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      controller: _listController,
       shrinkWrap: true,
       itemCount: _filteredDays.length,
       itemBuilder: (BuildContext context, int index) {
