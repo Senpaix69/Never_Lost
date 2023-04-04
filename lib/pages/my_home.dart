@@ -45,7 +45,8 @@ class _MyHomeState extends State<MyHome> {
   }
 
   void setNextSlot(List<dynamic> timeTables) {
-    String currentDay = weekdays[_currentPage];
+    sortTimeTables(timeTables);
+    String currentDay = weekdays[_today];
     for (final timeTable in timeTables) {
       final dayTimes = timeTable.dayTime;
       for (int i = 0; i < dayTimes.length; i++) {
@@ -58,6 +59,17 @@ class _MyHomeState extends State<MyHome> {
         }
       }
     }
+  }
+
+  void sortTimeTables(List<dynamic> timeTables) {
+    for (final timeTable in timeTables) {
+      final dayTimes = timeTable.dayTime;
+      dayTimes
+          .sort((a, b) => (a.startTime as Comparable).compareTo(b.startTime));
+    }
+
+    timeTables.sort(
+        (a, b) => a.dayTime[0].startTime.compareTo(b.dayTime[0].startTime));
   }
 
   @override
@@ -164,8 +176,7 @@ class _MyHomeState extends State<MyHome> {
                   filteredTimeTables.retainWhere((timeTable) => timeTable
                       .dayTime
                       .any((dayTime) => dayTime.day == currentDay));
-                  filteredTimeTables.sort((a, b) =>
-                      b.dayTime[0].startTime.compareTo(a.dayTime[0].startTime));
+
                   setNextSlot(filteredTimeTables);
                   if (filteredTimeTables.isEmpty) {
                     return noTimeTableAdded();
