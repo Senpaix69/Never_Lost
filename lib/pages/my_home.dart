@@ -22,13 +22,13 @@ class _MyHomeState extends State<MyHome> {
   bool _isPageChanging = false;
 
   void handlePage(int increment) {
-    if (_isPageChanging) {
+    int newPage = _currentPage + increment;
+    if (_isPageChanging || newPage < 0 || newPage >= weekdays.length) {
       return;
     }
     setState(() {
       _isPageChanging = true;
       _previousPage = _currentPage;
-      int newPage = _currentPage + increment;
       _currentPage = (newPage >= weekdays.length) || (newPage < 0)
           ? _currentPage
           : newPage;
@@ -46,6 +46,7 @@ class _MyHomeState extends State<MyHome> {
   }
 
   void setNextSlot(List<dynamic> timeTables) {
+    print("Object");
     sortTimeTables(timeTables);
     String currentDay = weekdays[_today];
     for (final timeTable in timeTables) {
