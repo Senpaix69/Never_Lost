@@ -46,7 +46,6 @@ class _MyHomeState extends State<MyHome> {
   }
 
   void setNextSlot(List<dynamic> timeTables) {
-    print("Object");
     sortTimeTables(timeTables);
     String currentDay = weekdays[_today];
     for (final timeTable in timeTables) {
@@ -151,10 +150,8 @@ class _MyHomeState extends State<MyHome> {
                     color: Colors.cyan,
                   ),
                 );
-              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return noTimeTableAdded();
               }
-              final timeTables = snapshot.data!;
+              final timeTables = snapshot.data;
               return PageView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: weekdays.length,
@@ -164,7 +161,7 @@ class _MyHomeState extends State<MyHome> {
                 },
                 itemBuilder: (context, ind) {
                   final currentDay = weekdays[ind];
-                  final filteredTimeTables = List.from(timeTables);
+                  final filteredTimeTables = List.from(timeTables!);
                   filteredTimeTables.retainWhere((timeTable) => timeTable
                       .dayTime
                       .any((dayTime) => dayTime.day == currentDay));
