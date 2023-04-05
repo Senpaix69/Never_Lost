@@ -50,6 +50,6 @@ class Subject {
 
   @override
   String toString() {
-    return 'Subject, id: $id, section: $section, name: $name, professorName: $professorName';
+    return 'Subject: $name, id: $id, section: $section, name: $name, professorName: $professorName';
   }
 }

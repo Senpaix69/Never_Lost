@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_timetable/pages/add_subject.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/utils.dart'
-    show isNextSlot, sortTimeTables, weekdays;
+    show isCurrentSlot, isNextSlot, sortTimeTables, weekdays;
 import 'package:my_timetable/widgets/animate_route.dart' show SlideRightRoute;
 import 'package:my_timetable/widgets/timetable_box.dart';
 
@@ -45,20 +45,21 @@ class _MyHomeState extends State<MyHome> {
     });
   }
 
-  void setNextSlot(List<dynamic> timeTables) {
+  void setNextSlot(final List<dynamic> timeTables) {
     sortTimeTables(timeTables);
     String currentDay = weekdays[_today];
     for (final timeTable in timeTables) {
       final dayTimes = timeTable.dayTime;
       for (int i = 0; i < dayTimes.length; i++) {
-        if (dayTimes[i].day == currentDay) {
-          bool isSlot = isNextSlot(dayTimes[i].startTime);
-          if (isSlot) {
-            dayTimes.map((dayTime) => dayTime.copyWith(nextSlot: false));
-            dayTimes[i] = dayTimes[i].copyWith(nextSlot: true);
-            return;
-          }
+        if (currentDay != dayTimes[i].day) {
+          continue;
         }
+        bool isSlot = isCurrentSlot(dayTimes[i].startTime, dayTimes[i].endTime);
+        bool isSlotNext = isNextSlot(dayTimes[i].startTime);
+        dayTimes[i] = dayTimes[i].copyWith(
+          nextSlot: isSlotNext,
+          currentSlot: isSlot,
+        );
       }
     }
   }

@@ -34,17 +34,21 @@ Text myText({
   );
 }
 
-Container headerContainer({required String title, required IconData icon}) {
+Container headerContainer({
+  required String title,
+  required IconData icon,
+}) {
   return Container(
     padding: const EdgeInsets.symmetric(vertical: 8.0),
     width: double.infinity,
+    height: 45,
     decoration: BoxDecoration(
       color: Colors.cyan[900],
       borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
     ),
     child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -52,8 +56,14 @@ Container headerContainer({required String title, required IconData icon}) {
           const SizedBox(
             width: 10.0,
           ),
-          Icon(
-            icon,
+          IconButton(
+            padding: EdgeInsets.zero,
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            alignment: Alignment.centerRight,
+            onPressed: () {},
+            icon: Icon(icon),
+            iconSize: 25,
             color: Colors.white,
           ),
         ],

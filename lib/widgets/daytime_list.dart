@@ -50,7 +50,11 @@ class _DayTimeListState extends State<DayTimeList> {
         child: Text(
           isAdding ? day.roomNo : "Slot $alpha",
           style: TextStyle(
-            color: day.nextSlot ? Colors.red : Colors.cyan[800],
+            color: day.currentSlot
+                ? Colors.yellow
+                : day.nextSlot
+                    ? Colors.red
+                    : Colors.cyan[800],
             fontWeight: FontWeight.bold,
             fontSize: isAdding ? 14.0 : 18.0,
           ),
@@ -79,19 +83,19 @@ class _DayTimeListState extends State<DayTimeList> {
               highlightColor: Colors.transparent,
               splashColor: Colors.transparent,
             )
-          : day.nextSlot
+          : day.nextSlot || day.currentSlot
               ? TextButton.icon(
                   label: Text(
-                    "Next",
+                    day.currentSlot ? "Now" : "Next",
                     style: TextStyle(
-                      color: Colors.cyan[400],
+                      color: day.currentSlot ? Colors.yellow : Colors.red,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   onPressed: () {},
                   icon: Icon(
                     Icons.scatter_plot,
-                    color: Colors.cyan[400],
+                    color: day.currentSlot ? Colors.yellow : Colors.red,
                   ),
                 )
               : null,

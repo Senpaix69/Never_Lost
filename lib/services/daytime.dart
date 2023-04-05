@@ -5,6 +5,7 @@ import 'package:my_timetable/constants/services.dart';
 class DayTime {
   final int? subId;
   final bool nextSlot;
+  final bool currentSlot;
   final String day;
   final String startTime;
   final String endTime;
@@ -13,6 +14,7 @@ class DayTime {
   const DayTime({
     this.subId,
     this.nextSlot = false,
+    this.currentSlot = false,
     required this.day,
     required this.startTime,
     required this.endTime,
@@ -32,6 +34,7 @@ class DayTime {
   DayTime copyWith({
     int? subId,
     bool? nextSlot,
+    bool? currentSlot,
     String? day,
     String? startTime,
     String? endTime,
@@ -41,6 +44,7 @@ class DayTime {
       subId: subId ?? this.subId,
       day: day ?? this.day,
       nextSlot: nextSlot ?? this.nextSlot,
+      currentSlot: currentSlot ?? this.currentSlot,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       roomNo: roomNo ?? this.roomNo,
@@ -59,6 +63,6 @@ class DayTime {
 
   @override
   String toString() {
-    return '$startTime-$endTime';
+    return 'Time: $startTime-$endTime, NextSlot: $nextSlot, CurrentSlot: $currentSlot';
   }
 }
