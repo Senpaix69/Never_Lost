@@ -43,8 +43,11 @@ Future<bool> confirmDialogue(
       builder: (context) {
         return AlertDialog(
           backgroundColor: Colors.grey[800],
-          title: const Text("Sign out", style: TextStyle(color: Colors.white)),
-          content: Text(message),
+          title: const Text("Delete", style: TextStyle(color: Colors.white)),
+          content: Text(
+            message,
+            style: const TextStyle(color: Colors.white),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
@@ -60,7 +63,7 @@ Future<bool> confirmDialogue(
                   ),
                 ),
                 child: const Text('Confirm'),
-                onPressed: () => Navigator.of(context).pop(false),
+                onPressed: () => Navigator.of(context).pop(true),
               ),
             ),
           ],

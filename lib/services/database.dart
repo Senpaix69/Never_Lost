@@ -44,6 +44,7 @@ class DatabaseService {
     await db.execute(createSubTable);
     await db.execute(createDayTimeTable);
     await db.execute(createProfessorTable);
+    await db.execute('PRAGMA foreign_keys = ON;');
     _catchAllTimeTables();
     _database = db;
   }
@@ -115,6 +116,9 @@ class DatabaseService {
     required List<DayTime> dayTimes,
   }) async {
     await deleteTimeTable(id: subject.id!);
+    _cachedTimeTables
+        .removeWhere((timeTable) => timeTable.subject.id == subject.id);
+    _timeTableController.add(_cachedTimeTables);
     await insertTimeTable(
       subject: subject,
       professor: professor,
@@ -126,7 +130,7 @@ class DatabaseService {
     final db = await open();
     final deleteSubjectResult = await db.delete(
       subTable,
-      where: 'id = ?',
+      where: '$subIdColumn = ?',
       whereArgs: [id],
     );
     if (deleteSubjectResult == 0) {

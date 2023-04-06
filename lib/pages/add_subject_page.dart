@@ -4,7 +4,9 @@ import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/daytime.dart';
 import 'package:my_timetable/services/professor.dart';
 import 'package:my_timetable/services/subject.dart';
-import 'package:my_timetable/utils.dart';
+import 'package:my_timetable/services/timeTable.dart';
+import 'package:my_timetable/utils.dart'
+    show GetArgument, textValidate, weekdays;
 import 'package:my_timetable/widgets/daytime_list.dart';
 import 'package:my_timetable/widgets/dialog_boxs.dart';
 import 'package:my_timetable/widgets/styles.dart';
@@ -16,9 +18,10 @@ class AddSubject extends StatefulWidget {
 }
 
 class _AddSubjectState extends State<AddSubject> {
+  int _subId = -1;
   final _formKey = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
-  final List<DayTime> _days = <DayTime>[];
+  List<DayTime> _days = <DayTime>[];
 
   late final DatabaseService _database;
   late final TextEditingController _professorName;
@@ -52,7 +55,26 @@ class _AddSubjectState extends State<AddSubject> {
     _database = DatabaseService();
     _facultyDay.text = "Sunday";
     _day.text = "Sunday";
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() => setArgument());
+    });
     super.initState();
+  }
+
+  void setArgument() {
+    final widgetTable = context.getArgument<TimeTable>();
+    if (widgetTable != null) {
+      _subId = widgetTable.subject.id!;
+      _subjectName.text = widgetTable.subject.name;
+      _section.text = widgetTable.subject.section;
+      _professorName.text = widgetTable.professor.name;
+      _professorEmail.text = widgetTable.professor.email!;
+      _facultyDay.text = widgetTable.professor.weekDay!;
+      _facultyRoomNo.text = widgetTable.professor.office!;
+      _startFacultyTime.text = widgetTable.professor.startTime!;
+      _endFacultyTime.text = widgetTable.professor.endTime!;
+      _days = widgetTable.dayTime;
+    }
   }
 
   @override
@@ -99,6 +121,16 @@ class _AddSubjectState extends State<AddSubject> {
     );
   }
 
+  Future<void> deleteTimeTable() async {
+    bool isDel = await confirmDialogue(
+        context: context, message: "Do you really want to delete?");
+    if (isDel) {
+      await _database.deleteTimeTable(id: _subId);
+      Future.delayed(
+          const Duration(milliseconds: 100), () => Navigator.of(context).pop());
+    }
+  }
+
   Future<void> saveTimeTable() async {
     if (!_formKey.currentState!.validate()) {
       return;
@@ -119,11 +151,18 @@ class _AddSubjectState extends State<AddSubject> {
       startTime: _startFacultyTime.text,
       endTime: _endFacultyTime.text,
     );
-    await _database.insertTimeTable(
-      daytimes: _days,
-      subject: sub,
-      professor: professor,
-    );
+    if (_subId != -1) {
+      await _database.updateTimeTable(
+          subject: sub.copyWith(id: _subId),
+          professor: professor,
+          dayTimes: _days);
+    } else {
+      await _database.insertTimeTable(
+        daytimes: _days,
+        subject: sub,
+        professor: professor,
+      );
+    }
     setState(() => _isSaving = false);
     Future.delayed(
         const Duration(milliseconds: 100), () => Navigator.of(context).pop());
@@ -290,6 +329,7 @@ class _AddSubjectState extends State<AddSubject> {
                       headerContainer(
                         title: "Timings",
                         icon: Icons.calendar_month,
+                        onClick: null,
                       ),
                       Padding(
                         padding: const EdgeInsets.all(6.0),
@@ -425,7 +465,7 @@ class _AddSubjectState extends State<AddSubject> {
       autocorrect: false,
       readOnly: onTap != null,
       onTap: onTap,
-      cursorColor: Colors.amber[200],
+      cursorColor: Colors.cyan[200],
       style: const TextStyle(color: Colors.white),
       decoration: decorationFormField(prefix, hint),
       validator: validator,
@@ -433,10 +473,21 @@ class _AddSubjectState extends State<AddSubject> {
   }
 
   AppBar myAppBar() {
+    bool isEditing = _subId != -1;
     return AppBar(
       backgroundColor: Colors.cyan[900],
-      title: const Text("Add Timetable"),
+      title: Text(isEditing ? "Edit TimeTable" : "Add Timetable"),
       actions: <Widget>[
+        isEditing
+            ? IconButton(
+                onPressed: () async {
+                  await deleteTimeTable();
+                },
+                icon: const Icon(Icons.delete),
+              )
+            : const SizedBox(
+                width: 0,
+              ),
         _isSaving
             ? Container(
                 width: 55,

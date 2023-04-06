@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 const List<String> weekdays = [
@@ -65,5 +66,18 @@ void sortTimeTables(List<dynamic> timeTables) {
       final timeB = DateFormat('hh:mm a').parse(b.startTime);
       return timeA.compareTo(timeB);
     });
+  }
+}
+
+extension GetArgument on BuildContext {
+  T? getArgument<T>() {
+    final modalRoute = ModalRoute.of(this);
+    if (modalRoute != null) {
+      final args = modalRoute.settings.arguments;
+      if (args != null && args is T) {
+        return args as T;
+      }
+    }
+    return null;
   }
 }

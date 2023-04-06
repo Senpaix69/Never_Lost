@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:my_timetable/pages/add_subject_page.dart';
+import 'package:my_timetable/widgets/animate_route.dart';
 import 'package:my_timetable/widgets/daytime_list.dart';
 import 'package:my_timetable/widgets/styles.dart' show headerContainer;
 
@@ -34,6 +36,16 @@ class _TimeTableBoxState extends State<TimeTableBox> {
     });
   }
 
+  void editTimeTable() {
+    Navigator.push(
+      context,
+      SlideRightRoute(
+        page: const AddSubject(),
+        arguments: widget.timeTable,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final subject = widget.timeTable.subject;
@@ -52,6 +64,7 @@ class _TimeTableBoxState extends State<TimeTableBox> {
           headerContainer(
             title: subject.name,
             icon: Icons.edit_note,
+            onClick: editTimeTable,
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(14.0, 14.0, 14.0, 0.0),

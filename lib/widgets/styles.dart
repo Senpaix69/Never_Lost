@@ -37,6 +37,7 @@ Text myText({
 Container headerContainer({
   required String title,
   required IconData icon,
+  required VoidCallback? onClick,
 }) {
   return Container(
     padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -61,7 +62,7 @@ Container headerContainer({
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
             alignment: Alignment.centerRight,
-            onPressed: () {},
+            onPressed: onClick,
             icon: Icon(icon),
             iconSize: 25,
             color: Colors.white,
