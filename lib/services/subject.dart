@@ -6,13 +6,11 @@ class Subject {
   final int? id;
   final String name;
   final String section;
-  final String professorName;
 
   const Subject({
     this.id,
     required this.section,
     required this.name,
-    required this.professorName,
   });
 
   Subject copyWith({
@@ -26,7 +24,6 @@ class Subject {
       id: id ?? this.id,
       name: name ?? this.name,
       section: section ?? this.section,
-      professorName: professorName ?? this.professorName,
     );
   }
 
@@ -35,7 +32,6 @@ class Subject {
       subIdColumn: id,
       subNameColumn: name,
       subSectionColumn: section,
-      subProfessorNameColumn: professorName,
     };
   }
 
@@ -44,12 +40,11 @@ class Subject {
       id: map[subIdColumn],
       section: map[subSectionColumn],
       name: map[subNameColumn],
-      professorName: map[subProfessorNameColumn],
     );
   }
 
   @override
   String toString() {
-    return 'Subject: $name, id: $id, section: $section, name: $name, professorName: $professorName';
+    return 'Subject: $name, id: $id, section: $section, name: $name';
   }
 }

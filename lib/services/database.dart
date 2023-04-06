@@ -1,5 +1,6 @@
 import 'package:my_timetable/constants/services.dart';
 import 'package:my_timetable/services/daytime.dart';
+import 'package:my_timetable/services/professor.dart';
 import 'package:my_timetable/services/subject.dart';
 import 'package:my_timetable/services/timeTable.dart';
 import 'package:sqflite/sqflite.dart';
@@ -41,6 +42,7 @@ class DatabaseService {
     // await db.execute("DROP TABLE IF EXISTS $dayTimeTable");
     await db.execute(createSubTable);
     await db.execute(createDayTimeTable);
+    await db.execute(createProfessorTable);
     _catchAllTimeTables();
     _database = db;
   }
@@ -61,21 +63,35 @@ class DatabaseService {
 
   Future<void> insertTimeTable({
     required Subject subject,
+    required Professor professor,
     required List<DayTime> daytimes,
   }) async {
-    int id = await insertSubject(subject: subject);
-    final myList = await insertDayTime(daytimes: daytimes, subId: id);
-    final TimeTable newTime = TimeTable(subject: subject, dayTime: myList);
-    if (id > 0) {
+    final sub = await insertSubject(subject: subject);
+    if (sub.id != null && sub.id! > 0) {
+      final myList = await insertDayTime(daytimes: daytimes, subId: sub.id!);
+      final prof = await insertProfessor(professor: professor, subId: sub.id!);
+      final newTime = TimeTable(subject: sub, professor: prof, dayTime: myList);
       _cachedTimeTables.add(newTime);
       _timeTableController.add(_cachedTimeTables);
     }
   }
 
-  Future<int> insertSubject({required Subject subject}) async {
+  Future<Subject> insertSubject({required Subject subject}) async {
     final db = await open();
     final id = await db.insert(subTable, subject.toMap());
-    return id;
+    return subject.copyWith(id: id);
+  }
+
+  Future<Professor> insertProfessor({
+    required Professor professor,
+    required int subId,
+  }) async {
+    final db = await open();
+    final id = await db.insert(professorTable, professor.toMap());
+    return professor.copyWith(
+      profId: id,
+      subId: subId,
+    );
   }
 
   Future<List<DayTime>> insertDayTime({
@@ -93,10 +109,15 @@ class DatabaseService {
 
   Future<void> updateTimeTable({
     required Subject subject,
+    required Professor professor,
     required List<DayTime> dayTimes,
   }) async {
     await deleteTimeTable(id: subject.id!);
-    await insertTimeTable(subject: subject, daytimes: dayTimes);
+    await insertTimeTable(
+      subject: subject,
+      professor: professor,
+      daytimes: dayTimes,
+    );
   }
 
   Future<void> deleteTimeTable({required int id}) async {
@@ -121,14 +142,23 @@ class DatabaseService {
     final dayTimes = await db.query(dayTimeTable);
     final subjectIds = dayTimes.map((dt) => dt[subIdColumn] as int).toSet();
     final subjects = <Subject>[];
+    final profs = <Professor>[];
     for (final id in subjectIds) {
       final sub = await db.query(
         subTable,
         where: '$subIdColumn = ?',
         whereArgs: [id],
       );
+      final prof = await db.query(
+        professorTable,
+        where: '$subIdColumn = ?',
+        whereArgs: [id],
+      );
       if (sub.isNotEmpty) {
         subjects.add(Subject.fromMap(sub.first));
+      }
+      if (prof.isNotEmpty) {
+        profs.add(Professor.fromMap(sub.first));
       }
     }
     _cachedTimeTables = subjects.map((sub) {
@@ -136,7 +166,8 @@ class DatabaseService {
           .where((dt) => dt[subIdColumn] == sub.id)
           .map((dt) => DayTime.fromMap(dt))
           .toList();
-      return TimeTable(subject: sub, dayTime: timeSlots);
+      final prof = profs.firstWhere((prof) => prof.subId == sub.id);
+      return TimeTable(subject: sub, professor: prof, dayTime: timeSlots);
     }).toList();
     return _cachedTimeTables;
   }

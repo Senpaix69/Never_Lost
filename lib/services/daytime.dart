@@ -4,15 +4,17 @@ import 'package:my_timetable/constants/services.dart';
 @immutable
 class DayTime {
   final int? subId;
+  final int? id;
+  final String day;
   final bool nextSlot;
   final bool currentSlot;
-  final String day;
   final String startTime;
   final String endTime;
   final String roomNo;
 
   const DayTime({
     this.subId,
+    this.id,
     this.nextSlot = false,
     this.currentSlot = false,
     required this.day,
@@ -25,6 +27,7 @@ class DayTime {
     return {
       dayColumn: day,
       subIdColumn: subId,
+      dayTimeIdColumn: id,
       startTimeColumn: startTime,
       endTimeColumn: endTime,
       roomNoColumn: roomNo,
@@ -33,6 +36,7 @@ class DayTime {
 
   DayTime copyWith({
     int? subId,
+    int? id,
     bool? nextSlot,
     bool? currentSlot,
     String? day,
@@ -42,6 +46,7 @@ class DayTime {
   }) {
     return DayTime(
       subId: subId ?? this.subId,
+      id: id ?? this.id,
       day: day ?? this.day,
       nextSlot: nextSlot ?? this.nextSlot,
       currentSlot: currentSlot ?? this.currentSlot,
@@ -55,6 +60,7 @@ class DayTime {
     return DayTime(
       day: map[dayColumn],
       subId: map[subIdColumn],
+      id: map[dayTimeIdColumn],
       startTime: map[startTimeColumn],
       endTime: map[endTimeColumn],
       roomNo: map[roomNoColumn],
@@ -65,4 +71,29 @@ class DayTime {
   String toString() {
     return 'Time: $startTime-$endTime, NextSlot: $nextSlot, CurrentSlot: $currentSlot';
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DayTime &&
+          runtimeType == other.runtimeType &&
+          subId == other.subId &&
+          id == other.id &&
+          day == other.day &&
+          nextSlot == other.nextSlot &&
+          currentSlot == other.currentSlot &&
+          startTime == other.startTime &&
+          endTime == other.endTime &&
+          roomNo == other.roomNo;
+
+  @override
+  int get hashCode =>
+      subId.hashCode ^
+      id.hashCode ^
+      day.hashCode ^
+      nextSlot.hashCode ^
+      currentSlot.hashCode ^
+      startTime.hashCode ^
+      endTime.hashCode ^
+      roomNo.hashCode;
 }

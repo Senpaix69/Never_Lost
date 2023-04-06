@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/helpers/show_time_picker.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/daytime.dart';
+import 'package:my_timetable/services/professor.dart';
 import 'package:my_timetable/services/subject.dart';
 import 'package:my_timetable/utils.dart';
 import 'package:my_timetable/widgets/daytime_list.dart';
@@ -109,9 +110,20 @@ class _AddSubjectState extends State<AddSubject> {
     Subject sub = Subject(
       name: _subjectName.text,
       section: _section.text,
-      professorName: _professorName.text,
     );
-    await _database.insertTimeTable(daytimes: _days, subject: sub);
+    Professor professor = Professor(
+      name: _professorName.text,
+      email: _professorEmail.text,
+      office: _facultyRoomNo.text,
+      weekDay: _facultyDay.text,
+      startTime: _startFacultyTime.text,
+      endTime: _endFacultyTime.text,
+    );
+    await _database.insertTimeTable(
+      daytimes: _days,
+      subject: sub,
+      professor: professor,
+    );
     setState(() => _isSaving = false);
     Future.delayed(
         const Duration(milliseconds: 100), () => Navigator.of(context).pop());
