@@ -23,9 +23,6 @@ class _DayTimeListState extends State<DayTimeList> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {});
-    });
     _filteredDays = widget.currentDay == null
         ? widget.days
         : widget.days.where((day) => day.day == widget.currentDay).toList();
