@@ -145,9 +145,8 @@ class _TimeTableBoxState extends State<TimeTableBox> {
                 "$text: $detail",
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 12.0,
+                  fontSize: 13.0,
                   fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic,
                 ),
               ),
               const SizedBox(
