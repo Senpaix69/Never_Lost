@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:my_timetable/pages/add_subject.dart';
+import 'package:my_timetable/pages/add_subject_page.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/utils.dart'
     show isCurrentSlot, isNextSlot, sortTimeTables, weekdays;
 import 'package:my_timetable/widgets/animate_route.dart' show SlideRightRoute;
 import 'package:my_timetable/widgets/timetable_box.dart';
 
-class MyHome extends StatefulWidget {
-  const MyHome({super.key});
+class TimeTablesPage extends StatefulWidget {
+  const TimeTablesPage({super.key});
 
   @override
-  State<MyHome> createState() => _MyHomeState();
+  State<TimeTablesPage> createState() => _TimeTablesPageState();
 }
 
-class _MyHomeState extends State<MyHome> {
+class _TimeTablesPageState extends State<TimeTablesPage> {
   late final DatabaseService _database;
   late final PageController _pageController;
   final int _today = DateTime.now().weekday - 1;
@@ -152,7 +152,8 @@ class _MyHomeState extends State<MyHome> {
                   ),
                 );
               }
-              final timeTables = snapshot.data;
+              final timeTables =
+                  snapshot.data != null ? [...snapshot.data!] : [];
               return PageView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: weekdays.length,
@@ -162,7 +163,7 @@ class _MyHomeState extends State<MyHome> {
                 },
                 itemBuilder: (context, ind) {
                   final currentDay = weekdays[ind];
-                  final filteredTimeTables = List.from(timeTables!);
+                  final filteredTimeTables = List.from(timeTables);
                   filteredTimeTables.retainWhere((timeTable) => timeTable
                       .dayTime
                       .any((dayTime) => dayTime.day == currentDay));

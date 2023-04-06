@@ -23,7 +23,7 @@ class DayTime {
     required this.roomNo,
   });
 
-  Map<String, dynamic> toMap() {
+  Map<String, Object?> toMap() {
     return {
       dayColumn: day,
       subIdColumn: subId,
@@ -56,14 +56,14 @@ class DayTime {
     );
   }
 
-  factory DayTime.fromMap(Map<String, dynamic> map) {
+  factory DayTime.fromMap(Map<String, Object?> map) {
     return DayTime(
-      day: map[dayColumn],
-      subId: map[subIdColumn],
-      id: map[dayTimeIdColumn],
-      startTime: map[startTimeColumn],
-      endTime: map[endTimeColumn],
-      roomNo: map[roomNoColumn],
+      day: map[dayColumn] as String,
+      subId: map[subIdColumn] as int?,
+      id: map[dayTimeIdColumn] as int?,
+      startTime: map[startTimeColumn] as String,
+      endTime: map[endTimeColumn] as String,
+      roomNo: map[roomNoColumn] as String,
     );
   }
 

@@ -27,7 +27,7 @@ class Subject {
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, Object?> toMap() {
     return {
       subIdColumn: id,
       subNameColumn: name,
@@ -35,11 +35,11 @@ class Subject {
     };
   }
 
-  factory Subject.fromMap(Map<String, dynamic> map) {
+  factory Subject.fromMap(Map<String, Object?> map) {
     return Subject(
-      id: map[subIdColumn],
-      section: map[subSectionColumn],
-      name: map[subNameColumn],
+      id: map[subIdColumn] as int?,
+      section: map[subSectionColumn] as String,
+      name: map[subNameColumn] as String,
     );
   }
 

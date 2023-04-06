@@ -45,7 +45,7 @@ class Professor {
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, Object?> toMap() {
     return {
       subIdColumn: subId,
       professorIdColumn: profId,
@@ -58,16 +58,16 @@ class Professor {
     };
   }
 
-  factory Professor.fromMap(Map<String, dynamic> map) {
+  factory Professor.fromMap(Map<String, Object?> map) {
     return Professor(
-      name: map[professorNameColumn],
-      subId: map[subIdColumn],
-      profId: map[professorIdColumn],
-      email: map[professorEmailColumn],
-      office: map[professorOfficeColumn],
-      weekDay: map[professorDayColumn],
-      startTime: map[professorStartTimeColumn],
-      endTime: map[professorEndTimeColumn],
+      name: map[professorNameColumn] as String,
+      subId: map[subIdColumn] as int?,
+      profId: map[professorIdColumn] as int?,
+      email: map[professorEmailColumn] as String?,
+      office: map[professorOfficeColumn] as String?,
+      weekDay: map[professorDayColumn] as String?,
+      startTime: map[professorStartTimeColumn] as String?,
+      endTime: map[professorEndTimeColumn] as String?,
     );
   }
 

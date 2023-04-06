@@ -1,2 +1,2 @@
-const home = "home";
-const addSubject = "addSubject";
+const timeTablePage = "home";
+const addSubjectPage = "addSubject";

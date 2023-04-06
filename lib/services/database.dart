@@ -40,6 +40,7 @@ class DatabaseService {
     final db = await openDatabase(path);
     // await db.execute("DROP TABLE IF EXISTS $subTable");
     // await db.execute("DROP TABLE IF EXISTS $dayTimeTable");
+    // await db.execute("DROP TABLE IF EXISTS $professorTable");
     await db.execute(createSubTable);
     await db.execute(createDayTimeTable);
     await db.execute(createProfessorTable);
@@ -87,7 +88,8 @@ class DatabaseService {
     required int subId,
   }) async {
     final db = await open();
-    final id = await db.insert(professorTable, professor.toMap());
+    final id = await db.insert(
+        professorTable, professor.copyWith(subId: subId).toMap());
     return professor.copyWith(
       profId: id,
       subId: subId,
@@ -158,7 +160,7 @@ class DatabaseService {
         subjects.add(Subject.fromMap(sub.first));
       }
       if (prof.isNotEmpty) {
-        profs.add(Professor.fromMap(sub.first));
+        profs.add(Professor.fromMap(prof.first));
       }
     }
     _cachedTimeTables = subjects.map((sub) {

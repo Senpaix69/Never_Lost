@@ -26,8 +26,8 @@ CREATE TABLE IF NOT EXISTS "$dayTimeTable" (
 	  "$dayColumn"	TEXT NOT NULL,
     "$startTimeColumn" TEXT NOT NULL,
     "$endTimeColumn" TEXT NOT NULL,
-	  "$roomNoColumn"	INTEGER NOT NULL DEFAULT 0,
-    FOREIGN KEY("$subIdColumn") REFERENCES "$subTable"("$subIdColumn"),
+	  "$roomNoColumn"	TEXT NOT NULL DEFAULT 0,
+    FOREIGN KEY("$subIdColumn") REFERENCES "$subTable"("$subIdColumn") ON DELETE CASCADE,
 	  PRIMARY KEY("$dayTimeIdColumn" AUTOINCREMENT)
 );''';
 
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS "$professorTable" (
     "$professorStartTimeColumn" TEXT NULL,
     "$professorEndTimeColumn" TEXT NULL,
     "$professorDayColumn" TEXT NULL,
-	  "$professorOfficeColumn"	INTEGER NULL DEFAULT 0,
-    FOREIGN KEY("$subIdColumn") REFERENCES "$subTable"("$subIdColumn"),
+	  "$professorOfficeColumn"	TEXT NULL,
+    FOREIGN KEY("$subIdColumn") REFERENCES "$subTable"("$subIdColumn") ON DELETE CASCADE,
 	  PRIMARY KEY("$professorIdColumn" AUTOINCREMENT)
 );''';

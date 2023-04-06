@@ -444,7 +444,7 @@ class _AddSubjectState extends State<AddSubject> {
                 child: const CircularProgressIndicator(
                   strokeWidth: 2,
                   valueColor: AlwaysStoppedAnimation<Color>(
-                    Colors.amber,
+                    Colors.cyan,
                   ),
                 ),
               )
