@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_timetable/pages/timetables_page.dart';
 import 'package:my_timetable/pages/todo_page.dart';
+import 'package:my_timetable/utils.dart' show MyCustomScrollBehavior;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -35,7 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView(
-        physics: const NeverScrollableScrollPhysics(),
+        scrollBehavior: MyCustomScrollBehavior(),
         controller: _pageController,
         onPageChanged: _onPageChanged,
         children: _pages,

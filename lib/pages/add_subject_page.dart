@@ -372,7 +372,7 @@ class _AddSubjectState extends State<AddSubject> {
 
   AnimatedContainer professorDetails() {
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 400),
       height: _height,
       child: SingleChildScrollView(
         physics: const NeverScrollableScrollPhysics(),
@@ -510,6 +510,7 @@ class _AddSubjectState extends State<AddSubject> {
   }) {
     return TextFormField(
       enableSuggestions: false,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       controller: controller,
       autocorrect: false,
       readOnly: onTap != null,

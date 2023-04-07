@@ -32,7 +32,7 @@ class _TimeTableBoxState extends State<TimeTableBox> {
 
   void _toggleHeight() {
     setState(() {
-      _height = _height == 0 ? 95 : 0;
+      _height = _height == 0 ? 120 : 0;
     });
   }
 
@@ -96,22 +96,30 @@ class _TimeTableBoxState extends State<TimeTableBox> {
                 ),
                 AnimatedContainer(
                   height: _height,
-                  duration: const Duration(milliseconds: 700),
+                  duration: const Duration(milliseconds: 500),
                   curve: Curves.ease,
                   child: SingleChildScrollView(
                     physics: const NeverScrollableScrollPhysics(),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        detailsProf(text: "Email", detail: professor.email),
-                        detailsProf(text: "Office", detail: professor.office),
-                        detailsProf(
-                            text: "Available", detail: professor.weekDay),
-                        detailsProf(
-                            text: "Timings",
-                            detail:
-                                '${professor.startTime} - ${professor.endTime}'),
-                      ],
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                        color: Colors.cyan.withAlpha(25),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          detailsProf(text: "Email", detail: professor.email),
+                          detailsProf(text: "Office", detail: professor.office),
+                          detailsProf(
+                              text: "Available", detail: professor.weekDay),
+                          detailsProf(
+                              text: "Timings",
+                              detail:
+                                  '${professor.startTime} - ${professor.endTime}'),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -148,7 +156,8 @@ class _TimeTableBoxState extends State<TimeTableBox> {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    color: changeColor ? Colors.cyan[400] : Colors.blueGrey,
+                    color:
+                        changeColor ? Colors.cyan[400] : Colors.blueGrey[200],
                   ),
                   children: <TextSpan>[
                     TextSpan(

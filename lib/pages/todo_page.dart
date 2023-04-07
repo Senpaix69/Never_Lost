@@ -93,14 +93,18 @@ class _TodoListState extends State<TodoList> {
                       context,
                       SlideRightRoute(page: const AddTodo(), arguments: todo),
                     ),
-                    title: Text(
-                      todo.title,
-                      style: TextStyle(
-                        color: completed ? Colors.grey[700] : Colors.cyan[600],
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
-                        decoration:
-                            completed ? TextDecoration.lineThrough : null,
+                    title: SizedBox(
+                      height: 25.0,
+                      child: Text(
+                        todo.title,
+                        style: TextStyle(
+                          color:
+                              completed ? Colors.grey[700] : Colors.cyan[600],
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                          decoration:
+                              completed ? TextDecoration.lineThrough : null,
+                        ),
                       ),
                     ),
                     subtitle: Column(
@@ -110,11 +114,15 @@ class _TodoListState extends State<TodoList> {
                           todo.body.toString().split("\n").join(""),
                           softWrap: true,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style: TextStyle(
+                            color:
+                                completed ? Colors.grey[700] : Colors.grey[300],
                             fontSize: 14.0,
+                            decoration:
+                                completed ? TextDecoration.lineThrough : null,
                           ),
                         ),
-                        const SizedBox(height: 4.0),
+                        const SizedBox(height: 6.0),
                         Text(
                           todo.date,
                           style: const TextStyle(
