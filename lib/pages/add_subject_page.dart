@@ -22,6 +22,7 @@ class _AddSubjectState extends State<AddSubject> {
   final _formKey = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
   List<DayTime> _days = <DayTime>[];
+  double _height = 0.0;
 
   late final DatabaseService _database;
   late final TextEditingController _professorName;
@@ -40,6 +41,7 @@ class _AddSubjectState extends State<AddSubject> {
 
   @override
   void initState() {
+    super.initState();
     _professorEmail = TextEditingController();
     _startFacultyTime = TextEditingController();
     _endFacultyTime = TextEditingController();
@@ -56,9 +58,11 @@ class _AddSubjectState extends State<AddSubject> {
     _facultyDay.text = "Sunday";
     _day.text = "Sunday";
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() => setArgument());
+      setState(() {
+        setArgument();
+        _height = 0.0;
+      });
     });
-    super.initState();
   }
 
   void setArgument() {
@@ -119,6 +123,12 @@ class _AddSubjectState extends State<AddSubject> {
         });
       },
     );
+  }
+
+  void _toggleHeight() {
+    setState(() {
+      _height = _height == 0 ? 238 : 0;
+    });
   }
 
   Future<void> deleteTimeTable() async {
@@ -226,47 +236,38 @@ class _AddSubjectState extends State<AddSubject> {
                         const SizedBox(
                           height: 10.0,
                         ),
-                        formText(
-                          prefix: Icons.person,
-                          hint: "Professor name",
-                          controller: _professorName,
-                          validator: textValidate,
-                        ),
-                        const SizedBox(
-                          height: 10.0,
-                        ),
-                        formText(
-                          prefix: Icons.email,
-                          hint: "Professor email (Optional)",
-                          controller: _professorEmail,
-                          validator: null,
-                        ),
-                        const SizedBox(
-                          height: 10.0,
-                        ),
-                        Text(
-                          "Enter Office Timing (Optional)",
-                          style: TextStyle(
-                            color: Colors.grey[200],
-                            fontSize: 12.0,
+                        Stack(children: <Widget>[
+                          formText(
+                            prefix: Icons.person,
+                            hint: "Professor name",
+                            controller: _professorName,
+                            validator: textValidate,
                           ),
-                        ),
-                        const SizedBox(
-                          height: 10.0,
-                        ),
-                        timingsField(
-                          sTime: _startFacultyTime,
-                          eTime: _endFacultyTime,
-                          validation: false,
-                        ),
-                        const SizedBox(
-                          height: 10.0,
-                        ),
-                        roomAndDay(
-                          day: _facultyDay,
-                          room: _facultyRoomNo,
-                          validation: false,
-                        ),
+                          Positioned(
+                            right: 6.0,
+                            top: 13.0,
+                            child: Container(
+                              height: 30.0,
+                              decoration: BoxDecoration(
+                                color: Colors.cyan[900],
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: TextButton(
+                                onPressed: _toggleHeight,
+                                child: const Text(
+                                  "Add More",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    letterSpacing: 1.0,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 10.0,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ]),
+                        professorDetails(),
                         Divider(
                           height: 40.0,
                           color: Colors.cyan[900],
@@ -366,6 +367,57 @@ class _AddSubjectState extends State<AddSubject> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  AnimatedContainer professorDetails() {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 500),
+      height: _height,
+      child: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            const SizedBox(
+              height: 10.0,
+            ),
+            Text(
+              "Optional Details",
+              style: TextStyle(
+                color: Colors.grey[200],
+                fontSize: 12.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
+            formText(
+              prefix: Icons.email,
+              hint: "Professor email",
+              controller: _professorEmail,
+              validator: null,
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
+            timingsField(
+              sTime: _startFacultyTime,
+              eTime: _endFacultyTime,
+              validation: false,
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
+            roomAndDay(
+              day: _facultyDay,
+              room: _facultyRoomNo,
+              validation: false,
+            ),
+          ],
         ),
       ),
     );

@@ -7,6 +7,23 @@ import 'package:my_timetable/pages/timetables_page.dart';
 void main() {
   runApp(
     MaterialApp(
+      theme: ThemeData(
+        brightness: Brightness.dark,
+        primaryColor: Colors.cyan[900],
+        colorScheme: const ColorScheme.dark(
+          primary: Colors.cyan,
+          secondary: Colors.cyan,
+        ),
+        textTheme: const TextTheme(
+          bodyLarge: TextStyle(color: Colors.white),
+          bodyMedium: TextStyle(color: Colors.white),
+          bodySmall: TextStyle(color: Colors.white),
+          labelLarge: TextStyle(color: Colors.white),
+          displayLarge: TextStyle(color: Colors.white),
+          displayMedium: TextStyle(color: Colors.white),
+          displaySmall: TextStyle(color: Colors.white),
+        ),
+      ),
       debugShowCheckedModeBanner: false,
       title: "Never Lost",
       home: const MyHomePage(),
