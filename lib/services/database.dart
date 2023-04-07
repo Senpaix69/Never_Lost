@@ -3,6 +3,7 @@ import 'package:my_timetable/services/daytime.dart';
 import 'package:my_timetable/services/professor.dart';
 import 'package:my_timetable/services/subject.dart';
 import 'package:my_timetable/services/timeTable.dart';
+import 'package:my_timetable/services/todo.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'dart:async';
@@ -10,9 +11,14 @@ import 'dart:async';
 class DatabaseService {
   static final DatabaseService _instance = DatabaseService._internal();
   static Database? _database;
+
   List<TimeTable> _cachedTimeTables = [];
   late final StreamController<List<TimeTable>> _timeTableController;
   Stream<List<TimeTable>> get allTimeTable => _timeTableController.stream;
+
+  List<Todo> _cachedTodos = [];
+  late final StreamController<List<Todo>> _todosController;
+  Stream<List<Todo>> get allTodos => _todosController.stream;
 
   factory DatabaseService() {
     return _instance;
@@ -22,6 +28,9 @@ class DatabaseService {
     _timeTableController =
         StreamController<List<TimeTable>>.broadcast(onListen: () {
       _timeTableController.sink.add(_cachedTimeTables);
+    });
+    _todosController = StreamController<List<Todo>>.broadcast(onListen: () {
+      _todosController.sink.add(_cachedTodos);
     });
   }
 
@@ -41,11 +50,14 @@ class DatabaseService {
     // await db.execute("DROP TABLE IF EXISTS $subTable");
     // await db.execute("DROP TABLE IF EXISTS $dayTimeTable");
     // await db.execute("DROP TABLE IF EXISTS $professorTable");
+    // await db.execute("DROP TABLE IF EXISTS $todoTable");
     await db.execute(createSubTable);
     await db.execute(createDayTimeTable);
     await db.execute(createProfessorTable);
+    await db.execute(createTodoTable);
     await db.execute('PRAGMA foreign_keys = ON;');
     _catchAllTimeTables();
+    _catchAllTodos();
     _database = db;
   }
 
@@ -176,5 +188,57 @@ class DatabaseService {
       return TimeTable(subject: sub, professor: prof, dayTime: timeSlots);
     }).toList();
     return _cachedTimeTables;
+  }
+
+  Future<Iterable<Todo>> getTodosStream() async {
+    if (_cachedTodos.isNotEmpty) {
+      return _cachedTodos;
+    }
+    final db = await open();
+    final todos = await db.query(todoTable);
+    _cachedTodos = todos.map((todoMap) => Todo.fromMap(todoMap)).toList();
+    return _cachedTodos;
+  }
+
+  Future<Todo> insertTodo({required Todo todo}) async {
+    final db = await open();
+    final id = await db.insert(todoTable, todo.toMap());
+    final toDo = todo.copyWith(id: id);
+    _cachedTodos.add(toDo);
+    _todosController.add(_cachedTodos);
+    return toDo;
+  }
+
+  Future<void> updateTodo({required Todo todo}) async {
+    final db = await open();
+    final updatedRows = await db.update(
+      todoTable,
+      todo.toMap(),
+      where: "$todoIdColumn = ?",
+      whereArgs: [todo.id],
+    );
+    if (updatedRows == 0) {
+      return;
+    }
+    final index = _cachedTodos.indexWhere((t) => t.id == todo.id);
+    if (index >= 0) {
+      _cachedTodos[index] = todo;
+      _todosController.add(_cachedTodos);
+    }
+  }
+
+  Future<int> deleteTodo({required int id}) async {
+    final db = await open();
+    final changes =
+        await db.delete(todoTable, where: "$todoIdColumn = ?", whereArgs: [id]);
+    _cachedTodos.removeWhere((ele) => ele.id == id);
+    _todosController.add(_cachedTodos);
+    return changes;
+  }
+
+  Future<void> _catchAllTodos() async {
+    final todos = await getTodosStream();
+    _cachedTodos = todos.toList();
+    _todosController.add(_cachedTodos);
   }
 }

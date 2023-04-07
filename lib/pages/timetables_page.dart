@@ -66,10 +66,10 @@ class _TimeTablesPageState extends State<TimeTablesPage> {
 
   @override
   void initState() {
+    super.initState();
     _pageController = PageController(initialPage: DateTime.now().weekday - 1);
     _database = DatabaseService();
     _database.open();
-    super.initState();
   }
 
   @override

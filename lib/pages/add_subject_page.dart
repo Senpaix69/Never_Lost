@@ -18,7 +18,7 @@ class AddSubject extends StatefulWidget {
 }
 
 class _AddSubjectState extends State<AddSubject> {
-  int _subId = -1;
+  int? _subId;
   final _formKey = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
   List<DayTime> _days = <DayTime>[];
@@ -37,7 +37,6 @@ class _AddSubjectState extends State<AddSubject> {
   late final TextEditingController _roomNo;
   late final TextEditingController _section;
   late final TextEditingController _day;
-  bool _isSaving = false;
 
   @override
   void initState() {
@@ -133,9 +132,10 @@ class _AddSubjectState extends State<AddSubject> {
 
   Future<void> deleteTimeTable() async {
     bool isDel = await confirmDialogue(
-        context: context, message: "Do you really want to delete?");
-    if (isDel) {
-      await _database.deleteTimeTable(id: _subId);
+        context: context,
+        message: "Do you really want to delete this timetable?");
+    if (isDel && _subId != null) {
+      await _database.deleteTimeTable(id: _subId!);
       Future.delayed(
           const Duration(milliseconds: 100), () => Navigator.of(context).pop());
     }
@@ -148,7 +148,6 @@ class _AddSubjectState extends State<AddSubject> {
       errorDialogue(context, "You need to enter timings");
       return;
     }
-    setState(() => _isSaving = true);
     Subject sub = Subject(
       name: _subjectName.text,
       section: _section.text,
@@ -161,7 +160,7 @@ class _AddSubjectState extends State<AddSubject> {
       startTime: _startFacultyTime.text,
       endTime: _endFacultyTime.text,
     );
-    if (_subId != -1) {
+    if (_subId != null) {
       await _database.updateTimeTable(
           subject: sub.copyWith(id: _subId),
           professor: professor,
@@ -173,7 +172,6 @@ class _AddSubjectState extends State<AddSubject> {
         professor: professor,
       );
     }
-    setState(() => _isSaving = false);
     Future.delayed(
         const Duration(milliseconds: 100), () => Navigator.of(context).pop());
   }
@@ -511,7 +509,6 @@ class _AddSubjectState extends State<AddSubject> {
     required String? Function(String?)? validator,
   }) {
     return TextFormField(
-      enabled: !_isSaving,
       enableSuggestions: false,
       controller: controller,
       autocorrect: false,
@@ -525,7 +522,7 @@ class _AddSubjectState extends State<AddSubject> {
   }
 
   AppBar myAppBar() {
-    bool isEditing = _subId != -1;
+    bool isEditing = _subId != null;
     return AppBar(
       backgroundColor: Colors.black,
       title: Text(isEditing ? "Edit TimeTable" : "Add Timetable"),
@@ -540,23 +537,12 @@ class _AddSubjectState extends State<AddSubject> {
             : const SizedBox(
                 width: 0,
               ),
-        _isSaving
-            ? Container(
-                width: 55,
-                padding: const EdgeInsets.all(14),
-                child: const CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Colors.cyan,
-                  ),
-                ),
-              )
-            : IconButton(
-                onPressed: () async {
-                  await saveTimeTable();
-                },
-                icon: const Icon(Icons.check),
-              ),
+        IconButton(
+          onPressed: () async {
+            await saveTimeTable();
+          },
+          icon: const Icon(Icons.check),
+        ),
       ],
       elevation: 0.0,
     );

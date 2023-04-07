@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' show DateFormat;
+import 'package:my_timetable/services/database.dart';
+import 'package:my_timetable/services/todo.dart';
+import 'package:my_timetable/utils.dart' show GetArgument, textValidate;
+import 'package:my_timetable/widgets/dialog_boxs.dart';
 
 class AddTodo extends StatefulWidget {
   const AddTodo({super.key});
@@ -8,8 +12,10 @@ class AddTodo extends StatefulWidget {
 }
 
 class _AddTodoState extends State<AddTodo> {
+  late final DatabaseService _database;
   late final TextEditingController _title;
   late final TextEditingController _body;
+  Todo? isTodo;
   final _formKey = GlobalKey<FormState>();
 
   String _date() {
@@ -20,8 +26,21 @@ class _AddTodoState extends State<AddTodo> {
   @override
   void initState() {
     super.initState();
+    _database = DatabaseService();
     _title = TextEditingController();
     _body = TextEditingController();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() => setArgument());
+    });
+  }
+
+  void setArgument() {
+    final widgetTable = context.getArgument<Todo>();
+    if (widgetTable != null) {
+      _title.text = widgetTable.title;
+      _body.text = widgetTable.body;
+      isTodo = widgetTable;
+    }
   }
 
   @override
@@ -31,17 +50,62 @@ class _AddTodoState extends State<AddTodo> {
     super.dispose();
   }
 
+  Future<void> saveTodo() async {
+    if (_formKey.currentState!.validate()) {
+      final todo = Todo(
+        title: _title.text,
+        body: _body.text,
+        date: isTodo != null ? isTodo!.date : _date(),
+      );
+
+      if (isTodo != null) {
+        await _database.updateTodo(
+          todo: todo.copyWith(
+            id: isTodo!.id,
+            complete: isTodo!.complete,
+          ),
+        );
+      } else {
+        await _database.insertTodo(todo: todo);
+      }
+      Future.delayed(
+        const Duration(milliseconds: 100),
+        () => Navigator.of(context).pop(),
+      );
+    }
+  }
+
+  Future<void> deleteTodo() async {
+    bool isDel = await confirmDialogue(
+        context: context, message: "Do you really want to delete this todo?");
+    if (isDel && isTodo != null) {
+      await _database.deleteTodo(id: isTodo!.id!);
+      Future.delayed(
+        const Duration(milliseconds: 100),
+        () => Navigator.of(context).pop(),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Text("Add Todo"),
+        title: Text(isTodo != null ? "Edit Todo" : "Add Todo"),
         elevation: 0.0,
         actions: <Widget>[
+          isTodo != null
+              ? IconButton(
+                  onPressed: () => deleteTodo(),
+                  icon: const Icon(
+                    Icons.delete,
+                  ),
+                )
+              : const SizedBox(),
           IconButton(
-            onPressed: () {},
+            onPressed: () => saveTodo(),
             icon: const Icon(Icons.check),
           ),
         ],
@@ -80,10 +144,15 @@ class _AddTodoState extends State<AddTodo> {
                       style: const TextStyle(
                         fontSize: 20.0,
                       ),
+                      validator: textValidate,
                     ),
                     Text(
-                      _date(),
-                      style: const TextStyle(color: Colors.grey),
+                      isTodo != null ? isTodo!.date : _date(),
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 11.0,
+                        letterSpacing: 0.8,
+                      ),
                     ),
                     const SizedBox(
                       height: 10.0,
@@ -91,7 +160,6 @@ class _AddTodoState extends State<AddTodo> {
                     TextFormField(
                       enableSuggestions: false,
                       autocorrect: false,
-                      autofocus: true,
                       maxLines: null,
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.zero,
@@ -100,6 +168,7 @@ class _AddTodoState extends State<AddTodo> {
                         hintText: 'write todo here...',
                       ),
                       controller: _body,
+                      validator: textValidate,
                     ),
                   ]),
             ),
