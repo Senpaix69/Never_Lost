@@ -85,9 +85,8 @@ class _AddTodoState extends State<AddTodo> {
                       _date(),
                       style: const TextStyle(color: Colors.grey),
                     ),
-                    Divider(
-                      height: 20.0,
-                      color: Colors.grey[900],
+                    const SizedBox(
+                      height: 10.0,
                     ),
                     TextFormField(
                       enableSuggestions: false,
