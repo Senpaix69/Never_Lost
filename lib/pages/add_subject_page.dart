@@ -527,7 +527,7 @@ class _AddSubjectState extends State<AddSubject> {
   AppBar myAppBar() {
     bool isEditing = _subId != -1;
     return AppBar(
-      backgroundColor: Colors.cyan[900],
+      backgroundColor: Colors.black,
       title: Text(isEditing ? "Edit TimeTable" : "Add Timetable"),
       actions: <Widget>[
         isEditing

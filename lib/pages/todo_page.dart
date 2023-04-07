@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:my_timetable/pages/add_todo_page.dart';
+import 'package:my_timetable/widgets/animate_route.dart';
 
 class TodoList extends StatelessWidget {
   const TodoList({super.key});
@@ -8,7 +10,7 @@ class TodoList extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.cyan[900],
+        backgroundColor: Colors.black,
         title: const Text("Todo List"),
         elevation: 0.0,
       ),
@@ -34,6 +36,18 @@ class TodoList extends StatelessWidget {
               ),
             )
           ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.push(
+            context,
+            SlideRightRoute(
+              page: const AddTodo(),
+            )),
+        backgroundColor: Colors.cyan[900],
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
         ),
       ),
     );
