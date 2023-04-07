@@ -40,42 +40,32 @@ class _MyHomePageState extends State<MyHomePage> {
         onPageChanged: _onPageChanged,
         children: _pages,
       ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              color: Colors.grey.withOpacity(1),
-              width: 0.1,
-            ),
+      bottomNavigationBar: BottomNavigationBar(
+        showUnselectedLabels: false,
+        fixedColor: Colors.cyan,
+        unselectedItemColor: Colors.white,
+        backgroundColor: Colors.black,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.timelapse),
+            label: 'Time Table',
           ),
-        ),
-        child: BottomNavigationBar(
-          showUnselectedLabels: false,
-          fixedColor: Colors.cyan,
-          unselectedItemColor: Colors.white,
-          backgroundColor: Colors.black,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.timelapse),
-              label: 'Time Table',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.check),
-              label: 'Todo List',
-            ),
-          ],
-          currentIndex: _currentPageIndex,
-          onTap: (index) {
-            setState(() {
-              _currentPageIndex = index;
-              _pageController.animateToPage(
-                index,
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeInOut,
-              );
-            });
-          },
-        ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.check),
+            label: 'Todo List',
+          ),
+        ],
+        currentIndex: _currentPageIndex,
+        onTap: (index) {
+          setState(() {
+            _currentPageIndex = index;
+            _pageController.animateToPage(
+              index,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            );
+          });
+        },
       ),
     );
   }

@@ -32,7 +32,7 @@ class _TimeTableBoxState extends State<TimeTableBox> {
 
   void _toggleHeight() {
     setState(() {
-      _height = _height == 0 ? 90 : 0;
+      _height = _height == 0 ? 95 : 0;
     });
   }
 
@@ -138,15 +138,26 @@ class _TimeTableBoxState extends State<TimeTableBox> {
   }
 
   dynamic detailsProf({required String text, required String detail}) {
+    bool changeColor = text == "Professor" || text == "Section";
     return detail.isNotEmpty
         ? Column(
             children: <Widget>[
-              Text(
-                "$text: $detail",
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 13.0,
-                  fontWeight: FontWeight.bold,
+              RichText(
+                text: TextSpan(
+                  text: "$text: ",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: changeColor ? Colors.cyan[400] : Colors.blueGrey,
+                  ),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: detail,
+                      style: const TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(
