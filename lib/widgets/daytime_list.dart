@@ -31,7 +31,7 @@ class _DayTimeListState extends State<DayTimeList> {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 400),
       height: _filteredDays.length * 70.5,
       child: ListView.builder(
         physics: const NeverScrollableScrollPhysics(),

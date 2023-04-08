@@ -36,13 +36,14 @@ class _TimeTablesPageState extends State<TimeTablesPage> {
     if (_previousPage != _currentPage) {
       _pageController.animateToPage(
         _currentPage,
-        duration: const Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 400),
         curve: Curves.ease,
       );
     }
-    Future.delayed(const Duration(milliseconds: 500), () {
-      _isPageChanging = false;
-    });
+    Future.delayed(
+      const Duration(milliseconds: 400),
+      () => _isPageChanging = false,
+    );
   }
 
   void setNextSlot(final List<dynamic> timeTables) {
@@ -204,19 +205,19 @@ Center noTimeTableAdded() {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
+      children: const <Widget>[
         Icon(
           Icons.calendar_today,
           size: 80.0,
-          color: Colors.grey[300],
+          color: Colors.grey,
         ),
-        const SizedBox(
+        SizedBox(
           height: 15.0,
         ),
         Text(
           "No TimeTable Added Yet",
           style: TextStyle(
-            color: Colors.grey[300],
+            color: Colors.grey,
             letterSpacing: 1.0,
             fontWeight: FontWeight.bold,
           ),

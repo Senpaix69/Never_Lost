@@ -116,17 +116,13 @@ class _AddSubjectState extends State<AddSubject> {
     showMaterialTimePicker(
       context: context,
       selectedTime: TimeOfDay.now(),
-      onChanged: (value) {
-        setState(() {
-          controller.text = value.format(context);
-        });
-      },
+      onChanged: (value) => controller.text = value.format(context),
     );
   }
 
   void _toggleHeight() {
     setState(() {
-      _height = _height == 0 ? 200 : 0;
+      _height = _height == 0 ? 208 : 0;
     });
   }
 
@@ -243,21 +239,20 @@ class _AddSubjectState extends State<AddSubject> {
                           ),
                           Positioned(
                             right: 6.0,
-                            top: 13.0,
+                            top: 9.0,
                             child: Container(
                               height: 30.0,
                               decoration: BoxDecoration(
-                                color: Colors.cyan[900],
+                                color: Colors.cyan.withAlpha(80),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: TextButton(
                                 onPressed: _toggleHeight,
-                                child: const Text(
-                                  "Add More",
-                                  style: TextStyle(
+                                child: Text(
+                                  _height == 0 ? "show more" : "show less",
+                                  style: const TextStyle(
                                     color: Colors.white,
-                                    letterSpacing: 1.0,
-                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 0.7,
                                     fontSize: 10.0,
                                   ),
                                 ),
@@ -432,7 +427,7 @@ class _AddSubjectState extends State<AddSubject> {
       children: <Widget>[
         Expanded(
           child: DropdownButtonFormField<String>(
-            iconSize: 20.0,
+            iconSize: 0.0,
             value: day.text,
             onChanged: (value) => day.text = value!,
             dropdownColor: Colors.grey[700],

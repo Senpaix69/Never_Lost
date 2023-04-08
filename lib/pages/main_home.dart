@@ -58,14 +58,12 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
         currentIndex: _currentPageIndex,
         onTap: (index) {
-          setState(() {
-            _currentPageIndex = index;
-            _pageController.animateToPage(
-              index,
-              duration: const Duration(milliseconds: 400),
-              curve: Curves.easeInOut,
-            );
-          });
+          _currentPageIndex = index;
+          _pageController.animateToPage(
+            index,
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeInOut,
+          );
         },
       ),
     );

@@ -24,16 +24,12 @@ class _TimeTableBoxState extends State<TimeTableBox> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        _height = 0;
-      });
+      setState(() => _height = 0);
     });
   }
 
   void _toggleHeight() {
-    setState(() {
-      _height = _height == 0 ? 120 : 0;
-    });
+    setState(() => _height = _height == 0 ? 120 : 0);
   }
 
   void editTimeTable() {
@@ -96,7 +92,7 @@ class _TimeTableBoxState extends State<TimeTableBox> {
                 ),
                 AnimatedContainer(
                   height: _height,
-                  duration: const Duration(milliseconds: 500),
+                  duration: const Duration(milliseconds: 400),
                   curve: Curves.ease,
                   child: SingleChildScrollView(
                     physics: const NeverScrollableScrollPhysics(),

@@ -27,7 +27,7 @@ Text myText({
   return Text(
     text,
     style: TextStyle(
-      color: color ?? Colors.white,
+      color: color ?? Colors.grey[300],
       fontSize: size,
       fontWeight: FontWeight.bold,
       letterSpacing: 1.0,
