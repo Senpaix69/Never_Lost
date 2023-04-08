@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 InputDecoration decorationFormField(prefixIcon, hintText) {
   return InputDecoration(
+    contentPadding: const EdgeInsets.all(15.0),
     prefixIcon: Icon(prefixIcon, color: Colors.grey),
     hintText: hintText,
     hintStyle: TextStyle(

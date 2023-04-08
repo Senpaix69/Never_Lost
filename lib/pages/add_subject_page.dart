@@ -126,7 +126,7 @@ class _AddSubjectState extends State<AddSubject> {
 
   void _toggleHeight() {
     setState(() {
-      _height = _height == 0 ? 238 : 0;
+      _height = _height == 0 ? 200 : 0;
     });
   }
 
@@ -432,12 +432,9 @@ class _AddSubjectState extends State<AddSubject> {
       children: <Widget>[
         Expanded(
           child: DropdownButtonFormField<String>(
+            iconSize: 20.0,
             value: day.text,
-            onChanged: (value) {
-              setState(() {
-                day.text = value!;
-              });
-            },
+            onChanged: (value) => day.text = value!,
             dropdownColor: Colors.grey[700],
             style: const TextStyle(color: Colors.white),
             decoration: decorationFormField(Icons.weekend, "Select Day"),
