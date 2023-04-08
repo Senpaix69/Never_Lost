@@ -5,7 +5,6 @@ import 'package:my_timetable/utils.dart' show MyCustomScrollBehavior;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -46,13 +45,15 @@ class _MyHomePageState extends State<MyHomePage> {
         fixedColor: Colors.cyan,
         unselectedItemColor: Colors.white,
         backgroundColor: Colors.black,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.timelapse),
+            icon: Icon(
+                _currentPageIndex == 0 ? Icons.today : Icons.today_outlined),
             label: 'Time Table',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.check),
+            icon: Icon(
+                _currentPageIndex == 1 ? Icons.topic : Icons.topic_outlined),
             label: 'Todo List',
           ),
         ],
