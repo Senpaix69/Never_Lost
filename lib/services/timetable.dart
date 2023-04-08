@@ -42,6 +42,6 @@ class TimeTable {
 
   @override
   String toString() {
-    return 'Subject: $subject, Professor: $professor, DayTimes: ${dayTime.map((dt) => dt.toString()).toList()}';
+    return '\nSubject: $subject, \nProfessor: $professor, \nDayTimes: ${dayTime.map((dt) => dt.toString()).toList()}';
   }
 }

@@ -141,7 +141,7 @@ class _AddTodoState extends State<AddTodo> {
                       ),
                       controller: _title,
                       style: const TextStyle(
-                        fontSize: 20.0,
+                        fontSize: 18.0,
                         fontWeight: FontWeight.bold,
                       ),
                       validator: textValidate,
@@ -150,8 +150,8 @@ class _AddTodoState extends State<AddTodo> {
                       isTodo != null ? isTodo!.date : _date(),
                       style: const TextStyle(
                         color: Colors.grey,
-                        fontSize: 11.0,
-                        letterSpacing: 0.8,
+                        fontSize: 10.0,
+                        letterSpacing: 0.6,
                       ),
                     ),
                     const SizedBox(
@@ -169,7 +169,8 @@ class _AddTodoState extends State<AddTodo> {
                       controller: _body,
                       validator: textValidate,
                       style: TextStyle(
-                        letterSpacing: 0.5,
+                        fontSize: 13.0,
+                        letterSpacing: 0.3,
                         color: Colors.grey[300],
                       ),
                     ),

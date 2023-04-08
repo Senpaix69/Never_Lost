@@ -90,6 +90,7 @@ class _TimeTableBoxState extends State<TimeTableBox> {
                     )
                   ],
                 ),
+                detailsProf(text: "Section", detail: subject.section),
                 AnimatedContainer(
                   height: _height,
                   duration: const Duration(milliseconds: 400),
@@ -119,14 +120,10 @@ class _TimeTableBoxState extends State<TimeTableBox> {
                     ),
                   ),
                 ),
-                detailsProf(text: "Section", detail: subject.section),
-                const SizedBox(
-                  height: 20.0,
-                ),
                 Divider(
-                  height: 0.0,
+                  height: 8.0,
                   color: Colors.cyan[900],
-                  thickness: 2.0,
+                  thickness: 1.0,
                 )
               ],
             ),

@@ -8,7 +8,6 @@ import 'package:my_timetable/widgets/timetable_box.dart';
 
 class TimeTablesPage extends StatefulWidget {
   const TimeTablesPage({super.key});
-
   @override
   State<TimeTablesPage> createState() => _TimeTablesPageState();
 }
@@ -47,6 +46,7 @@ class _TimeTablesPageState extends State<TimeTablesPage> {
   }
 
   void setNextSlot(final List<dynamic> timeTables) {
+    bool nextSlot = false;
     sortTimeTables(timeTables);
     String currentDay = weekdays[_today];
     for (final timeTable in timeTables) {
@@ -58,9 +58,12 @@ class _TimeTablesPageState extends State<TimeTablesPage> {
         bool isSlot = isCurrentSlot(dayTimes[i].startTime, dayTimes[i].endTime);
         bool isSlotNext = isNextSlot(dayTimes[i].startTime);
         dayTimes[i] = dayTimes[i].copyWith(
-          nextSlot: isSlotNext,
+          nextSlot: nextSlot ? false : isSlotNext,
           currentSlot: isSlot,
         );
+        if (!nextSlot && isSlotNext) {
+          nextSlot = true;
+        }
       }
     }
   }

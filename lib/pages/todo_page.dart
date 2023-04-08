@@ -90,7 +90,7 @@ class _TodoListState extends State<TodoList> {
             borderRadius: BorderRadius.circular(10.0),
           ),
           child: ListTile(
-            minVerticalPadding: 10.0,
+            minVerticalPadding: 15.0,
             onTap: () => Navigator.push(
               context,
               SlideRightRoute(page: const AddTodo(), arguments: todo),
@@ -132,6 +132,9 @@ class _TodoListState extends State<TodoList> {
               ],
             ),
             trailing: Checkbox(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4.0),
+              ),
               value: todo.complete != 0,
               onChanged: (value) async {
                 await _database.updateTodo(

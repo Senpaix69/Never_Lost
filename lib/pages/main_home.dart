@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
           _currentPageIndex = index;
           _pageController.animateToPage(
             index,
-            duration: const Duration(milliseconds: 400),
+            duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
           );
         },
