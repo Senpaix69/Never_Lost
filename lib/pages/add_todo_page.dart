@@ -169,7 +169,7 @@ class _AddTodoState extends State<AddTodo> {
                       controller: _body,
                       validator: textValidate,
                       style: TextStyle(
-                        letterSpacing: 0.7,
+                        letterSpacing: 0.5,
                         color: Colors.grey[300],
                       ),
                     ),
