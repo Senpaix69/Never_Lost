@@ -135,7 +135,6 @@ class _AddTodoState extends State<AddTodo> {
                       enableSuggestions: false,
                       autocorrect: false,
                       decoration: InputDecoration(
-                        contentPadding: EdgeInsets.zero,
                         border: InputBorder.none,
                         hintStyle: TextStyle(color: Colors.grey[700]),
                         hintText: 'Title',
@@ -143,6 +142,7 @@ class _AddTodoState extends State<AddTodo> {
                       controller: _title,
                       style: const TextStyle(
                         fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
                       ),
                       validator: textValidate,
                     ),
@@ -155,14 +155,13 @@ class _AddTodoState extends State<AddTodo> {
                       ),
                     ),
                     const SizedBox(
-                      height: 10.0,
+                      height: 20.0,
                     ),
                     TextFormField(
                       enableSuggestions: false,
                       autocorrect: false,
                       maxLines: null,
                       decoration: InputDecoration(
-                        contentPadding: EdgeInsets.zero,
                         border: InputBorder.none,
                         hintStyle: TextStyle(color: Colors.grey[700]),
                         hintText: 'write todo here...',

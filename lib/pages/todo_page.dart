@@ -3,7 +3,6 @@ import 'package:my_timetable/pages/add_todo_page.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/todo.dart';
 import 'package:my_timetable/widgets/animate_route.dart';
-import 'package:my_timetable/widgets/styles.dart' show myText;
 
 class TodoList extends StatefulWidget {
   const TodoList({super.key});
@@ -20,11 +19,14 @@ class _TodoListState extends State<TodoList> {
     _database = DatabaseService();
   }
 
-  List<Todo> filterTodos({
+  List<Todo> sort({
     required List<Todo> todos,
-    int completed = 0,
   }) {
-    return todos.where((todo) => todo.complete == completed).toList();
+    List<Todo> sortedTodos = todos.toList();
+    sortedTodos.sort((a, b) => (a.complete.compareTo(b.complete) != 0)
+        ? a.complete.compareTo(b.complete)
+        : a.date.compareTo(b.date));
+    return sortedTodos;
   }
 
   @override
@@ -54,29 +56,11 @@ class _TodoListState extends State<TodoList> {
             if (todos.isEmpty) {
               return emptyTodos();
             }
-            final completedTodos = filterTodos(
-              todos: todos as List<Todo>,
-              completed: 1,
-            );
-            final notCompletedTodos = filterTodos(todos: todos);
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                if (notCompletedTodos.isNotEmpty)
-                  Flexible(
-                    child: myListBuilder(notCompletedTodos),
-                  ),
-                if (completedTodos.isNotEmpty) ...[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: myText(text: "Completed:"),
-                  ),
-                  Flexible(
-                    flex: 2,
-                    child: myListBuilder(completedTodos),
-                  ),
-                ],
-              ],
+            return Container(
+              decoration: null,
+              height: double.infinity,
+              width: double.infinity,
+              child: myListBuilder(sort(todos: todos as List<Todo>)),
             );
           },
         ),
@@ -186,17 +170,20 @@ class _TodoListState extends State<TodoList> {
     );
   }
 
-  FloatingActionButton addTodoButton(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: () => Navigator.push(
-          context,
-          SlideRightRoute(
-            page: const AddTodo(),
-          )),
-      backgroundColor: Colors.cyan[900],
-      child: const Icon(
-        Icons.add,
-        color: Colors.white,
+  Padding addTodoButton(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 10.0),
+      child: FloatingActionButton(
+        onPressed: () => Navigator.push(
+            context,
+            SlideRightRoute(
+              page: const AddTodo(),
+            )),
+        backgroundColor: Colors.cyan[900],
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
     );
   }
