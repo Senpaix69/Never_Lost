@@ -54,6 +54,8 @@ class _AddSubjectState extends State<AddSubject> {
     _roomNo = TextEditingController();
     _day = TextEditingController();
     _database = DatabaseService();
+    _facultyDay.text = "Sunday";
+    _day.text = "Sunday";
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         setArgument();
