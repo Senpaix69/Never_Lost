@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_material_pickers/helpers/show_time_picker.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/daytime.dart';
 import 'package:my_timetable/services/professor.dart';
@@ -54,8 +53,6 @@ class _AddSubjectState extends State<AddSubject> {
     _roomNo = TextEditingController();
     _day = TextEditingController();
     _database = DatabaseService();
-    _facultyDay.text = "Sunday";
-    _day.text = "Sunday";
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         setArgument();
@@ -113,11 +110,26 @@ class _AddSubjectState extends State<AddSubject> {
   }
 
   void _showTimePicker({required TextEditingController controller}) {
-    showMaterialTimePicker(
+    final now = DateTime.now();
+    final currentHour = now.hour;
+    final currentMinute = now.minute;
+    final timeFor = controller.text.split(":");
+
+    final hour =
+        controller.text.isNotEmpty ? int.parse(timeFor[0]) : currentHour;
+    final minute = controller.text.isNotEmpty
+        ? int.parse(timeFor[1].split(" ")[0])
+        : currentMinute;
+    showTimePicker(
       context: context,
-      selectedTime: TimeOfDay.now(),
-      onChanged: (value) => controller.text = value.format(context),
-    );
+      initialTime: TimeOfDay(hour: hour, minute: minute),
+    ).then((pickedTime) {
+      if (pickedTime != null) {
+        final time =
+            TimeOfDay(hour: pickedTime.hour, minute: pickedTime.minute);
+        controller.text = time.format(context);
+      }
+    });
   }
 
   void _toggleHeight() {
@@ -428,9 +440,9 @@ class _AddSubjectState extends State<AddSubject> {
         Expanded(
           child: DropdownButtonFormField<String>(
             iconSize: 0.0,
-            value: day.text,
+            value: day.text.isNotEmpty ? day.text : null,
             onChanged: (value) => day.text = value!,
-            dropdownColor: Colors.grey[700],
+            dropdownColor: Colors.cyan[900],
             style: const TextStyle(color: Colors.white),
             decoration: decorationFormField(Icons.weekend, "Select Day"),
             items: weekdays.map<DropdownMenuItem<String>>((weekday) {
@@ -471,7 +483,7 @@ class _AddSubjectState extends State<AddSubject> {
         Expanded(
           child: formText(
             prefix: Icons.timer,
-            hint: "1:00 AM",
+            hint: "Start Time",
             controller: sTime,
             validator: validation ? textValidate : null,
             onTap: () => _showTimePicker(controller: sTime),
@@ -483,7 +495,7 @@ class _AddSubjectState extends State<AddSubject> {
         Expanded(
           child: formText(
             prefix: Icons.timer,
-            hint: "12:00 PM",
+            hint: "End Time",
             controller: eTime,
             onTap: () => _showTimePicker(controller: eTime),
             validator: validation ? textValidate : null,

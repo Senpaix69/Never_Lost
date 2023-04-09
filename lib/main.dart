@@ -5,6 +5,7 @@ import 'package:my_timetable/pages/main_home.dart';
 import 'package:my_timetable/pages/timetables_page.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(
     MaterialApp(
       theme: ThemeData(
