@@ -140,35 +140,30 @@ class _TimeTableBoxState extends State<TimeTableBox> {
 
   dynamic detailsProf({required String text, required String detail}) {
     bool changeColor = text == "Professor" || text == "Section";
-    return detail.isNotEmpty
-        ? Column(
-            children: <Widget>[
-              RichText(
-                text: TextSpan(
-                  text: "$text: ",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color:
-                        changeColor ? Colors.cyan[400] : Colors.blueGrey[200],
-                  ),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: detail,
-                      style: const TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
+    return Column(
+      children: <Widget>[
+        RichText(
+          text: TextSpan(
+            text: "$text: ",
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: changeColor ? Colors.cyan[400] : Colors.blueGrey[200],
+            ),
+            children: <TextSpan>[
+              TextSpan(
+                text: detail.isEmpty ? "not provided" : detail,
+                style: const TextStyle(
+                  color: Colors.white,
                 ),
               ),
-              const SizedBox(
-                height: 8.0,
-              ),
             ],
-          )
-        : const SizedBox(
-            height: 0,
-          );
+          ),
+        ),
+        const SizedBox(
+          height: 8.0,
+        ),
+      ],
+    );
   }
 }

@@ -22,6 +22,7 @@ class _AddSubjectState extends State<AddSubject> {
   final _formKey2 = GlobalKey<FormState>();
   List<DayTime> _days = <DayTime>[];
   double _height = 0.0;
+  bool _editing = false;
 
   late final DatabaseService _database;
   late final TextEditingController _professorName;
@@ -78,7 +79,7 @@ class _AddSubjectState extends State<AddSubject> {
   }
 
   @override
-  void dispose() {
+  void dispose() async {
     _professorEmail.dispose();
     _startFacultyTime.dispose();
     _endFacultyTime.dispose();
@@ -109,25 +110,32 @@ class _AddSubjectState extends State<AddSubject> {
     }
   }
 
-  void _showTimePicker({required TextEditingController controller}) {
+  void _showTimePicker({
+    required TextEditingController controller,
+    required String? stime,
+  }) {
     final now = DateTime.now();
-    final currentHour = now.hour;
-    final currentMinute = now.minute;
-    final timeFor = controller.text.split(":");
+    final currentTime = TimeOfDay.fromDateTime(now);
 
+    final timeFor = controller.text.split(":");
     final hour =
-        controller.text.isNotEmpty ? int.parse(timeFor[0]) : currentHour;
+        controller.text.isNotEmpty ? int.parse(timeFor[0]) : currentTime.hour;
     final minute = controller.text.isNotEmpty
         ? int.parse(timeFor[1].split(" ")[0])
-        : currentMinute;
+        : currentTime.minute;
+
     showTimePicker(
       context: context,
       initialTime: TimeOfDay(hour: hour, minute: minute),
+      builder: (BuildContext context, Widget? child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+          child: child!,
+        );
+      },
     ).then((pickedTime) {
       if (pickedTime != null) {
-        final time =
-            TimeOfDay(hour: pickedTime.hour, minute: pickedTime.minute);
-        controller.text = time.format(context);
+        controller.text = pickedTime.format(context);
       }
     });
   }
@@ -136,6 +144,23 @@ class _AddSubjectState extends State<AddSubject> {
     setState(() {
       _height = _height == 0 ? 208 : 0;
     });
+  }
+
+  void backPage() async {
+    if (_editing) {
+      bool isChanges = await confirmDialogue(
+        context: context,
+        message: "Some changes have done do you want to save them?",
+      );
+      if (isChanges) {
+        await saveTimeTable();
+        return;
+      }
+    }
+    Future.delayed(
+      const Duration(milliseconds: 50),
+      () => Navigator.of(context).pop(),
+    );
   }
 
   Future<void> deleteTimeTable() async {
@@ -486,7 +511,7 @@ class _AddSubjectState extends State<AddSubject> {
             hint: "Start Time",
             controller: sTime,
             validator: validation ? textValidate : null,
-            onTap: () => _showTimePicker(controller: sTime),
+            onTap: () => _showTimePicker(controller: sTime, stime: null),
           ),
         ),
         const SizedBox(
@@ -497,7 +522,7 @@ class _AddSubjectState extends State<AddSubject> {
             prefix: Icons.timer,
             hint: "End Time",
             controller: eTime,
-            onTap: () => _showTimePicker(controller: eTime),
+            onTap: () => _showTimePicker(controller: eTime, stime: sTime.text),
             validator: validation ? textValidate : null,
           ),
         ),
@@ -519,6 +544,13 @@ class _AddSubjectState extends State<AddSubject> {
       autocorrect: false,
       readOnly: onTap != null,
       onTap: onTap,
+      onChanged: (value) {
+        if (!_editing) {
+          setState(
+            () => _editing = true,
+          );
+        }
+      },
       cursorColor: Colors.cyan[200],
       style: const TextStyle(color: Colors.white),
       decoration: decorationFormField(prefix, hint),
@@ -529,25 +561,31 @@ class _AddSubjectState extends State<AddSubject> {
   AppBar myAppBar() {
     bool isEditing = _subId != null;
     return AppBar(
+      automaticallyImplyLeading: false, // disable the default back button
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () => backPage(),
+      ),
       backgroundColor: Colors.black,
       title: Text(isEditing ? "Edit TimeTable" : "Add Timetable"),
       actions: <Widget>[
-        isEditing
-            ? IconButton(
-                onPressed: () async {
-                  await deleteTimeTable();
-                },
-                icon: const Icon(Icons.delete),
-              )
-            : const SizedBox(
-                width: 0,
-              ),
-        IconButton(
-          onPressed: () async {
-            await saveTimeTable();
-          },
-          icon: const Icon(Icons.check),
-        ),
+        if (isEditing)
+          Padding(
+            padding: EdgeInsets.only(right: _editing ? 0.0 : 8.0),
+            child: IconButton(
+              onPressed: () async {
+                await deleteTimeTable();
+              },
+              icon: const Icon(Icons.delete),
+            ),
+          ),
+        if (_editing)
+          IconButton(
+            onPressed: () async {
+              await saveTimeTable();
+            },
+            icon: const Icon(Icons.check),
+          ),
       ],
       elevation: 0.0,
     );
