@@ -467,7 +467,7 @@ class _AddSubjectState extends State<AddSubject> {
         Expanded(
           child: DropdownButtonFormField<String>(
             iconSize: 0.0,
-            value: day.text.isNotEmpty ? day.text : null,
+            value: day.text,
             onChanged: (value) => day.text = value!,
             dropdownColor: Colors.cyan[900],
             style: const TextStyle(color: Colors.white),
