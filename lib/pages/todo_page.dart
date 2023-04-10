@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:my_timetable/pages/add_todo_page.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/todo.dart';
-import 'package:my_timetable/widgets/animate_route.dart';
+import 'package:my_timetable/widgets/animate_route.dart'
+    show SlideFromBottomTransition, SlideRightRoute;
 
 class TodoList extends StatefulWidget {
   const TodoList({super.key});
@@ -10,13 +11,26 @@ class TodoList extends StatefulWidget {
   State<TodoList> createState() => _TodoListState();
 }
 
-class _TodoListState extends State<TodoList> {
+class _TodoListState extends State<TodoList>
+    with SingleTickerProviderStateMixin {
   late final DatabaseService _database;
+  late AnimationController _animationController;
+  late Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
     _database = DatabaseService();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+    _animation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOut,
+      reverseCurve: Curves.easeIn,
+    );
+    _animationController.forward();
   }
 
   List<Todo> sort({
@@ -27,6 +41,12 @@ class _TodoListState extends State<TodoList> {
         ? a.complete.compareTo(b.complete)
         : a.date.compareTo(b.date));
     return sortedTodos;
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -78,68 +98,80 @@ class _TodoListState extends State<TodoList> {
       itemBuilder: (context, index) {
         final todo = todos[index];
         bool completed = todo.complete == 1;
-        return Container(
-          margin: const EdgeInsets.symmetric(
-            vertical: 5.0,
-            horizontal: 10.0,
-          ),
-          decoration: BoxDecoration(
-            color: completed
-                ? Colors.grey.withAlpha(50)
-                : Colors.cyan.withAlpha(50),
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          child: ListTile(
-            minVerticalPadding: 15.0,
-            onTap: () => Navigator.push(
-              context,
-              SlideRightRoute(page: const AddTodo(), arguments: todo),
-            ),
-            title: SizedBox(
-              height: 25.0,
-              child: Text(
-                todo.title,
-                style: TextStyle(
-                  color: completed ? Colors.grey[700] : Colors.cyan[600],
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                  decoration: completed ? TextDecoration.lineThrough : null,
-                ),
+        return FadeTransition(
+          opacity: _animation,
+          child: SlideFromBottomTransition(
+            animation: _animation,
+            child: Container(
+              margin: const EdgeInsets.symmetric(
+                vertical: 5.0,
+                horizontal: 10.0,
               ),
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  todo.body.toString().split("\n").join(""),
-                  softWrap: true,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    decorationThickness: 6.0,
-                    color: completed ? Colors.grey[700] : Colors.grey[300],
-                    fontSize: 14.0,
-                    decoration: completed ? TextDecoration.lineThrough : null,
+              decoration: BoxDecoration(
+                color: completed
+                    ? Colors.grey.withAlpha(50)
+                    : Colors.cyan.withAlpha(50),
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: ListTile(
+                minVerticalPadding: 15.0,
+                onTap: () => Navigator.push(
+                  context,
+                  SlideRightRoute(page: const AddTodo(), arguments: todo),
+                ),
+                title: SizedBox(
+                  height: 25.0,
+                  child: Text(
+                    todo.title,
+                    style: TextStyle(
+                      color: completed ? Colors.grey[700] : Colors.cyan[600],
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                      decoration: completed ? TextDecoration.lineThrough : null,
+                    ),
                   ),
                 ),
-                const SizedBox(height: 6.0),
-                Text(
-                  todo.date,
-                  style: const TextStyle(
-                    fontSize: 12.0,
-                    color: Colors.blueGrey,
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      todo.body.toString().split("\n").join(""),
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        decorationThickness: 6.0,
+                        color: completed ? Colors.grey[700] : Colors.grey[300],
+                        fontSize: 14.0,
+                        decoration:
+                            completed ? TextDecoration.lineThrough : null,
+                      ),
+                    ),
+                    const SizedBox(height: 6.0),
+                    Text(
+                      todo.date,
+                      style: const TextStyle(
+                        fontSize: 12.0,
+                        color: Colors.blueGrey,
+                      ),
+                    ),
+                  ],
+                ),
+                trailing: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: Checkbox(
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4.0),
+                    ),
+                    value: todo.complete != 0,
+                    onChanged: (value) async {
+                      await _database.updateTodo(
+                          todo: todo.copyWith(
+                              complete: todo.complete == 0 ? 1 : 0));
+                    },
                   ),
                 ),
-              ],
-            ),
-            trailing: Checkbox(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4.0),
               ),
-              value: todo.complete != 0,
-              onChanged: (value) async {
-                await _database.updateTodo(
-                    todo: todo.copyWith(complete: todo.complete == 0 ? 1 : 0));
-              },
             ),
           ),
         );
