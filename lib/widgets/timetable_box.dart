@@ -96,7 +96,10 @@ class _TimeTableBoxState extends State<TimeTableBox>
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        detailsProf(text: "Professor", detail: professor.name),
+                        detailsProf(
+                            text: "Professor",
+                            detail: professor.name,
+                            head: true),
                         SizedBox(
                           height: 30,
                           child: IconButton(
@@ -114,7 +117,8 @@ class _TimeTableBoxState extends State<TimeTableBox>
                         )
                       ],
                     ),
-                    detailsProf(text: "Section", detail: subject.section),
+                    detailsProf(
+                        text: "Section", detail: subject.section, head: true),
                     const SizedBox(
                       height: 8.0,
                     ),
@@ -178,7 +182,8 @@ class _TimeTableBoxState extends State<TimeTableBox>
     );
   }
 
-  dynamic detailsProf({required String text, required String detail}) {
+  dynamic detailsProf(
+      {required String text, required String detail, bool head = false}) {
     bool changeColor = text == "Professor" || text == "Section";
     return Column(
       children: <Widget>[
@@ -186,7 +191,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
           text: TextSpan(
             text: "$text: ",
             style: TextStyle(
-              fontSize: 12,
+              fontSize: head ? 14 : 12,
               letterSpacing: 0.5,
               fontWeight: FontWeight.bold,
               color: changeColor ? Colors.cyan[400] : Colors.blueGrey[200],
