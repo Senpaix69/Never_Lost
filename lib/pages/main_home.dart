@@ -44,8 +44,9 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: CurvedNavigationBar(
         height: 50,
         color: const Color.fromARGB(255, 0, 96, 100),
+        animationDuration: const Duration(milliseconds: 500),
         backgroundColor: Colors.black,
-        buttonBackgroundColor: Colors.cyan[800],
+        buttonBackgroundColor: Colors.cyan[900],
         items: const <Widget>[
           Icon(Icons.today, size: 30, color: Colors.white),
           Icon(Icons.topic, size: 30, color: Colors.white),
