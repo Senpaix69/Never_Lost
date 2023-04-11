@@ -35,10 +35,11 @@ Text myText({
   );
 }
 
+typedef CallbackAction<T> = void Function(T);
 Container headerContainer({
   required String title,
   required IconData icon,
-  required VoidCallback? onClick,
+  required CallbackAction<String>? onClick,
 }) {
   return Container(
     padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -49,27 +50,52 @@ Container headerContainer({
       borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
     ),
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          myText(text: title),
-          const SizedBox(
-            width: 10.0,
-          ),
-          IconButton(
-            padding: EdgeInsets.zero,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            alignment: Alignment.centerRight,
-            onPressed: onClick,
-            icon: Icon(icon),
-            iconSize: 25,
-            color: Colors.white,
-          ),
-        ],
-      ),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: myText(text: title),
+        ),
+        const SizedBox(
+          width: 10.0,
+        ),
+        onClick != null
+            ? PopupMenuButton(
+                padding: EdgeInsets.zero,
+                itemBuilder: (BuildContext context) {
+                  return <PopupMenuEntry>[
+                    const PopupMenuItem(
+                      value: 'edit',
+                      child: Text('Edit'),
+                    ),
+                    const PopupMenuItem(
+                      value: 'delete',
+                      child: Text('Delete'),
+                    ),
+                    const PopupMenuItem(
+                      value: 'reminder',
+                      child: Text('Set Reminder'),
+                    ),
+                  ];
+                },
+                onSelected: (value) => onClick(value),
+                color: Colors.cyan[900],
+                shadowColor: Colors.black,
+                icon: Icon(
+                  Icons.menu_open_rounded,
+                  color: Colors.grey[200],
+                ),
+              )
+            : Padding(
+                padding: const EdgeInsets.only(right: 10.0),
+                child: Icon(
+                  Icons.calendar_today,
+                  color: Colors.grey[300],
+                ),
+              ),
+      ],
     ),
   );
 }

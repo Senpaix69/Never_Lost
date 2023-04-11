@@ -5,12 +5,16 @@ import 'package:my_timetable/widgets/animate_route.dart'
 import 'package:my_timetable/widgets/daytime_list.dart';
 import 'package:my_timetable/widgets/styles.dart' show headerContainer;
 
+typedef CallbackAction<T> = void Function(T);
+
 class TimeTableBox extends StatefulWidget {
   final dynamic timeTable;
   final String currentDay;
+  final CallbackAction<int> callback;
   const TimeTableBox({
     Key? key,
     required this.timeTable,
+    required this.callback,
     required this.currentDay,
   }) : super(key: key);
 
@@ -62,6 +66,14 @@ class _TimeTableBoxState extends State<TimeTableBox>
     super.dispose();
   }
 
+  void menuCheck(String value) {
+    if (value == 'edit') {
+      editTimeTable();
+    } else if (value == 'delete') {
+      widget.callback(widget.timeTable.subject.id);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final subject = widget.timeTable.subject;
@@ -84,7 +96,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
               headerContainer(
                 title: subject.name,
                 icon: Icons.edit_note,
-                onClick: editTimeTable,
+                onClick: menuCheck,
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(14.0, 14.0, 14.0, 0.0),

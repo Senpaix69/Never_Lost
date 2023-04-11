@@ -4,6 +4,7 @@ import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/utils.dart'
     show isCurrentSlot, isNextSlot, sortTimeTables, weekdays;
 import 'package:my_timetable/widgets/animate_route.dart' show SlideRightRoute;
+import 'package:my_timetable/widgets/dialog_boxs.dart';
 import 'package:my_timetable/widgets/timetable_box.dart';
 
 class TimeTablesPage extends StatefulWidget {
@@ -81,6 +82,14 @@ class _TimeTablesPageState extends State<TimeTablesPage> {
     _pageController.dispose();
     _database.close();
     super.dispose();
+  }
+
+  void deleteTimeTable(int id) async {
+    bool confirmDel = await confirmDialogue(
+        context: context, message: "Do you really want to delete timetable?");
+    if (confirmDel) {
+      _database.deleteTimeTable(id: id);
+    }
   }
 
   @override
@@ -189,6 +198,7 @@ class _TimeTablesPageState extends State<TimeTablesPage> {
                         return TimeTableBox(
                           timeTable: timeTable,
                           currentDay: weekdays[_currentPage],
+                          callback: deleteTimeTable,
                         );
                       },
                     ),
