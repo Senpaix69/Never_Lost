@@ -10,10 +10,10 @@ void main() {
     MaterialApp(
       theme: ThemeData(
         brightness: Brightness.dark,
-        primaryColor: Colors.cyan[900],
+        primaryColor: Colors.deepPurple[900],
         colorScheme: const ColorScheme.dark(
-          primary: Colors.cyan,
-          secondary: Colors.cyan,
+          primary: Colors.deepPurple,
+          secondary: Colors.deepPurple,
         ),
         textTheme: const TextTheme(
           bodyLarge: TextStyle(color: Colors.white),
@@ -25,6 +25,7 @@ void main() {
           displaySmall: TextStyle(color: Colors.white),
         ),
       ),
+      darkTheme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
       title: "Never Lost",
       home: const MyHomePage(),

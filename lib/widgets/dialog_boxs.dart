@@ -23,7 +23,10 @@ Future<void> errorDialogue(BuildContext context, String message) {
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              child: const Text('OK'),
+              child: const Text(
+                'OK',
+                style: TextStyle(color: Colors.white),
+              ),
               onPressed: () => Navigator.of(context).pop(false),
             ),
           ),
@@ -66,7 +69,10 @@ Future<bool> confirmDialogue(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: const Text('Confirm'),
+                child: const Text(
+                  'Confirm',
+                  style: TextStyle(color: Colors.white),
+                ),
                 onPressed: () => Navigator.of(context).pop(true),
               ),
             ),

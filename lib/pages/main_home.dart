@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_timetable/pages/timetables_page.dart';
 import 'package:my_timetable/pages/todo_page.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:my_timetable/utils.dart' show MyCustomScrollBehavior;
 
 class MyHomePage extends StatefulWidget {
@@ -40,31 +41,25 @@ class _MyHomePageState extends State<MyHomePage> {
         onPageChanged: _onPageChanged,
         children: _pages,
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        showUnselectedLabels: false,
-        fixedColor: Colors.cyan,
-        unselectedItemColor: Colors.white,
+      bottomNavigationBar: CurvedNavigationBar(
+        height: 50,
+        color: const Color.fromARGB(255, 0, 96, 100),
         backgroundColor: Colors.black,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(
-                _currentPageIndex == 0 ? Icons.today : Icons.today_outlined),
-            label: 'Time Table',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-                _currentPageIndex == 1 ? Icons.topic : Icons.topic_outlined),
-            label: 'Todo List',
-          ),
+        buttonBackgroundColor: Colors.cyan[800],
+        items: const <Widget>[
+          Icon(Icons.today, size: 30, color: Colors.white),
+          Icon(Icons.topic, size: 30, color: Colors.white),
         ],
-        currentIndex: _currentPageIndex,
+        index: _currentPageIndex,
         onTap: (index) {
-          _currentPageIndex = index;
-          _pageController.animateToPage(
-            index,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-          );
+          setState(() {
+            _currentPageIndex = index;
+            _pageController.animateToPage(
+              index,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+            );
+          });
         },
       ),
     );

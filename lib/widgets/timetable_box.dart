@@ -191,16 +191,16 @@ class _TimeTableBoxState extends State<TimeTableBox>
           text: TextSpan(
             text: "$text: ",
             style: TextStyle(
-              fontSize: head ? 14 : 12,
+              fontSize: 12,
               letterSpacing: 0.5,
-              fontWeight: FontWeight.bold,
+              fontWeight: head ? FontWeight.bold : FontWeight.normal,
               color: changeColor ? Colors.cyan[400] : Colors.blueGrey[200],
             ),
             children: <TextSpan>[
               TextSpan(
                 text: detail.isEmpty ? "not provided" : detail,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: Colors.grey[200],
                 ),
               ),
             ],
