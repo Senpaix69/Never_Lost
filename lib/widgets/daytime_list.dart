@@ -18,28 +18,18 @@ class DayTimeList extends StatefulWidget {
 }
 
 class _DayTimeListState extends State<DayTimeList> {
-  List<DayTime> _filteredDays = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _filteredDays = widget.currentDay == null
-        ? widget.days
-        : widget.days.where((day) => day.day == widget.currentDay).toList();
-  }
-
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 400),
-      height: _filteredDays.length * 70.5,
+      height: widget.days.length * 70.5,
       child: ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
         reverse: widget.callBack != null,
         shrinkWrap: true,
-        itemCount: _filteredDays.length,
+        itemCount: widget.days.length,
         itemBuilder: (BuildContext context, int index) {
-          final DayTime day = _filteredDays[index];
+          final DayTime day = widget.days[index];
           return _buildItem(day, index);
         },
       ),

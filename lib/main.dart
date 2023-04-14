@@ -3,17 +3,19 @@ import 'package:my_timetable/constants/routes.dart';
 import 'package:my_timetable/pages/add_subject_page.dart';
 import 'package:my_timetable/pages/main_home.dart';
 import 'package:my_timetable/pages/timetables_page.dart';
+import 'package:my_timetable/services/notification_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  NotificationService.initialize();
   runApp(
     MaterialApp(
       theme: ThemeData(
         brightness: Brightness.dark,
-        primaryColor: Colors.deepPurple[900],
+        primaryColor: Colors.cyan[900],
         colorScheme: const ColorScheme.dark(
-          primary: Colors.deepPurple,
-          secondary: Colors.deepPurple,
+          primary: Colors.cyan,
+          secondary: Colors.cyan,
         ),
         textTheme: const TextTheme(
           bodyLarge: TextStyle(color: Colors.white),

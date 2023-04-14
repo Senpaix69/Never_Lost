@@ -58,15 +58,6 @@ void sortTimeTables(List<dynamic> timeTables) {
     final timeB = DateFormat('hh:mm a').parse(b.dayTime[0].startTime);
     return timeA.compareTo(timeB);
   });
-
-  for (final timeTable in timeTables) {
-    final dayTimes = timeTable.dayTime;
-    dayTimes.sort((a, b) {
-      final timeA = DateFormat('hh:mm a').parse(a.startTime);
-      final timeB = DateFormat('hh:mm a').parse(b.startTime);
-      return timeA.compareTo(timeB);
-    });
-  }
 }
 
 extension GetArgument on BuildContext {

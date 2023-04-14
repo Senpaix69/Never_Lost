@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:my_timetable/pages/add_subject_page.dart';
+import 'package:my_timetable/services/daytime.dart';
 import 'package:my_timetable/widgets/animate_route.dart'
     show SlideRightRoute, SlideFromBottomTransition;
 import 'package:my_timetable/widgets/daytime_list.dart';
+import 'package:my_timetable/services/notification_service.dart';
 import 'package:my_timetable/widgets/styles.dart' show headerContainer;
 
 typedef CallbackAction<T> = void Function(T);
@@ -27,6 +29,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
   double _height = 0;
   late AnimationController _animationController;
   late Animation<double> _animation;
+  List<DayTime> _filteredDays = [];
 
   @override
   void initState() {
@@ -34,6 +37,9 @@ class _TimeTableBoxState extends State<TimeTableBox>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() => _height = 0);
     });
+    _filteredDays = widget.timeTable.dayTime
+        .where((day) => day.day == widget.currentDay)
+        .toList();
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 600),
@@ -71,6 +77,18 @@ class _TimeTableBoxState extends State<TimeTableBox>
       editTimeTable();
     } else if (value == 'delete') {
       widget.callback(widget.timeTable.subject.id);
+    } else if (value == 'reminder') {
+      for (int i = 0; i < _filteredDays.length; i++) {
+        final day = _filteredDays[i];
+        NotificationService.showScheduleNotification(
+          id: day.id!,
+          title: widget.timeTable.subject.name,
+          body: "Your class is being held in ${day.roomNo}",
+          scheduleDate: DateTime.now().add(
+            Duration(seconds: i * 8 + 3),
+          ),
+        );
+      }
     }
   }
 
@@ -78,7 +96,6 @@ class _TimeTableBoxState extends State<TimeTableBox>
   Widget build(BuildContext context) {
     final subject = widget.timeTable.subject;
     final professor = widget.timeTable.professor;
-    final dayTimes = widget.timeTable.dayTime;
 
     return FadeTransition(
       opacity: _animation,
@@ -183,7 +200,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
                 ),
               ),
               DayTimeList(
-                days: dayTimes,
+                days: _filteredDays,
                 callBack: null,
                 currentDay: widget.currentDay,
               ),
