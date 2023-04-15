@@ -61,5 +61,26 @@ class NotificationService {
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
+        matchDateTimeComponents: DateTimeComponents.time,
       );
+
+  static Future showRepeatNotification({
+    required int id,
+    required String title,
+    required String body,
+    String? payload,
+    required DateTime scheduleDate,
+  }) async =>
+      _notification.periodicallyShow(
+        id,
+        title,
+        body,
+        RepeatInterval.hourly,
+        await _notificationDetails(),
+        payload: payload,
+        androidAllowWhileIdle: true,
+      );
+
+  static Future cancelScheduleNotification({required int id}) async =>
+      _notification.cancel(id);
 }

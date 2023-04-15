@@ -96,5 +96,5 @@ class Professor {
 
   @override
   String toString() =>
-      'Professor(name: $name, email: $email, office: $office, weekDay: $weekDay, startTime: $startTime, endTime: $endTime)';
+      'Professor(id: $profId, name: $name, email: $email, office: $office, weekDay: $weekDay, startTime: $startTime, endTime: $endTime)';
 }

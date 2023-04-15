@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:my_timetable/pages/add_subject_page.dart';
+import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/daytime.dart';
+import 'package:my_timetable/utils.dart' show weekdays;
 import 'package:my_timetable/widgets/animate_route.dart'
     show SlideRightRoute, SlideFromBottomTransition;
 import 'package:my_timetable/widgets/daytime_list.dart';
 import 'package:my_timetable/services/notification_service.dart';
+import 'package:my_timetable/widgets/dialog_boxs.dart' show errorDialogue;
 import 'package:my_timetable/widgets/styles.dart' show headerContainer;
 
 typedef CallbackAction<T> = void Function(T);
@@ -30,6 +34,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
   late AnimationController _animationController;
   late Animation<double> _animation;
   List<DayTime> _filteredDays = [];
+  late final DatabaseService _service;
 
   @override
   void initState() {
@@ -37,6 +42,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() => _height = 0);
     });
+    _service = DatabaseService();
     _filteredDays = widget.timeTable.dayTime
         .where((day) => day.day == widget.currentDay)
         .toList();
@@ -72,23 +78,60 @@ class _TimeTableBoxState extends State<TimeTableBox>
     super.dispose();
   }
 
-  void menuCheck(String value) {
+  void menuCheck(String value) async {
     if (value == 'edit') {
       editTimeTable();
     } else if (value == 'delete') {
       widget.callback(widget.timeTable.subject.id);
     } else if (value == 'reminder') {
+      if (widget.currentDay != weekdays[DateTime.now().weekday - 1]) {
+        await errorDialogue(context, "You can set reminders for current day");
+        return;
+      }
+      bool isSet = false;
       for (int i = 0; i < _filteredDays.length; i++) {
         final day = _filteredDays[i];
-        NotificationService.showScheduleNotification(
-          id: day.id!,
-          title: widget.timeTable.subject.name,
-          body: "Your class is being held in ${day.roomNo}",
-          scheduleDate: DateTime.now().add(
-            Duration(seconds: i * 8 + 3),
+
+        final startTime = DateFormat.jm().parse(day.startTime);
+        final scheduleDate = DateTime(
+          DateTime.now().year,
+          DateTime.now().month,
+          DateTime.now().day,
+          startTime.hour,
+          startTime.minute,
+        ).subtract(const Duration(minutes: 5));
+
+        if (DateTime.now().isBefore(scheduleDate)) {
+          isSet = true;
+          await NotificationService.showScheduleNotification(
+            id: day.id!,
+            title: widget.timeTable.subject.name,
+            body: "Your class is being held in ${day.roomNo} after 5 mins",
+            scheduleDate: scheduleDate,
+          );
+        }
+      }
+      if (isSet) {
+        await _service.updateSubject(
+          subject: widget.timeTable.subject.copyWith(sched: 1),
+        );
+      } else {
+        Future.delayed(
+          const Duration(milliseconds: 100),
+          () => errorDialogue(
+            context,
+            "This timetable has passed the current time",
           ),
         );
       }
+    } else if (value == 'cancelReminder') {
+      for (int i = 0; i < _filteredDays.length; i++) {
+        final day = _filteredDays[i];
+        await NotificationService.cancelScheduleNotification(id: day.id!);
+      }
+      await _service.updateSubject(
+        subject: widget.timeTable.subject.copyWith(sched: 0),
+      );
     }
   }
 
@@ -114,6 +157,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
                 title: subject.name,
                 icon: Icons.edit_note,
                 onClick: menuCheck,
+                reminder: widget.timeTable.subject.sched != 0,
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(14.0, 14.0, 14.0, 0.0),

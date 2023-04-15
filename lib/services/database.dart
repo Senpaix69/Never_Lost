@@ -8,6 +8,16 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'dart:async';
 
+extension IterableExtensions<T> on Iterable<T> {
+  T? firstWhereOrNull(bool Function(T) test) {
+    try {
+      return firstWhere(test);
+    } catch (_) {
+      return null;
+    }
+  }
+}
+
 class DatabaseService {
   static final DatabaseService _instance = DatabaseService._internal();
   static Database? _database;
@@ -96,6 +106,26 @@ class DatabaseService {
     return subject.copyWith(id: id);
   }
 
+  Future<void> updateSubject({required Subject subject}) async {
+    final db = await open();
+    await db.update(
+      subTable,
+      subject.toMap(),
+      where: "$subIdColumn = ?",
+      whereArgs: [subject.id],
+    );
+
+    for (int i = 0; i < _cachedTimeTables.length; i++) {
+      final timetable = _cachedTimeTables[i];
+      if (timetable.subject.id == subject.id) {
+        _cachedTimeTables[i] = timetable.copyWith(subject: subject);
+        break;
+      }
+    }
+
+    _timeTableController.add(_cachedTimeTables);
+  }
+
   Future<Professor> insertProfessor({
     required Professor professor,
     required int subId,
@@ -109,6 +139,26 @@ class DatabaseService {
     );
   }
 
+  Future<void> updateProfessor({required Professor prof}) async {
+    final db = await open();
+    await db.update(
+      professorTable,
+      prof.toMap(),
+      where: "$professorIdColumn = ?",
+      whereArgs: [prof.profId],
+    );
+
+    for (int i = 0; i < _cachedTimeTables.length; i++) {
+      final timetable = _cachedTimeTables[i];
+      if (timetable.professor.profId == prof.profId) {
+        _cachedTimeTables[i] = timetable.copyWith(professor: prof);
+        break;
+      }
+    }
+
+    _timeTableController.add(_cachedTimeTables);
+  }
+
   Future<List<DayTime>> insertDayTime({
     required List<DayTime> daytimes,
     required int subId,
@@ -116,10 +166,46 @@ class DatabaseService {
     final db = await open();
     List<DayTime> myList = [];
     for (DayTime day in daytimes) {
-      myList.add(day.copyWith(subId: subId));
-      await db.insert(dayTimeTable, myList.last.toMap());
+      final DayTime daytime = day.copyWith(subId: subId);
+      int id = await db.insert(dayTimeTable, daytime.toMap());
+      myList.add(
+        daytime.copyWith(id: id),
+      );
     }
     return myList;
+  }
+
+  Future<void> updateDayTime({
+    required List<DayTime> daytimes,
+    required int subId,
+  }) async {
+    final db = await open();
+
+    await db.delete(
+      dayTimeTable,
+      where: "$subIdColumn = ?",
+      whereArgs: [subId],
+    );
+
+    List<DayTime> dayTimes =
+        await insertDayTime(daytimes: daytimes, subId: subId);
+
+    for (int i = 0; i < _cachedTimeTables.length; i++) {
+      final timetable = _cachedTimeTables[i];
+      final updatedDayTimeList = <DayTime>[];
+      for (int j = 0; j < dayTimes.length; j++) {
+        final day = dayTimes[j];
+        final index = timetable.dayTime.indexWhere((d) => d.id == day.id);
+        if (index >= 0) {
+          updatedDayTimeList.add(day.copyWith());
+        } else {
+          updatedDayTimeList.add(day);
+        }
+      }
+      final updatedTimetable = timetable.copyWith(dayTime: updatedDayTimeList);
+      _cachedTimeTables[i] = updatedTimetable;
+    }
+    _timeTableController.add(_cachedTimeTables);
   }
 
   Future<void> updateTimeTable({
@@ -127,15 +213,10 @@ class DatabaseService {
     required Professor professor,
     required List<DayTime> dayTimes,
   }) async {
-    await deleteTimeTable(id: subject.id!);
-    _cachedTimeTables
-        .removeWhere((timeTable) => timeTable.subject.id == subject.id);
+    await updateSubject(subject: subject);
+    await updateProfessor(prof: professor);
+    await updateDayTime(daytimes: dayTimes, subId: subject.id!);
     _timeTableController.add(_cachedTimeTables);
-    await insertTimeTable(
-      subject: subject,
-      professor: professor,
-      daytimes: dayTimes,
-    );
   }
 
   Future<void> deleteTimeTable({required int id}) async {

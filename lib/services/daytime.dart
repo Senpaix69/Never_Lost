@@ -69,7 +69,7 @@ class DayTime {
 
   @override
   String toString() {
-    return 'Time: $startTime-$endTime, NextSlot: $nextSlot, CurrentSlot: $currentSlot';
+    return 'ID: $id, Time: $startTime-$endTime, NextSlot: $nextSlot, CurrentSlot: $currentSlot';
   }
 
   @override

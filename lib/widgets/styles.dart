@@ -39,6 +39,7 @@ typedef CallbackAction<T> = void Function(T);
 Container headerContainer({
   required String title,
   required IconData icon,
+  bool reminder = false,
   required CallbackAction<String>? onClick,
 }) {
   return Container(
@@ -58,35 +59,42 @@ Container headerContainer({
           padding: const EdgeInsets.only(left: 10.0),
           child: myText(text: title),
         ),
-        const SizedBox(
-          width: 10.0,
-        ),
         onClick != null
-            ? PopupMenuButton(
-                padding: EdgeInsets.zero,
-                itemBuilder: (BuildContext context) {
-                  return <PopupMenuEntry>[
-                    const PopupMenuItem(
-                      value: 'edit',
-                      child: Text('Edit'),
+            ? Row(
+                children: [
+                  Icon(
+                    reminder ? Icons.alarm : Icons.alarm_off_rounded,
+                    size: 18.0,
+                    color: reminder ? Colors.amberAccent : Colors.grey[300],
+                  ),
+                  PopupMenuButton(
+                    padding: EdgeInsets.zero,
+                    itemBuilder: (BuildContext context) {
+                      return <PopupMenuEntry>[
+                        const PopupMenuItem(
+                          value: 'edit',
+                          child: Text('Edit'),
+                        ),
+                        const PopupMenuItem(
+                          value: 'delete',
+                          child: Text('Delete'),
+                        ),
+                        PopupMenuItem(
+                          value: reminder ? 'cancelReminder' : 'reminder',
+                          child: Text(
+                              reminder ? 'Cancel Reminder' : 'Set Reminder'),
+                        ),
+                      ];
+                    },
+                    onSelected: (value) => onClick(value),
+                    color: Colors.cyan[900],
+                    shadowColor: Colors.black,
+                    icon: Icon(
+                      Icons.menu_open_rounded,
+                      color: Colors.grey[200],
                     ),
-                    const PopupMenuItem(
-                      value: 'delete',
-                      child: Text('Delete'),
-                    ),
-                    const PopupMenuItem(
-                      value: 'reminder',
-                      child: Text('Set Reminder'),
-                    ),
-                  ];
-                },
-                onSelected: (value) => onClick(value),
-                color: Colors.cyan[900],
-                shadowColor: Colors.black,
-                icon: Icon(
-                  Icons.menu_open_rounded,
-                  color: Colors.grey[200],
-                ),
+                  ),
+                ],
               )
             : Padding(
                 padding: const EdgeInsets.only(right: 10.0),

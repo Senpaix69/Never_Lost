@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/daytime.dart';
+import 'package:my_timetable/services/notification_service.dart';
 import 'package:my_timetable/services/professor.dart';
 import 'package:my_timetable/services/subject.dart';
 import 'package:my_timetable/services/timeTable.dart';
@@ -17,7 +18,7 @@ class AddSubject extends StatefulWidget {
 }
 
 class _AddSubjectState extends State<AddSubject> {
-  int? _subId;
+  TimeTable? _timeTable;
   final _formKey = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
   List<DayTime> _days = <DayTime>[];
@@ -67,7 +68,7 @@ class _AddSubjectState extends State<AddSubject> {
   void setArgument() {
     final widgetTable = context.getArgument<TimeTable>();
     if (widgetTable != null) {
-      _subId = widgetTable.subject.id!;
+      _timeTable = widgetTable;
       _subjectName.text = widgetTable.subject.name;
       _section.text = widgetTable.subject.section;
       _professorName.text = widgetTable.professor.name;
@@ -76,7 +77,7 @@ class _AddSubjectState extends State<AddSubject> {
       _facultyRoomNo.text = widgetTable.professor.office!;
       _startFacultyTime.text = widgetTable.professor.startTime!;
       _endFacultyTime.text = widgetTable.professor.endTime!;
-      _days = widgetTable.dayTime;
+      _days = [...widgetTable.dayTime];
     }
   }
 
@@ -100,14 +101,17 @@ class _AddSubjectState extends State<AddSubject> {
   void addDayTime() {
     if (_formKey2.currentState!.validate()) {
       setState(
-        () => _days.add(
-          DayTime(
-            day: _day.text,
-            roomNo: _roomNo.text,
-            startTime: _startSlotTime.text,
-            endTime: _endSlotTime.text,
-          ),
-        ),
+        () {
+          _days.add(
+            DayTime(
+              day: _day.text,
+              roomNo: _roomNo.text,
+              startTime: _startSlotTime.text,
+              endTime: _endSlotTime.text,
+            ),
+          );
+          _editing = true;
+        },
       );
     }
   }
@@ -169,8 +173,8 @@ class _AddSubjectState extends State<AddSubject> {
     bool isDel = await confirmDialogue(
         context: context,
         message: "Do you really want to delete this timetable?");
-    if (isDel && _subId != null) {
-      await _database.deleteTimeTable(id: _subId!);
+    if (isDel && _timeTable != null) {
+      await _database.deleteTimeTable(id: _timeTable!.subject.id!);
       Future.delayed(
           const Duration(milliseconds: 100), () => Navigator.of(context).pop());
     }
@@ -195,11 +199,22 @@ class _AddSubjectState extends State<AddSubject> {
       startTime: _startFacultyTime.text,
       endTime: _endFacultyTime.text,
     );
-    if (_subId != null) {
+    if (_timeTable != null) {
+      for (int i = 0; i < _timeTable!.dayTime.length; i++) {
+        await NotificationService.cancelScheduleNotification(
+            id: _timeTable!.dayTime[i].id!);
+      }
       await _database.updateTimeTable(
-          subject: sub.copyWith(id: _subId),
-          professor: professor,
-          dayTimes: _days);
+        subject: sub.copyWith(
+          id: _timeTable!.subject.id!,
+          sched: 0,
+        ),
+        professor: professor.copyWith(
+          profId: _timeTable!.professor.profId!,
+          subId: _timeTable!.subject.id!,
+        ),
+        dayTimes: _days,
+      );
     } else {
       await _database.insertTimeTable(
         daytimes: _days,
@@ -561,7 +576,7 @@ class _AddSubjectState extends State<AddSubject> {
   }
 
   AppBar myAppBar() {
-    bool isEditing = _subId != null;
+    bool isEditing = _timeTable != null;
     return AppBar(
       automaticallyImplyLeading: false, // disable the default back button
       leading: IconButton(

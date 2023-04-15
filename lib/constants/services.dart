@@ -2,12 +2,14 @@
 const subTable = "subject";
 const subIdColumn = "sub_id";
 const subNameColumn = "sub_name";
+const subSchedColumn = 'sched';
 const subSectionColumn = 'sub_section';
 const createSubTable = '''
 CREATE TABLE IF NOT EXISTS "$subTable" (
   "$subIdColumn" INTEGER NOT NULL,
-  "$subNameColumn" TEXT NOT NULL, 
+  "$subNameColumn" TEXT NOT NULL,
   "$subSectionColumn" TEXT NOT NULL,
+	"$subSchedColumn"	INTEGER NOT NULL DEFAULT 0,
   PRIMARY KEY("$subIdColumn" AUTOINCREMENT)
   );
 ''';
