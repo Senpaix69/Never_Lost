@@ -8,7 +8,6 @@ import 'package:my_timetable/widgets/animate_route.dart'
     show SlideRightRoute, SlideFromBottomTransition;
 import 'package:my_timetable/widgets/daytime_list.dart';
 import 'package:my_timetable/services/notification_service.dart';
-import 'package:my_timetable/widgets/dialog_boxs.dart' show errorDialogue;
 import 'package:my_timetable/widgets/styles.dart' show headerContainer;
 
 typedef CallbackAction<T> = void Function(T);
@@ -78,60 +77,69 @@ class _TimeTableBoxState extends State<TimeTableBox>
     super.dispose();
   }
 
+  void showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.cyan[900],
+        showCloseIcon: true,
+        content: Text(
+          message,
+          style: const TextStyle(color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  void setSchedule() async {
+    for (int i = 0; i < _filteredDays.length; i++) {
+      final day = _filteredDays[i];
+
+      final startTime = DateFormat.jm().parse(day.startTime);
+      final targetWeekday = weekdays.indexOf(day.day) + 1;
+      final today = DateTime.now();
+      final todayWeekday = today.weekday;
+      final scheduleDate = DateTime(
+        today.year,
+        today.month,
+        today.day + (targetWeekday - todayWeekday) % 7,
+        startTime.hour,
+        startTime.minute,
+      ).subtract(const Duration(minutes: 10));
+
+      await NotificationService.showScheduleNotification(
+        id: day.id!,
+        title: widget.timeTable.subject.name,
+        body: "Your class is being held in room: ${day.roomNo} after 10 mins",
+        scheduleDate: scheduleDate,
+      );
+    }
+    await _service.updateSubject(
+      subject: widget.timeTable.subject.copyWith(sched: 1),
+    );
+    showSnackBar('The reminder has been set daily');
+  }
+
+  void cancelSchedule(List<DayTime> list) async {
+    for (int i = 0; i < list.length; i++) {
+      final day = list[i];
+      await NotificationService.cancelScheduleNotification(id: day.id!);
+    }
+  }
+
   void menuCheck(String value) async {
     if (value == 'edit') {
       editTimeTable();
     } else if (value == 'delete') {
+      cancelSchedule(widget.timeTable.dayTime);
       widget.callback(widget.timeTable.subject.id);
     } else if (value == 'reminder') {
-      if (widget.currentDay != weekdays[DateTime.now().weekday - 1]) {
-        await errorDialogue(context, "You can set reminders for current day");
-        return;
-      }
-      bool isSet = false;
-      for (int i = 0; i < _filteredDays.length; i++) {
-        final day = _filteredDays[i];
-
-        final startTime = DateFormat.jm().parse(day.startTime);
-        final scheduleDate = DateTime(
-          DateTime.now().year,
-          DateTime.now().month,
-          DateTime.now().day,
-          startTime.hour,
-          startTime.minute,
-        ).subtract(const Duration(minutes: 5));
-
-        if (DateTime.now().isBefore(scheduleDate)) {
-          isSet = true;
-          await NotificationService.showScheduleNotification(
-            id: day.id!,
-            title: widget.timeTable.subject.name,
-            body: "Your class is being held in ${day.roomNo} after 5 mins",
-            scheduleDate: scheduleDate,
-          );
-        }
-      }
-      if (isSet) {
-        await _service.updateSubject(
-          subject: widget.timeTable.subject.copyWith(sched: 1),
-        );
-      } else {
-        Future.delayed(
-          const Duration(milliseconds: 100),
-          () => errorDialogue(
-            context,
-            "This timetable has passed the current time",
-          ),
-        );
-      }
+      setSchedule();
     } else if (value == 'cancelReminder') {
-      for (int i = 0; i < _filteredDays.length; i++) {
-        final day = _filteredDays[i];
-        await NotificationService.cancelScheduleNotification(id: day.id!);
-      }
+      cancelSchedule(_filteredDays);
       await _service.updateSubject(
         subject: widget.timeTable.subject.copyWith(sched: 0),
       );
+      showSnackBar('The reminder has been removed');
     }
   }
 
