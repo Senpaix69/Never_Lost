@@ -158,15 +158,14 @@ class _TimeTablesPageState extends State<TimeTablesPage> {
               child: StreamBuilder(
             stream: _database.allTimeTable,
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.connectionState == ConnectionState.done ||
+                  snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
                   child: CircularProgressIndicator(
                     color: Colors.cyan,
                   ),
                 );
               }
-              final timeTables =
-                  snapshot.data != null ? [...snapshot.data!] : [];
               return PageView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: weekdays.length,
@@ -175,14 +174,13 @@ class _TimeTablesPageState extends State<TimeTablesPage> {
                   _currentPage = value;
                 },
                 itemBuilder: (context, ind) {
+                  final timeTables = [...snapshot.data!];
                   final currentDay = weekdays[ind];
-                  final filteredTimeTables = List.from(timeTables);
-                  filteredTimeTables.retainWhere((timeTable) => timeTable
-                      .dayTime
+                  timeTables.retainWhere((timeTable) => timeTable.dayTime
                       .any((dayTime) => dayTime.day == currentDay));
 
-                  setNextSlot(filteredTimeTables);
-                  if (filteredTimeTables.isEmpty) {
+                  setNextSlot(timeTables);
+                  if (timeTables.isEmpty) {
                     return noTimeTableAdded();
                   }
                   return Container(
@@ -192,9 +190,9 @@ class _TimeTablesPageState extends State<TimeTablesPage> {
                     child: ListView.builder(
                       physics: const AlwaysScrollableScrollPhysics(
                           parent: BouncingScrollPhysics()),
-                      itemCount: filteredTimeTables.length,
+                      itemCount: timeTables.length,
                       itemBuilder: (context, index) {
-                        final timeTable = filteredTimeTables[index];
+                        final timeTable = timeTables[index];
                         return TimeTableBox(
                           timeTable: timeTable,
                           currentDay: weekdays[_currentPage],
