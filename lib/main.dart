@@ -12,10 +12,10 @@ void main() {
     MaterialApp(
       theme: ThemeData(
         brightness: Brightness.dark,
-        primaryColor: Colors.brown,
+        primaryColor: Colors.grey,
         colorScheme: const ColorScheme.dark(
-          primary: Colors.brown,
-          secondary: Colors.brown,
+          primary: Colors.grey,
+          secondary: Colors.grey,
         ),
         textTheme: const TextTheme(
           bodyLarge: TextStyle(color: Colors.white),

@@ -9,7 +9,7 @@ InputDecoration decorationFormField(prefixIcon, hintText) {
       color: Colors.grey[400],
     ),
     filled: true,
-    fillColor: Colors.brown.withAlpha(100),
+    fillColor: Colors.grey.withAlpha(40),
     border: const OutlineInputBorder(
       borderRadius: BorderRadius.all(
         Radius.circular(8.0),
@@ -46,9 +46,9 @@ Container headerContainer({
     padding: const EdgeInsets.symmetric(vertical: 8.0),
     width: double.infinity,
     height: 45,
-    decoration: const BoxDecoration(
-      color: Colors.brown,
-      borderRadius: BorderRadius.only(
+    decoration: BoxDecoration(
+      color: Colors.grey[900],
+      borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
     ),
     child: Row(
@@ -87,7 +87,7 @@ Container headerContainer({
                       ];
                     },
                     onSelected: (value) => onClick(value),
-                    color: Colors.brown[700],
+                    color: Colors.grey[800],
                     shadowColor: Colors.black,
                     icon: Icon(
                       Icons.menu_open_rounded,

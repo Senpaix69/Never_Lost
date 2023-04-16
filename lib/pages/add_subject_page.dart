@@ -280,7 +280,7 @@ class _AddSubjectState extends State<AddSubject> {
                         ),
                         Divider(
                           height: 40.0,
-                          color: Colors.brown[600],
+                          color: Colors.grey[600],
                         ),
                         myText(text: "Professor Details"),
                         const SizedBox(
@@ -309,7 +309,7 @@ class _AddSubjectState extends State<AddSubject> {
                         professorDetails(),
                         Divider(
                           height: 40.0,
-                          color: Colors.brown[600],
+                          color: Colors.grey[600],
                         ),
                       ],
                     ),
@@ -335,7 +335,7 @@ class _AddSubjectState extends State<AddSubject> {
                       Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: Colors.brown,
+                          color: Colors.grey[900],
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         child: TextButton.icon(
@@ -361,7 +361,7 @@ class _AddSubjectState extends State<AddSubject> {
                 Container(
                   margin: const EdgeInsets.only(top: 20.0),
                   decoration: BoxDecoration(
-                    color: Colors.brown.withAlpha(80),
+                    color: Colors.grey.withAlpha(80),
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   child: Column(
@@ -477,7 +477,7 @@ class _AddSubjectState extends State<AddSubject> {
             iconSize: 0.0,
             value: day.text,
             onChanged: (value) => day.text = value!,
-            dropdownColor: Colors.cyan[900],
+            dropdownColor: Colors.grey[900],
             style: const TextStyle(color: Colors.white),
             decoration: decorationFormField(Icons.weekend, "Select Day"),
             items: weekdays.map<DropdownMenuItem<String>>((weekday) {
@@ -561,7 +561,7 @@ class _AddSubjectState extends State<AddSubject> {
           );
         }
       },
-      cursorColor: Colors.cyan[200],
+      cursorColor: Colors.grey[200],
       style: const TextStyle(color: Colors.white),
       decoration: decorationFormField(prefix, hint),
       validator: validator,

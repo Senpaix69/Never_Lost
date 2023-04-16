@@ -51,7 +51,7 @@ class _DayTimeListState extends State<DayTimeList> {
               ? Colors.yellow
               : day.nextSlot
                   ? Colors.red
-                  : Colors.brown[300],
+                  : Colors.grey[600],
         ),
       ),
       title: Text(

@@ -37,7 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Container(
       decoration: const BoxDecoration(
         image: DecorationImage(
-          image: AssetImage("assets/background1.png"),
+          image: AssetImage("assets/bg-2.jpg"),
           fit: BoxFit.cover,
         ),
       ),
@@ -51,10 +51,10 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         bottomNavigationBar: CurvedNavigationBar(
           height: 50,
-          color: Colors.brown,
+          color: const Color.fromARGB(255, 33, 33, 33),
           animationDuration: const Duration(milliseconds: 500),
           backgroundColor: Colors.transparent,
-          buttonBackgroundColor: Colors.brown,
+          buttonBackgroundColor: Colors.grey[900],
           items: const <Widget>[
             Icon(Icons.today, size: 30, color: Colors.white),
             Icon(Icons.topic, size: 30, color: Colors.white),

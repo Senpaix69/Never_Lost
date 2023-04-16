@@ -78,7 +78,7 @@ class _TodoListState extends State<TodoList>
             if (snapshot.connectionState == ConnectionState.done) {
               return const Center(
                 child: CircularProgressIndicator(
-                  color: Colors.cyan,
+                  color: Colors.grey,
                 ),
               );
             }
@@ -119,7 +119,7 @@ class _TodoListState extends State<TodoList>
               decoration: BoxDecoration(
                 color: completed
                     ? Colors.grey.withAlpha(50)
-                    : Colors.brown.withAlpha(80),
+                    : Colors.grey.withAlpha(80),
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: ListTile(
@@ -133,7 +133,7 @@ class _TodoListState extends State<TodoList>
                   child: Text(
                     todo.title,
                     style: TextStyle(
-                      color: completed ? Colors.grey[700] : Colors.brown[300],
+                      color: completed ? Colors.grey[700] : Colors.grey[300],
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
                       decoration: completed ? TextDecoration.lineThrough : null,

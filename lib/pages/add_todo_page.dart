@@ -141,7 +141,7 @@ class _AddTodoState extends State<AddTodo> {
                       ),
                       controller: _title,
                       style: TextStyle(
-                        color: Colors.brown[300],
+                        color: Colors.grey[300],
                         fontSize: 18.0,
                         fontWeight: FontWeight.bold,
                       ),

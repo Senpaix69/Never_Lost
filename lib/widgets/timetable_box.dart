@@ -82,7 +82,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
       SnackBar(
         behavior: SnackBarBehavior.floating,
         margin: const EdgeInsets.only(bottom: 20.0, left: 5.0, right: 5.0),
-        backgroundColor: Colors.brown,
+        backgroundColor: Colors.grey[900],
         showCloseIcon: true,
         content: Text(
           message,
@@ -165,7 +165,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 6.0),
           decoration: BoxDecoration(
-            color: Colors.brown.withAlpha(80),
+            color: Colors.grey.withAlpha(40),
             borderRadius: BorderRadius.circular(10.0),
           ),
           child: Column(
@@ -224,7 +224,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
                           padding: const EdgeInsets.all(15.0),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(6.0),
-                            color: Colors.brown.withAlpha(80),
+                            color: Colors.grey.withAlpha(30),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,7 +255,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
                     ),
                     Divider(
                       height: 8.0,
-                      color: Colors.brown[600],
+                      color: Colors.grey[600],
                       thickness: 1.0,
                     )
                   ],
@@ -286,7 +286,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
               fontSize: 12,
               letterSpacing: 0.5,
               fontWeight: head ? FontWeight.bold : FontWeight.normal,
-              color: changeColor ? Colors.brown[200] : Colors.brown[100],
+              color: changeColor ? Colors.grey[400] : Colors.grey[200],
             ),
             children: <TextSpan>[
               TextSpan(

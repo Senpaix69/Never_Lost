@@ -135,7 +135,7 @@ class _TimeTablesPageState extends State<TimeTablesPage> {
                     style: TextStyle(
                       letterSpacing: 1.0,
                       color: _today == _currentPage
-                          ? Colors.brown[400]
+                          ? Colors.red[400]
                           : Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
@@ -162,7 +162,7 @@ class _TimeTablesPageState extends State<TimeTablesPage> {
                   snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
                   child: CircularProgressIndicator(
-                    color: Colors.brown,
+                    color: Colors.grey,
                   ),
                 );
               }
