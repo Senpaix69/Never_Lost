@@ -54,19 +54,20 @@ dev_dependencies:
   flutter_native_splash: ^2.2.19
 
 flutter_native_splash:
-  background_image: "assets/background.png"
+  color: "#6D4C41"
   image: "assets/logo.png"
   branding: assets/text.png
   branding_mode: bottom
 
   android_12:
-    background_image: "assets/background.png"
+    color: "#6D4C41"
     image: "assets/logo.png"
     branding: assets/text.png
     branding_mode: bottom
   android: true
   ios: true
   web: false
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

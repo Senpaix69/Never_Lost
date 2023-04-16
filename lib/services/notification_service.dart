@@ -44,7 +44,7 @@ class NotificationService {
         payload: payload,
       );
 
-  static Future showScheduleNotification({
+  static Future weeklyNotification({
     required int id,
     required String title,
     required String body,

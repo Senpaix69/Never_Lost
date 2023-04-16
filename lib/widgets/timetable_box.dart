@@ -108,7 +108,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
         startTime.minute,
       ).subtract(const Duration(minutes: 10));
 
-      await NotificationService.showScheduleNotification(
+      await NotificationService.weeklyNotification(
         id: day.id!,
         title: widget.timeTable.subject.name,
         body: "Your class is being held in room: ${day.roomNo} after 10 mins",
@@ -122,7 +122,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
         'The reminders for ${widget.timeTable.subject.name} has been set daily');
   }
 
-  void cancelSchedule(List<DayTime> list) async {
+  Future cancelSchedule(List<DayTime> list) async {
     for (int i = 0; i < list.length; i++) {
       final day = list[i];
       await NotificationService.cancelScheduleNotification(id: day.id!);
@@ -134,7 +134,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
     if (value == 'edit') {
       editTimeTable();
     } else if (value == 'delete') {
-      cancelSchedule(timeTable.dayTime);
+      await cancelSchedule(timeTable.dayTime);
       widget.callback(timeTable.subject.id);
     } else if (value == 'reminder') {
       setSchedule();
@@ -224,7 +224,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
                           padding: const EdgeInsets.all(15.0),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(6.0),
-                            color: Colors.brown.withAlpha(25),
+                            color: Colors.brown.withAlpha(80),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,7 +255,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
                     ),
                     Divider(
                       height: 8.0,
-                      color: Colors.brown[900],
+                      color: Colors.brown[600],
                       thickness: 1.0,
                     )
                   ],
@@ -264,6 +264,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
               DayTimeList(
                 days: _filteredDays,
                 callBack: null,
+                reminder: subject.sched != 0,
                 currentDay: widget.currentDay,
               ),
             ],

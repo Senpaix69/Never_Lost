@@ -65,7 +65,7 @@ Container headerContainer({
                   Icon(
                     reminder ? Icons.alarm : Icons.alarm_off_rounded,
                     size: 20.0,
-                    color: reminder ? Colors.yellow : Colors.grey[300],
+                    color: reminder ? Colors.yellowAccent : Colors.grey[300],
                   ),
                   PopupMenuButton(
                     padding: EdgeInsets.zero,

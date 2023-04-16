@@ -280,7 +280,7 @@ class _AddSubjectState extends State<AddSubject> {
                         ),
                         Divider(
                           height: 40.0,
-                          color: Colors.cyan[900],
+                          color: Colors.brown[600],
                         ),
                         myText(text: "Professor Details"),
                         const SizedBox(
@@ -309,7 +309,7 @@ class _AddSubjectState extends State<AddSubject> {
                         professorDetails(),
                         Divider(
                           height: 40.0,
-                          color: Colors.cyan[900],
+                          color: Colors.brown[600],
                         ),
                       ],
                     ),

@@ -4,10 +4,12 @@ import 'package:my_timetable/services/daytime.dart';
 class DayTimeList extends StatefulWidget {
   final List<DayTime> days;
   final String? currentDay;
+  final bool reminder;
   final Function(int)? callBack;
 
   const DayTimeList({
     super.key,
+    this.reminder = false,
     required this.days,
     this.currentDay,
     this.callBack,
@@ -38,21 +40,18 @@ class _DayTimeListState extends State<DayTimeList> {
 
   Widget _buildItem(DayTime day, int index) {
     bool isAdding = widget.callBack != null;
-    String alpha = String.fromCharCode('A'.codeUnitAt(0) + index);
+    bool isReminder = widget.reminder;
     return ListTile(
       leading: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 15.0),
-        child: Text(
-          isAdding ? day.roomNo : "Slot $alpha",
-          style: TextStyle(
-            color: day.currentSlot
-                ? Colors.yellow
-                : day.nextSlot
-                    ? Colors.red
-                    : Colors.white70,
-            fontWeight: FontWeight.bold,
-            fontSize: isAdding ? 14.0 : 18.0,
-          ),
+        padding: const EdgeInsets.symmetric(vertical: 14.0),
+        child: Icon(
+          isReminder ? Icons.add_alert_rounded : Icons.crisis_alert_sharp,
+          size: 30.0,
+          color: day.currentSlot
+              ? Colors.yellow
+              : day.nextSlot
+                  ? Colors.red
+                  : Colors.brown[300],
         ),
       ),
       title: Text(

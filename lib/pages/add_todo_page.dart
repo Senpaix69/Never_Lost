@@ -92,7 +92,7 @@ class _AddTodoState extends State<AddTodo> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.brown[800],
+        backgroundColor: Colors.transparent,
         title: Text(isTodo != null ? "Edit Todo" : "Add Todo"),
         elevation: 0.0,
         actions: <Widget>[
@@ -141,7 +141,7 @@ class _AddTodoState extends State<AddTodo> {
                       ),
                       controller: _title,
                       style: TextStyle(
-                        color: Colors.brown[100],
+                        color: Colors.brown[300],
                         fontSize: 18.0,
                         fontWeight: FontWeight.bold,
                       ),
