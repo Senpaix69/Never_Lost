@@ -9,7 +9,7 @@ InputDecoration decorationFormField(prefixIcon, hintText) {
       color: Colors.grey[400],
     ),
     filled: true,
-    fillColor: Colors.cyan.withAlpha(40),
+    fillColor: Colors.brown.withAlpha(100),
     border: const OutlineInputBorder(
       borderRadius: BorderRadius.all(
         Radius.circular(8.0),
@@ -46,9 +46,9 @@ Container headerContainer({
     padding: const EdgeInsets.symmetric(vertical: 8.0),
     width: double.infinity,
     height: 45,
-    decoration: BoxDecoration(
-      color: Colors.cyan[900],
-      borderRadius: const BorderRadius.only(
+    decoration: const BoxDecoration(
+      color: Colors.brown,
+      borderRadius: BorderRadius.only(
           topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
     ),
     child: Row(
@@ -64,8 +64,8 @@ Container headerContainer({
                 children: [
                   Icon(
                     reminder ? Icons.alarm : Icons.alarm_off_rounded,
-                    size: 18.0,
-                    color: reminder ? Colors.amberAccent : Colors.grey[300],
+                    size: 20.0,
+                    color: reminder ? Colors.yellow : Colors.grey[300],
                   ),
                   PopupMenuButton(
                     padding: EdgeInsets.zero,
@@ -87,7 +87,7 @@ Container headerContainer({
                       ];
                     },
                     onSelected: (value) => onClick(value),
-                    color: Colors.cyan[900],
+                    color: Colors.brown[700],
                     shadowColor: Colors.black,
                     icon: Icon(
                       Icons.menu_open_rounded,

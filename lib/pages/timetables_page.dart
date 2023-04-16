@@ -95,9 +95,9 @@ class _TimeTablesPageState extends State<TimeTablesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.transparent,
         title: const Text("Time Table"),
         elevation: 0.0,
         actions: <Widget>[
@@ -127,7 +127,7 @@ class _TimeTablesPageState extends State<TimeTablesPage> {
                     onPressed: () => handlePage(-1),
                     icon: Icon(
                       Icons.arrow_left,
-                      color: Colors.cyan[800],
+                      color: Colors.grey[400],
                     ),
                   ),
                   Text(
@@ -135,7 +135,7 @@ class _TimeTablesPageState extends State<TimeTablesPage> {
                     style: TextStyle(
                       letterSpacing: 1.0,
                       color: _today == _currentPage
-                          ? Colors.cyan[600]
+                          ? Colors.brown[400]
                           : Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
@@ -147,7 +147,7 @@ class _TimeTablesPageState extends State<TimeTablesPage> {
                     iconSize: 40.0,
                     icon: Icon(
                       Icons.arrow_right,
-                      color: Colors.cyan[800],
+                      color: Colors.grey[400],
                     ),
                   ),
                 ],
@@ -162,7 +162,7 @@ class _TimeTablesPageState extends State<TimeTablesPage> {
                   snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
                   child: CircularProgressIndicator(
-                    color: Colors.cyan,
+                    color: Colors.brown,
                   ),
                 );
               }

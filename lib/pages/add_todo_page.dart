@@ -92,7 +92,7 @@ class _AddTodoState extends State<AddTodo> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.brown[800],
         title: Text(isTodo != null ? "Edit Todo" : "Add Todo"),
         elevation: 0.0,
         actions: <Widget>[
@@ -136,11 +136,12 @@ class _AddTodoState extends State<AddTodo> {
                       autocorrect: false,
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintStyle: TextStyle(color: Colors.grey[700]),
+                        hintStyle: TextStyle(color: Colors.grey[500]),
                         hintText: 'Title',
                       ),
                       controller: _title,
-                      style: const TextStyle(
+                      style: TextStyle(
+                        color: Colors.brown[100],
                         fontSize: 18.0,
                         fontWeight: FontWeight.bold,
                       ),
@@ -150,7 +151,7 @@ class _AddTodoState extends State<AddTodo> {
                       isTodo != null ? isTodo!.date : _date(),
                       style: const TextStyle(
                         color: Colors.grey,
-                        fontSize: 10.0,
+                        fontSize: 12.0,
                         letterSpacing: 0.6,
                       ),
                     ),
@@ -163,13 +164,13 @@ class _AddTodoState extends State<AddTodo> {
                       maxLines: null,
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintStyle: TextStyle(color: Colors.grey[700]),
+                        hintStyle: TextStyle(color: Colors.grey[500]),
                         hintText: 'write todo here...',
                       ),
                       controller: _body,
                       validator: textValidate,
                       style: TextStyle(
-                        fontSize: 13.0,
+                        fontSize: 15.0,
                         letterSpacing: 0.3,
                         color: Colors.grey[300],
                       ),

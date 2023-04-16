@@ -178,11 +178,33 @@ class DatabaseService {
     await updateProfessor(prof: professor);
     List<DayTime> daytimes =
         await updateDayTime(daytimes: dayTimes, subId: subject.id!);
-    final newTime =
-        TimeTable(subject: subject, professor: professor, dayTime: daytimes);
-    _cachedTimeTables.removeWhere((s) => s.subject.id == subject.id);
-    _cachedTimeTables.add(newTime);
-    _timeTableController.add(_cachedTimeTables);
+    int index = _cachedTimeTables
+        .indexWhere((timeTable) => timeTable.subject.id == subject.id!);
+
+    if (index != -1) {
+      final TimeTable timetable = _cachedTimeTables[index];
+      TimeTable updatedTimeTable = timetable.copyWith(
+        subject: subject,
+        professor: professor,
+        dayTime: daytimes,
+      );
+      if (timetable != updatedTimeTable) {
+        _cachedTimeTables[index] = updatedTimeTable;
+        _timeTableController.add(_cachedTimeTables);
+      }
+    }
+  }
+
+  void updateSubjectOfTimeTable({required Subject newSubject}) {
+    int index = _cachedTimeTables
+        .indexWhere((timeTable) => timeTable.subject.id == newSubject.id);
+
+    if (index != -1) {
+      TimeTable updatedTimeTable =
+          _cachedTimeTables[index].copyWith(subject: newSubject);
+      _cachedTimeTables[index] = updatedTimeTable;
+      _timeTableController.add(_cachedTimeTables);
+    }
   }
 
   Future<void> deleteTimeTable({required int id}) async {

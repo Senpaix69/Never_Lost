@@ -223,7 +223,9 @@ class _AddSubjectState extends State<AddSubject> {
       );
     }
     Future.delayed(
-        const Duration(milliseconds: 100), () => Navigator.of(context).pop());
+      const Duration(milliseconds: 200),
+      () => Navigator.of(context).pop(),
+    );
   }
 
   @override
@@ -293,23 +295,13 @@ class _AddSubjectState extends State<AddSubject> {
                           ),
                           Positioned(
                             right: 6.0,
-                            top: 9.0,
-                            child: Container(
-                              height: 30.0,
-                              decoration: BoxDecoration(
-                                color: Colors.cyan.withAlpha(80),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: TextButton(
-                                onPressed: _toggleHeight,
-                                child: Text(
-                                  _height == 0 ? "show more" : "show less",
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    letterSpacing: 0.7,
-                                    fontSize: 10.0,
-                                  ),
-                                ),
+                            child: IconButton(
+                              onPressed: _toggleHeight,
+                              icon: Icon(
+                                _height > 0
+                                    ? Icons.swipe_up_sharp
+                                    : Icons.swipe_down_sharp,
+                                color: Colors.grey[300],
                               ),
                             ),
                           ),
@@ -343,7 +335,7 @@ class _AddSubjectState extends State<AddSubject> {
                       Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: Colors.cyan[900],
+                          color: Colors.brown,
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         child: TextButton.icon(
@@ -369,7 +361,7 @@ class _AddSubjectState extends State<AddSubject> {
                 Container(
                   margin: const EdgeInsets.only(top: 20.0),
                   decoration: BoxDecoration(
-                    color: Colors.cyan.withAlpha(40),
+                    color: Colors.brown.withAlpha(80),
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   child: Column(
@@ -400,9 +392,10 @@ class _AddSubjectState extends State<AddSubject> {
                                     ),
                                   )
                                 : DayTimeList(
-                                    callBack: (index) => setState(
-                                      () => _days.removeAt(index),
-                                    ),
+                                    callBack: (index) => setState(() {
+                                      _days.removeAt(index);
+                                      _editing = true;
+                                    }),
                                     days: _days,
                                   ),
                           ],
@@ -421,7 +414,7 @@ class _AddSubjectState extends State<AddSubject> {
 
   AnimatedContainer professorDetails() {
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 400),
+      duration: const Duration(milliseconds: 330),
       height: _height,
       child: SingleChildScrollView(
         physics: const NeverScrollableScrollPhysics(),

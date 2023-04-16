@@ -80,11 +80,13 @@ class _TimeTableBoxState extends State<TimeTableBox>
   void showSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: Colors.cyan[900],
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.only(bottom: 20.0, left: 5.0, right: 5.0),
+        backgroundColor: Colors.brown,
         showCloseIcon: true,
         content: Text(
           message,
-          style: const TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.grey[300]),
         ),
       ),
     );
@@ -116,7 +118,8 @@ class _TimeTableBoxState extends State<TimeTableBox>
     await _service.updateSubject(
       subject: widget.timeTable.subject.copyWith(sched: 1),
     );
-    showSnackBar('The reminder has been set daily');
+    showSnackBar(
+        'The reminders for ${widget.timeTable.subject.name} has been set daily');
   }
 
   void cancelSchedule(List<DayTime> list) async {
@@ -127,19 +130,27 @@ class _TimeTableBoxState extends State<TimeTableBox>
   }
 
   void menuCheck(String value) async {
+    final timeTable = widget.timeTable;
     if (value == 'edit') {
       editTimeTable();
     } else if (value == 'delete') {
-      cancelSchedule(widget.timeTable.dayTime);
-      widget.callback(widget.timeTable.subject.id);
+      cancelSchedule(timeTable.dayTime);
+      widget.callback(timeTable.subject.id);
     } else if (value == 'reminder') {
       setSchedule();
+      _service.updateSubjectOfTimeTable(
+        newSubject: timeTable.subject.copyWith(sched: 1),
+      );
     } else if (value == 'cancelReminder') {
       cancelSchedule(_filteredDays);
       await _service.updateSubject(
-        subject: widget.timeTable.subject.copyWith(sched: 0),
+        subject: timeTable.subject.copyWith(sched: 0),
       );
-      showSnackBar('The reminder has been removed');
+      _service.updateSubjectOfTimeTable(
+        newSubject: timeTable.subject.copyWith(sched: 0),
+      );
+      showSnackBar(
+          'The reminders for ${timeTable.subject.name} has been removed');
     }
   }
 
@@ -147,7 +158,6 @@ class _TimeTableBoxState extends State<TimeTableBox>
   Widget build(BuildContext context) {
     final subject = widget.timeTable.subject;
     final professor = widget.timeTable.professor;
-
     return FadeTransition(
       opacity: _animation,
       child: SlideFromBottomTransition(
@@ -155,7 +165,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 6.0),
           decoration: BoxDecoration(
-            color: Colors.cyan.withAlpha(40),
+            color: Colors.brown.withAlpha(80),
             borderRadius: BorderRadius.circular(10.0),
           ),
           child: Column(
@@ -214,7 +224,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
                           padding: const EdgeInsets.all(15.0),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(6.0),
-                            color: Colors.cyan.withAlpha(25),
+                            color: Colors.brown.withAlpha(25),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -245,7 +255,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
                     ),
                     Divider(
                       height: 8.0,
-                      color: Colors.cyan[900],
+                      color: Colors.brown[900],
                       thickness: 1.0,
                     )
                   ],
@@ -275,7 +285,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
               fontSize: 12,
               letterSpacing: 0.5,
               fontWeight: head ? FontWeight.bold : FontWeight.normal,
-              color: changeColor ? Colors.cyan[400] : Colors.blueGrey[200],
+              color: changeColor ? Colors.brown[200] : Colors.brown[100],
             ),
             children: <TextSpan>[
               TextSpan(

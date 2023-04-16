@@ -52,11 +52,21 @@ class _TodoListState extends State<TodoList>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.transparent,
         title: const Text("Todo List"),
         elevation: 0.0,
+        actions: <Widget>[
+          IconButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .push(SlideRightRoute(page: const AddTodo()));
+              },
+              icon: const Icon(
+                Icons.add,
+              ))
+        ],
       ),
       body: Container(
         height: double.infinity,
@@ -85,7 +95,6 @@ class _TodoListState extends State<TodoList>
           },
         ),
       ),
-      floatingActionButton: addTodoButton(context),
     );
   }
 
@@ -110,7 +119,7 @@ class _TodoListState extends State<TodoList>
               decoration: BoxDecoration(
                 color: completed
                     ? Colors.grey.withAlpha(50)
-                    : Colors.cyan.withAlpha(50),
+                    : Colors.brown.withAlpha(80),
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: ListTile(
@@ -124,7 +133,7 @@ class _TodoListState extends State<TodoList>
                   child: Text(
                     todo.title,
                     style: TextStyle(
-                      color: completed ? Colors.grey[700] : Colors.cyan[600],
+                      color: completed ? Colors.grey[700] : Colors.brown[300],
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
                       decoration: completed ? TextDecoration.lineThrough : null,
@@ -151,7 +160,7 @@ class _TodoListState extends State<TodoList>
                       todo.date,
                       style: const TextStyle(
                         fontSize: 12.0,
-                        color: Colors.blueGrey,
+                        color: Colors.grey,
                       ),
                     ),
                   ],
@@ -201,24 +210,6 @@ class _TodoListState extends State<TodoList>
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Padding addTodoButton(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 10.0),
-      child: FloatingActionButton(
-        onPressed: () => Navigator.push(
-            context,
-            SlideRightRoute(
-              page: const AddTodo(),
-            )),
-        backgroundColor: Colors.cyan[900],
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
       ),
     );
   }

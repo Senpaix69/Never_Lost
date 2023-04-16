@@ -49,7 +49,7 @@ class _DayTimeListState extends State<DayTimeList> {
                 ? Colors.yellow
                 : day.nextSlot
                     ? Colors.red
-                    : Colors.cyan[800],
+                    : Colors.white70,
             fontWeight: FontWeight.bold,
             fontSize: isAdding ? 14.0 : 18.0,
           ),
@@ -57,15 +57,15 @@ class _DayTimeListState extends State<DayTimeList> {
       ),
       title: Text(
         isAdding ? day.day : day.roomNo,
-        style: const TextStyle(
-          color: Colors.white,
+        style: TextStyle(
+          color: Colors.grey[300],
           fontWeight: FontWeight.bold,
         ),
       ),
       subtitle: Text(
         '${day.startTime} - ${day.endTime}',
-        style: const TextStyle(
-          color: Colors.white,
+        style: TextStyle(
+          color: Colors.grey[300],
         ),
       ),
       trailing: widget.callBack != null

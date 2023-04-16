@@ -34,34 +34,43 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: PageView(
-        scrollBehavior: MyCustomScrollBehavior(),
-        controller: _pageController,
-        onPageChanged: _onPageChanged,
-        children: _pages,
+    return Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/background1.png"),
+          fit: BoxFit.cover,
+        ),
       ),
-      bottomNavigationBar: CurvedNavigationBar(
-        height: 50,
-        color: const Color.fromARGB(255, 0, 96, 100),
-        animationDuration: const Duration(milliseconds: 500),
-        backgroundColor: Colors.black,
-        buttonBackgroundColor: Colors.cyan[900],
-        items: const <Widget>[
-          Icon(Icons.today, size: 30, color: Colors.white),
-          Icon(Icons.topic, size: 30, color: Colors.white),
-        ],
-        index: _currentPageIndex,
-        onTap: (index) {
-          setState(() {
-            _currentPageIndex = index;
-            _pageController.animateToPage(
-              index,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-            );
-          });
-        },
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: PageView(
+          scrollBehavior: MyCustomScrollBehavior(),
+          controller: _pageController,
+          onPageChanged: _onPageChanged,
+          children: _pages,
+        ),
+        bottomNavigationBar: CurvedNavigationBar(
+          height: 50,
+          color: Colors.brown,
+          animationDuration: const Duration(milliseconds: 500),
+          backgroundColor: Colors.transparent,
+          buttonBackgroundColor: Colors.brown,
+          items: const <Widget>[
+            Icon(Icons.today, size: 30, color: Colors.white),
+            Icon(Icons.topic, size: 30, color: Colors.white),
+          ],
+          index: _currentPageIndex,
+          onTap: (index) {
+            setState(() {
+              _currentPageIndex = index;
+              _pageController.animateToPage(
+                index,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            });
+          },
+        ),
       ),
     );
   }
