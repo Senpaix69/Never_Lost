@@ -4,6 +4,7 @@ import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/todo.dart';
 import 'package:my_timetable/widgets/animate_route.dart'
     show SlideFromBottomTransition, SlideRightRoute;
+import 'package:my_timetable/widgets/bottom_sheet.dart';
 
 class TodoList extends StatefulWidget {
   const TodoList({super.key});
@@ -52,20 +53,23 @@ class _TodoListState extends State<TodoList>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: const Text("Todo List"),
         elevation: 0.0,
         actions: <Widget>[
-          IconButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .push(SlideRightRoute(page: const AddTodo()));
-              },
-              icon: const Icon(
+          InkWell(
+            onTap: _showAddTodoBottomSheet,
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              child: Icon(
                 Icons.add,
-              ))
+                size: 28.0,
+              ),
+            ),
+          ),
         ],
       ),
       body: Container(
@@ -95,6 +99,15 @@ class _TodoListState extends State<TodoList>
           },
         ),
       ),
+    );
+  }
+
+  void _showAddTodoBottomSheet() {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      context: context,
+      builder: (_) => const MyBottomSheet(),
     );
   }
 

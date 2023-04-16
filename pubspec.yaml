@@ -54,13 +54,13 @@ dev_dependencies:
   flutter_native_splash: ^2.2.19
 
 flutter_native_splash:
-  color: "#272727"
+  color: "#999999"
   image: "assets/logo.png"
   branding: assets/text.png
   branding_mode: bottom
 
   android_12:
-    color: "#272727"
+    color: "#999999"
     image: "assets/logo.png"
     branding: assets/text.png
     branding_mode: bottom
