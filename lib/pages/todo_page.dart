@@ -134,7 +134,7 @@ class _TodoListState extends State<TodoList>
                     todo.title,
                     style: TextStyle(
                       color: completed ? Colors.grey[700] : Colors.grey[300],
-                      fontSize: 18.0,
+                      fontSize: 16.0,
                       fontWeight: FontWeight.bold,
                       decoration: completed ? TextDecoration.lineThrough : null,
                     ),
