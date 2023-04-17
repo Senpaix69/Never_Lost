@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:my_timetable/pages/note/add_note_page.dart';
 import 'package:my_timetable/pages/note/note_page.dart';
+import 'package:my_timetable/pages/todo/todo_page.dart';
 import 'package:my_timetable/utils.dart' show MyCustomScrollBehavior;
+import 'package:my_timetable/widgets/animate_route.dart';
+import 'package:my_timetable/widgets/bottom_sheet.dart';
 
 class SecondHomePage extends StatefulWidget {
   const SecondHomePage({super.key});
@@ -13,7 +17,7 @@ class _SecondHomePageState extends State<SecondHomePage> {
 
   final _pages = [
     const Note(),
-    const Center(child: Text('Todo')),
+    const TodoList(),
   ];
 
   final PageController _pageController = PageController(initialPage: 0);
@@ -86,6 +90,30 @@ class _SecondHomePageState extends State<SecondHomePage> {
         onPageChanged: _onPageChanged,
         children: _pages,
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _selectedIndex == 0 ? _addNotePage : _showAddTodoBottomSheet,
+        child: const Icon(
+          Icons.add,
+          size: 30.0,
+        ),
+      ),
+    );
+  }
+
+  void _addNotePage() {
+    Navigator.of(context).push(
+      SlideRightRoute(
+        page: const AddNote(),
+      ),
+    );
+  }
+
+  void _showAddTodoBottomSheet() {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      context: context,
+      builder: (_) => const MyBottomSheet(),
     );
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_timetable/widgets/bottom_sheet.dart';
+import 'package:my_timetable/utils.dart';
 
 class TodoList extends StatefulWidget {
   const TodoList({super.key});
@@ -10,15 +10,12 @@ class TodoList extends StatefulWidget {
 class _TodoListState extends State<TodoList> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
-  }
-
-  void _showAddTodoBottomSheet() {
-    showModalBottomSheet(
-      isScrollControlled: true,
+    return Scaffold(
       backgroundColor: Colors.transparent,
-      context: context,
-      builder: (_) => const MyBottomSheet(),
+      body: emptyWidget(
+        icon: Icons.checklist_outlined,
+        message: "Empty Todos",
+      ),
     );
   }
 }

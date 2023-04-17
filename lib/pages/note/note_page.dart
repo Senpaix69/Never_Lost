@@ -52,19 +52,6 @@ class _NoteState extends State<Note> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            SlideRightRoute(
-              page: const AddNote(),
-            ),
-          );
-        },
-        child: const Icon(
-          Icons.add,
-          size: 30.0,
-        ),
-      ),
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
       body: Container(
