@@ -56,19 +56,19 @@ CREATE TABLE IF NOT EXISTS "$professorTable" (
 	  PRIMARY KEY("$professorIdColumn" AUTOINCREMENT)
 );''';
 
-// Todo Constants
-const todoTable = 'todo';
-const todoIdColumn = 'todo_id';
-const todoTitleColumn = 'todo_title';
-const todoBodyColumn = 'todo_body';
-const todoDateColumn = 'todo_date';
-const todoCompleteColumn = 'todo_complete';
-const createTodoTable = '''
-CREATE TABLE IF NOT EXISTS "$todoTable" (
-  "$todoIdColumn" INTEGER NOT NULL,
-  "$todoTitleColumn" TEXT NOT NULL,
-  "$todoBodyColumn" TEXT NOT NULL,
-  "$todoDateColumn" TEXT NOT NULL,
-  "$todoCompleteColumn" INTEGER NOT NULL DEFAULT 0,
-  PRIMARY KEY("$todoIdColumn" AUTOINCREMENT)
+//! Note Constants
+const noteTable = 'note';
+const noteIdColumn = 'note_id';
+const noteTitleColumn = 'note_title';
+const noteBodyColumn = 'note_body';
+const noteDateColumn = 'note_date';
+const noteImagesColumn = 'note_images';
+const createNoteTable = '''
+CREATE TABLE IF NOT EXISTS "$noteTable" (
+  "$noteIdColumn" INTEGER NOT NULL,
+  "$noteTitleColumn" TEXT NOT NULL,
+  "$noteBodyColumn" TEXT NOT NULL,
+  "$noteDateColumn" TEXT NOT NULL,
+  "$noteImagesColumn" TEXT NULL,
+  PRIMARY KEY("$noteIdColumn" AUTOINCREMENT)
 );''';

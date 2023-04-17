@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'package:my_timetable/constants/services.dart';
 
 @immutable
@@ -7,11 +8,11 @@ class Note {
   final String title;
   final String body;
   final String date;
-  final int complete;
+  final List<String>? images;
 
   const Note({
-    this.complete = 0,
     this.id,
+    this.images,
     required this.title,
     required this.body,
     required this.date,
@@ -19,21 +20,23 @@ class Note {
 
   Map<String, Object?> toMap() {
     return {
-      todoIdColumn: id,
-      todoTitleColumn: title,
-      todoBodyColumn: body,
-      todoDateColumn: date,
-      todoCompleteColumn: complete,
+      noteIdColumn: id,
+      noteTitleColumn: title,
+      noteBodyColumn: body,
+      noteDateColumn: date,
+      noteImagesColumn: json.encode(images),
     };
   }
 
   factory Note.fromMap(Map<String, Object?> map) {
     return Note(
-      id: map[todoIdColumn] as int?,
-      title: map[todoTitleColumn] as String,
-      body: map[todoBodyColumn] as String,
-      date: map[todoDateColumn] as String,
-      complete: map[todoCompleteColumn] as int,
+      id: map[noteIdColumn] as int?,
+      title: map[noteTitleColumn] as String,
+      body: map[noteBodyColumn] as String,
+      date: map[noteDateColumn] as String,
+      images: List<String>.from(
+        json.decode(map[noteImagesColumn] as String),
+      ),
     );
   }
 
@@ -42,19 +45,19 @@ class Note {
     String? title,
     String? body,
     String? date,
-    int? complete,
+    List<String>? images,
   }) {
     return Note(
       id: id ?? this.id,
       title: title ?? this.title,
       body: body ?? this.body,
       date: date ?? this.date,
-      complete: complete ?? this.complete,
+      images: images ?? this.images,
     );
   }
 
   @override
   String toString() {
-    return "Todo: {id: $id, title: $title, body: $body, date: $date, complete: $complete}";
+    return "Todo: {id: $id, title: $title, body: $body, date: $date, images: [${json.encode(images)}]\n";
   }
 }

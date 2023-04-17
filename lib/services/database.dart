@@ -26,9 +26,9 @@ class DatabaseService {
   late final StreamController<List<TimeTable>> _timeTableController;
   Stream<List<TimeTable>> get allTimeTable => _timeTableController.stream;
 
-  List<Note> _cachedTodos = [];
-  late final StreamController<List<Note>> _todosController;
-  Stream<List<Note>> get allTodos => _todosController.stream;
+  List<Note> _cachedNotes = [];
+  late final StreamController<List<Note>> _notesController;
+  Stream<List<Note>> get allNotes => _notesController.stream;
 
   factory DatabaseService() {
     return _instance;
@@ -39,8 +39,8 @@ class DatabaseService {
         StreamController<List<TimeTable>>.broadcast(onListen: () {
       _timeTableController.sink.add(_cachedTimeTables);
     });
-    _todosController = StreamController<List<Note>>.broadcast(onListen: () {
-      _todosController.sink.add(_cachedTodos);
+    _notesController = StreamController<List<Note>>.broadcast(onListen: () {
+      _notesController.sink.add(_cachedNotes);
     });
   }
 
@@ -60,14 +60,14 @@ class DatabaseService {
     // await db.execute("DROP TABLE IF EXISTS $subTable");
     // await db.execute("DROP TABLE IF EXISTS $dayTimeTable");
     // await db.execute("DROP TABLE IF EXISTS $professorTable");
-    // await db.execute("DROP TABLE IF EXISTS $todoTable");
+    // await db.execute("DROP TABLE IF EXISTS $noteTable");
     await db.execute(createSubTable);
     await db.execute(createDayTimeTable);
     await db.execute(createProfessorTable);
-    await db.execute(createTodoTable);
+    await db.execute(createNoteTable);
     await db.execute('PRAGMA foreign_keys = ON;');
     _catchAllTimeTables();
-    _catchAllTodos();
+    _catchAllNotes();
     _database = db;
   }
 
@@ -259,55 +259,55 @@ class DatabaseService {
     return _cachedTimeTables;
   }
 
-  Future<Iterable<Note>> getTodosStream() async {
-    if (_cachedTodos.isNotEmpty) {
-      return _cachedTodos;
+  Future<Iterable<Note>> getNotesStream() async {
+    if (_cachedNotes.isNotEmpty) {
+      return _cachedNotes;
     }
     final db = await open();
-    final todos = await db.query(todoTable);
-    _cachedTodos = todos.map((todoMap) => Note.fromMap(todoMap)).toList();
-    return _cachedTodos;
+    final notes = await db.query(noteTable);
+    _cachedNotes = notes.map((noteMap) => Note.fromMap(noteMap)).toList();
+    return _cachedNotes;
   }
 
-  Future<Note> insertTodo({required Note todo}) async {
+  Future<Note> insertNote({required Note note}) async {
     final db = await open();
-    final id = await db.insert(todoTable, todo.toMap());
-    final toDo = todo.copyWith(id: id);
-    _cachedTodos.add(toDo);
-    _todosController.add(_cachedTodos);
-    return toDo;
+    final id = await db.insert(noteTable, note.toMap());
+    final noTe = note.copyWith(id: id);
+    _cachedNotes.add(noTe);
+    _notesController.add(_cachedNotes);
+    return noTe;
   }
 
-  Future<void> updateTodo({required Note todo}) async {
+  Future<void> updateNote({required Note note}) async {
     final db = await open();
     final updatedRows = await db.update(
-      todoTable,
-      todo.toMap(),
-      where: "$todoIdColumn = ?",
-      whereArgs: [todo.id],
+      noteTable,
+      note.toMap(),
+      where: "$noteIdColumn = ?",
+      whereArgs: [note.id],
     );
     if (updatedRows == 0) {
       return;
     }
-    final index = _cachedTodos.indexWhere((t) => t.id == todo.id);
+    final index = _cachedNotes.indexWhere((t) => t.id == note.id);
     if (index >= 0) {
-      _cachedTodos[index] = todo;
-      _todosController.add(_cachedTodos);
+      _cachedNotes[index] = note;
+      _notesController.add(_cachedNotes);
     }
   }
 
-  Future<int> deleteTodo({required int id}) async {
+  Future<int> deleteNote({required int id}) async {
     final db = await open();
     final changes =
-        await db.delete(todoTable, where: "$todoIdColumn = ?", whereArgs: [id]);
-    _cachedTodos.removeWhere((ele) => ele.id == id);
-    _todosController.add(_cachedTodos);
+        await db.delete(noteTable, where: "$noteIdColumn = ?", whereArgs: [id]);
+    _cachedNotes.removeWhere((note) => note.id == id);
+    _notesController.add(_cachedNotes);
     return changes;
   }
 
-  Future<void> _catchAllTodos() async {
-    final todos = await getTodosStream();
-    _cachedTodos = todos.toList();
-    _todosController.add(_cachedTodos);
+  Future<void> _catchAllNotes() async {
+    final notes = await getNotesStream();
+    _cachedNotes = notes.toList();
+    _notesController.add(_cachedNotes);
   }
 }

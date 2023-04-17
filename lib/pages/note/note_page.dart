@@ -37,11 +37,9 @@ class _NoteListState extends State<NoteList>
   List<Note> sort({
     required List<Note> notes,
   }) {
-    List<Note> sortedTodos = notes.toList();
-    sortedTodos.sort((a, b) => (a.complete.compareTo(b.complete) != 0)
-        ? a.complete.compareTo(b.complete)
-        : a.date.compareTo(b.date));
-    return sortedTodos;
+    List<Note> sortedNotes = notes.toList();
+    sortedNotes.sort((a, b) => b.date.compareTo(a.date));
+    return sortedNotes;
   }
 
   @override
@@ -60,7 +58,7 @@ class _NoteListState extends State<NoteList>
         width: double.infinity,
         decoration: null,
         child: StreamBuilder(
-          stream: _database.allTodos,
+          stream: _database.allNotes,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return const Center(
@@ -69,8 +67,8 @@ class _NoteListState extends State<NoteList>
                 ),
               );
             }
-            final todos = snapshot.data != null ? [...snapshot.data!] : [];
-            if (todos.isEmpty) {
+            final notes = snapshot.data != null ? [...snapshot.data!] : [];
+            if (notes.isEmpty) {
               return emptyWidget(
                 icon: Icons.library_books_outlined,
                 message: "Empty Notes",
@@ -80,7 +78,7 @@ class _NoteListState extends State<NoteList>
               decoration: null,
               height: double.infinity,
               width: double.infinity,
-              child: myListBuilder(sort(notes: todos as List<Note>)),
+              child: myListBuilder(sort(notes: notes as List<Note>)),
             );
           },
         ),
@@ -88,15 +86,14 @@ class _NoteListState extends State<NoteList>
     );
   }
 
-  ListView myListBuilder(List<Note> todos) {
+  ListView myListBuilder(List<Note> notes) {
     return ListView.builder(
       physics: const AlwaysScrollableScrollPhysics(
         parent: BouncingScrollPhysics(),
       ),
-      itemCount: todos.length,
+      itemCount: notes.length,
       itemBuilder: (context, index) {
-        final todo = todos[index];
-        bool completed = todo.complete == 1;
+        final note = notes[index];
         return FadeTransition(
           opacity: _animation,
           child: SlideFromBottomTransition(
@@ -107,26 +104,23 @@ class _NoteListState extends State<NoteList>
                 horizontal: 10.0,
               ),
               decoration: BoxDecoration(
-                color: completed
-                    ? Colors.grey.withAlpha(50)
-                    : Colors.grey.withAlpha(80),
+                color: Colors.grey.withAlpha(60),
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: ListTile(
                 minVerticalPadding: 15.0,
                 onTap: () => Navigator.push(
                   context,
-                  SlideRightRoute(page: const AddNote(), arguments: todo),
+                  SlideRightRoute(page: const AddNote(), arguments: note),
                 ),
                 title: SizedBox(
                   height: 25.0,
                   child: Text(
-                    todo.title,
+                    note.title,
                     style: TextStyle(
-                      color: completed ? Colors.grey[700] : Colors.grey[300],
+                      color: Colors.grey[300],
                       fontSize: 16.0,
                       fontWeight: FontWeight.bold,
-                      decoration: completed ? TextDecoration.lineThrough : null,
                     ),
                   ),
                 ),
@@ -134,41 +128,22 @@ class _NoteListState extends State<NoteList>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      todo.body.toString().split("\n").join(""),
+                      note.body.toString().split("\n").join(""),
                       softWrap: true,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        decorationThickness: 6.0,
-                        color: completed ? Colors.grey[700] : Colors.grey[300],
+                      style: const TextStyle(
                         fontSize: 14.0,
-                        decoration:
-                            completed ? TextDecoration.lineThrough : null,
                       ),
                     ),
                     const SizedBox(height: 6.0),
                     Text(
-                      todo.date,
+                      note.date,
                       style: const TextStyle(
                         fontSize: 12.0,
                         color: Colors.grey,
                       ),
                     ),
                   ],
-                ),
-                trailing: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0),
-                  child: Checkbox(
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4.0),
-                    ),
-                    value: todo.complete != 0,
-                    onChanged: (value) async {
-                      await _database.updateTodo(
-                          todo: todo.copyWith(
-                              complete: todo.complete == 0 ? 1 : 0));
-                    },
-                  ),
                 ),
               ),
             ),

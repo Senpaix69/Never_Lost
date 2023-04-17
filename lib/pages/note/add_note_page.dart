@@ -59,14 +59,13 @@ class _AddNoteState extends State<AddNote> {
       );
 
       if (isNote != null) {
-        await _database.updateTodo(
-          todo: todo.copyWith(
+        await _database.updateNote(
+          note: todo.copyWith(
             id: isNote!.id,
-            complete: isNote!.complete,
           ),
         );
       } else {
-        await _database.insertTodo(todo: todo);
+        await _database.insertNote(note: todo);
       }
       Future.delayed(
         const Duration(milliseconds: 100),
@@ -79,7 +78,7 @@ class _AddNoteState extends State<AddNote> {
     bool isDel = await confirmDialogue(
         context: context, message: "Do you really want to delete this todo?");
     if (isDel && isNote != null) {
-      await _database.deleteTodo(id: isNote!.id!);
+      await _database.deleteNote(id: isNote!.id!);
       Future.delayed(
         const Duration(milliseconds: 100),
         () => Navigator.of(context).pop(),
