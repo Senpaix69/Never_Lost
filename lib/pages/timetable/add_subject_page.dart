@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:my_timetable/services/database.dart';
-import 'package:my_timetable/services/daytime.dart';
+import 'package:my_timetable/services/timetable/daytime.dart';
 import 'package:my_timetable/services/notification_service.dart';
-import 'package:my_timetable/services/professor.dart';
-import 'package:my_timetable/services/subject.dart';
-import 'package:my_timetable/services/timeTable.dart';
+import 'package:my_timetable/services/timetable/professor.dart';
+import 'package:my_timetable/services/timetable/subject.dart';
+import 'package:my_timetable/services/timetable/timeTable.dart';
 import 'package:my_timetable/utils.dart'
     show GetArgument, textValidate, weekdays;
 import 'package:my_timetable/widgets/daytime_list.dart';
 import 'package:my_timetable/widgets/dialog_boxs.dart';
-import 'package:my_timetable/widgets/styles.dart';
+import 'package:my_timetable/widgets/styles.dart'
+    show decorationFormField, myText, headerContainer;
 
 class AddSubject extends StatefulWidget {
   const AddSubject({super.key});

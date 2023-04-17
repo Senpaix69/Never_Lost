@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:my_timetable/constants/services.dart';
 
 @immutable
-class Todo {
+class Note {
   final int? id;
   final String title;
   final String body;
   final String date;
   final int complete;
 
-  const Todo({
+  const Note({
     this.complete = 0,
     this.id,
     required this.title,
@@ -27,8 +27,8 @@ class Todo {
     };
   }
 
-  factory Todo.fromMap(Map<String, Object?> map) {
-    return Todo(
+  factory Note.fromMap(Map<String, Object?> map) {
+    return Note(
       id: map[todoIdColumn] as int?,
       title: map[todoTitleColumn] as String,
       body: map[todoBodyColumn] as String,
@@ -37,14 +37,14 @@ class Todo {
     );
   }
 
-  Todo copyWith({
+  Note copyWith({
     int? id,
     String? title,
     String? body,
     String? date,
     int? complete,
   }) {
-    return Todo(
+    return Note(
       id: id ?? this.id,
       title: title ?? this.title,
       body: body ?? this.body,

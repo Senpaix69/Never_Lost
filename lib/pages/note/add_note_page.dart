@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:my_timetable/services/database.dart';
-import 'package:my_timetable/services/todo.dart';
+import 'package:my_timetable/services/note.dart';
 import 'package:my_timetable/utils.dart' show GetArgument, textValidate;
 import 'package:my_timetable/widgets/dialog_boxs.dart';
 
@@ -15,7 +15,7 @@ class _AddNoteState extends State<AddNote> {
   late final DatabaseService _database;
   late final TextEditingController _title;
   late final TextEditingController _body;
-  Todo? isNote;
+  Note? isNote;
   final _formKey = GlobalKey<FormState>();
 
   String _date() {
@@ -35,7 +35,7 @@ class _AddNoteState extends State<AddNote> {
   }
 
   void setArgument() {
-    final widgetTable = context.getArgument<Todo>();
+    final widgetTable = context.getArgument<Note>();
     if (widgetTable != null) {
       _title.text = widgetTable.title;
       _body.text = widgetTable.body;
@@ -52,7 +52,7 @@ class _AddNoteState extends State<AddNote> {
 
   Future<void> saveNote() async {
     if (_formKey.currentState!.validate()) {
-      final todo = Todo(
+      final todo = Note(
         title: _title.text,
         body: _body.text,
         date: isNote != null ? isNote!.date : _date(),

@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:my_timetable/services/daytime.dart';
-import 'package:my_timetable/services/professor.dart';
-import 'package:my_timetable/services/subject.dart';
+import 'package:my_timetable/services/timetable/daytime.dart';
+import 'package:my_timetable/services/timetable/professor.dart';
+import 'package:my_timetable/services/timetable/subject.dart';
 
 @immutable
 class TimeTable {

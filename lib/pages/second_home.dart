@@ -16,7 +16,7 @@ class _SecondHomePageState extends State<SecondHomePage> {
   int _selectedIndex = 0;
 
   final _pages = [
-    const Note(),
+    const NoteList(),
     const TodoList(),
   ];
 

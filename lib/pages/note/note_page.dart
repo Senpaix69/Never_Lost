@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:my_timetable/pages/note/add_note_page.dart';
 import 'package:my_timetable/services/database.dart';
-import 'package:my_timetable/services/todo.dart';
+import 'package:my_timetable/services/note.dart';
 import 'package:my_timetable/utils.dart' show emptyWidget;
 import 'package:my_timetable/widgets/animate_route.dart'
     show SlideFromBottomTransition, SlideRightRoute;
 
-class Note extends StatefulWidget {
-  const Note({super.key});
+class NoteList extends StatefulWidget {
+  const NoteList({super.key});
   @override
-  State<Note> createState() => _NoteState();
+  State<NoteList> createState() => _NoteListState();
 }
 
-class _NoteState extends State<Note> with SingleTickerProviderStateMixin {
+class _NoteListState extends State<NoteList>
+    with SingleTickerProviderStateMixin {
   late final DatabaseService _database;
   late AnimationController _animationController;
   late Animation<double> _animation;
@@ -33,10 +34,10 @@ class _NoteState extends State<Note> with SingleTickerProviderStateMixin {
     _animationController.forward();
   }
 
-  List<Todo> sort({
-    required List<Todo> todos,
+  List<Note> sort({
+    required List<Note> notes,
   }) {
-    List<Todo> sortedTodos = todos.toList();
+    List<Note> sortedTodos = notes.toList();
     sortedTodos.sort((a, b) => (a.complete.compareTo(b.complete) != 0)
         ? a.complete.compareTo(b.complete)
         : a.date.compareTo(b.date));
@@ -79,7 +80,7 @@ class _NoteState extends State<Note> with SingleTickerProviderStateMixin {
               decoration: null,
               height: double.infinity,
               width: double.infinity,
-              child: myListBuilder(sort(todos: todos as List<Todo>)),
+              child: myListBuilder(sort(notes: todos as List<Note>)),
             );
           },
         ),
@@ -87,7 +88,7 @@ class _NoteState extends State<Note> with SingleTickerProviderStateMixin {
     );
   }
 
-  ListView myListBuilder(List<Todo> todos) {
+  ListView myListBuilder(List<Note> todos) {
     return ListView.builder(
       physics: const AlwaysScrollableScrollPhysics(
         parent: BouncingScrollPhysics(),
