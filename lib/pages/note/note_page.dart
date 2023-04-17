@@ -60,14 +60,15 @@ class _NoteListState extends State<NoteList>
         child: StreamBuilder(
           stream: _database.allNotes,
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.connectionState == ConnectionState.done ||
+                snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
                 child: CircularProgressIndicator(
                   color: Colors.grey,
                 ),
               );
             }
-            final notes = snapshot.data != null ? [...snapshot.data!] : [];
+            final notes = snapshot.data!;
             if (notes.isEmpty) {
               return emptyWidget(
                 icon: Icons.library_books_outlined,
@@ -78,7 +79,7 @@ class _NoteListState extends State<NoteList>
               decoration: null,
               height: double.infinity,
               width: double.infinity,
-              child: myListBuilder(sort(notes: notes as List<Note>)),
+              child: myListBuilder(sort(notes: notes)),
             );
           },
         ),

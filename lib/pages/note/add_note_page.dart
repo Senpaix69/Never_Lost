@@ -16,8 +16,9 @@ class _AddNoteState extends State<AddNote> {
   late final DatabaseService _database;
   late final TextEditingController _title;
   late final TextEditingController _body;
-  Note? isNote;
+  Note? _isNote;
   final _formKey = GlobalKey<FormState>();
+  bool _isEditing = false;
 
   String _date() {
     final DateFormat formatter = DateFormat('EEEE MMMM d hh:mm a', 'en_US');
@@ -40,7 +41,7 @@ class _AddNoteState extends State<AddNote> {
     if (widgetTable != null) {
       _title.text = widgetTable.title;
       _body.text = widgetTable.body;
-      isNote = widgetTable;
+      _isNote = widgetTable;
     }
   }
 
@@ -56,13 +57,13 @@ class _AddNoteState extends State<AddNote> {
       final todo = Note(
         title: _title.text,
         body: _body.text,
-        date: isNote != null ? isNote!.date : _date(),
+        date: _isNote != null ? _isNote!.date : _date(),
       );
 
-      if (isNote != null) {
+      if (_isNote != null) {
         await _database.updateNote(
           note: todo.copyWith(
-            id: isNote!.id,
+            id: _isNote!.id,
           ),
         );
       } else {
@@ -78,8 +79,8 @@ class _AddNoteState extends State<AddNote> {
   Future<void> deleteNote() async {
     bool isDel = await confirmDialogue(
         context: context, message: "Do you really want to delete this todo?");
-    if (isDel && isNote != null) {
-      await _database.deleteNote(id: isNote!.id!);
+    if (isDel && _isNote != null) {
+      await _database.deleteNote(id: _isNote!.id!);
       Future.delayed(
         const Duration(milliseconds: 100),
         () => Navigator.of(context).pop(),
@@ -87,27 +88,62 @@ class _AddNoteState extends State<AddNote> {
     }
   }
 
+  void backPage() async {
+    if (_isEditing) {
+      bool isChanges = await confirmDialogue(
+        context: context,
+        message: "Some changes have done do you want to save them?",
+      );
+      if (isChanges) {
+        await saveNote();
+        return;
+      }
+    }
+    Future.delayed(
+      const Duration(milliseconds: 50),
+      () => Navigator.of(context).pop(),
+    );
+  }
+
+  void checkNote(String value) {
+    if (_isNote != null &&
+        (_isNote!.title == _title.text && _isNote!.body == _body.text)) {
+      if (_isEditing) setState(() => _isEditing = false);
+      return;
+    }
+    if (_title.text.isNotEmpty || _body.text.isNotEmpty) {
+      if (!_isEditing) setState(() => _isEditing = true);
+      return;
+    }
+    if (_isEditing) setState(() => _isEditing = false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => backPage(),
+        ),
         backgroundColor: Colors.transparent,
-        title: Text(isNote != null ? "Edit Note" : "Add Note"),
+        title: Text(_isNote != null ? "Edit Note" : "Add Note"),
         elevation: 0.0,
         actions: <Widget>[
-          isNote != null
-              ? IconButton(
-                  onPressed: () => deleteNote(),
-                  icon: const Icon(
-                    Icons.delete,
-                  ),
-                )
-              : const SizedBox(),
-          IconButton(
-            onPressed: () => saveNote(),
-            icon: const Icon(Icons.check),
-          ),
+          if (_isNote != null)
+            IconButton(
+              onPressed: () => deleteNote(),
+              icon: const Icon(
+                Icons.delete,
+              ),
+            ),
+          if (_isEditing)
+            IconButton(
+              onPressed: () => saveNote(),
+              icon: const Icon(Icons.check),
+            ),
         ],
       ),
       body: GestureDetector(
@@ -132,6 +168,7 @@ class _AddNoteState extends State<AddNote> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     TextFormField(
+                      onChanged: checkNote,
                       enableSuggestions: false,
                       autocorrect: false,
                       decoration: InputDecoration(
@@ -148,7 +185,7 @@ class _AddNoteState extends State<AddNote> {
                       validator: textValidate,
                     ),
                     Text(
-                      isNote != null ? isNote!.date : _date(),
+                      _isNote != null ? _isNote!.date : _date(),
                       style: const TextStyle(
                         color: Colors.grey,
                         fontSize: 12.0,
@@ -159,6 +196,7 @@ class _AddNoteState extends State<AddNote> {
                       height: 20.0,
                     ),
                     TextFormField(
+                      onChanged: checkNote,
                       enableSuggestions: false,
                       autocorrect: false,
                       maxLines: null,

@@ -572,7 +572,7 @@ class _AddSubjectState extends State<AddSubject> {
   AppBar myAppBar() {
     bool isEditing = _timeTable != null;
     return AppBar(
-      automaticallyImplyLeading: false, // disable the default back button
+      automaticallyImplyLeading: false,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back),
         onPressed: () => backPage(),
