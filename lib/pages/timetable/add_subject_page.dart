@@ -4,7 +4,6 @@ import 'package:my_timetable/services/timetable/daytime.dart';
 import 'package:my_timetable/services/notification_service.dart';
 import 'package:my_timetable/services/timetable/professor.dart';
 import 'package:my_timetable/services/timetable/subject.dart';
-import 'package:my_timetable/services/timetable/timeTable.dart';
 import 'package:my_timetable/utils.dart'
     show GetArgument, textValidate, weekdays;
 import 'package:my_timetable/widgets/daytime_list.dart';
@@ -19,7 +18,7 @@ class AddSubject extends StatefulWidget {
 }
 
 class _AddSubjectState extends State<AddSubject> {
-  TimeTable? _timeTable;
+  dynamic _timeTable;
   final _formKey = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
   List<DayTime> _days = <DayTime>[];
@@ -67,7 +66,7 @@ class _AddSubjectState extends State<AddSubject> {
   }
 
   void setArgument() {
-    final widgetTable = context.getArgument<TimeTable>();
+    final widgetTable = context.getArgument<dynamic>();
     if (widgetTable != null) {
       _timeTable = widgetTable;
       _subjectName.text = widgetTable.subject.name;
