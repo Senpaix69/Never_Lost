@@ -5,17 +5,17 @@ import 'package:my_timetable/services/todo.dart';
 import 'package:my_timetable/utils.dart' show GetArgument, textValidate;
 import 'package:my_timetable/widgets/dialog_boxs.dart';
 
-class AddTodo extends StatefulWidget {
-  const AddTodo({super.key});
+class AddNote extends StatefulWidget {
+  const AddNote({super.key});
   @override
-  State<AddTodo> createState() => _AddTodoState();
+  State<AddNote> createState() => _AddNoteState();
 }
 
-class _AddTodoState extends State<AddTodo> {
+class _AddNoteState extends State<AddNote> {
   late final DatabaseService _database;
   late final TextEditingController _title;
   late final TextEditingController _body;
-  Todo? isTodo;
+  Todo? isNote;
   final _formKey = GlobalKey<FormState>();
 
   String _date() {
@@ -39,7 +39,7 @@ class _AddTodoState extends State<AddTodo> {
     if (widgetTable != null) {
       _title.text = widgetTable.title;
       _body.text = widgetTable.body;
-      isTodo = widgetTable;
+      isNote = widgetTable;
     }
   }
 
@@ -50,19 +50,19 @@ class _AddTodoState extends State<AddTodo> {
     super.dispose();
   }
 
-  Future<void> saveTodo() async {
+  Future<void> saveNote() async {
     if (_formKey.currentState!.validate()) {
       final todo = Todo(
         title: _title.text,
         body: _body.text,
-        date: isTodo != null ? isTodo!.date : _date(),
+        date: isNote != null ? isNote!.date : _date(),
       );
 
-      if (isTodo != null) {
+      if (isNote != null) {
         await _database.updateTodo(
           todo: todo.copyWith(
-            id: isTodo!.id,
-            complete: isTodo!.complete,
+            id: isNote!.id,
+            complete: isNote!.complete,
           ),
         );
       } else {
@@ -75,11 +75,11 @@ class _AddTodoState extends State<AddTodo> {
     }
   }
 
-  Future<void> deleteTodo() async {
+  Future<void> deleteNote() async {
     bool isDel = await confirmDialogue(
         context: context, message: "Do you really want to delete this todo?");
-    if (isDel && isTodo != null) {
-      await _database.deleteTodo(id: isTodo!.id!);
+    if (isDel && isNote != null) {
+      await _database.deleteTodo(id: isNote!.id!);
       Future.delayed(
         const Duration(milliseconds: 100),
         () => Navigator.of(context).pop(),
@@ -93,19 +93,19 @@ class _AddTodoState extends State<AddTodo> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: Text(isTodo != null ? "Edit Todo" : "Add Todo"),
+        title: Text(isNote != null ? "Edit Note" : "Add Note"),
         elevation: 0.0,
         actions: <Widget>[
-          isTodo != null
+          isNote != null
               ? IconButton(
-                  onPressed: () => deleteTodo(),
+                  onPressed: () => deleteNote(),
                   icon: const Icon(
                     Icons.delete,
                   ),
                 )
               : const SizedBox(),
           IconButton(
-            onPressed: () => saveTodo(),
+            onPressed: () => saveNote(),
             icon: const Icon(Icons.check),
           ),
         ],
@@ -148,7 +148,7 @@ class _AddTodoState extends State<AddTodo> {
                       validator: textValidate,
                     ),
                     Text(
-                      isTodo != null ? isTodo!.date : _date(),
+                      isNote != null ? isNote!.date : _date(),
                       style: const TextStyle(
                         color: Colors.grey,
                         fontSize: 12.0,

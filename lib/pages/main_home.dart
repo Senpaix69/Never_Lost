@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:my_timetable/pages/timetables_page.dart';
-import 'package:my_timetable/pages/todo_page.dart';
+import 'package:my_timetable/pages/second_home.dart';
+import 'package:my_timetable/pages/timetable/timetable_page.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:my_timetable/utils.dart' show MyCustomScrollBehavior;
+import 'package:my_timetable/utils.dart';
+// import 'package:my_timetable/utils.dart' show MyCustomScrollBehavior;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -14,8 +15,8 @@ class _MyHomePageState extends State<MyHomePage> {
   int _currentPageIndex = 0;
 
   final List<Widget> _pages = [
-    const TimeTablesPage(),
-    const TodoList(),
+    const TimeTablePage(),
+    const SecondHomePage(),
   ];
 
   final PageController _pageController = PageController(initialPage: 0);

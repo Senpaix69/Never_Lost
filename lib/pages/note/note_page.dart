@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:my_timetable/pages/add_todo_page.dart';
+import 'package:my_timetable/pages/note/add_note_page.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/todo.dart';
+import 'package:my_timetable/utils.dart' show emptyWidget;
 import 'package:my_timetable/widgets/animate_route.dart'
     show SlideFromBottomTransition, SlideRightRoute;
-import 'package:my_timetable/widgets/bottom_sheet.dart';
 
-class TodoList extends StatefulWidget {
-  const TodoList({super.key});
+class Note extends StatefulWidget {
+  const Note({super.key});
   @override
-  State<TodoList> createState() => _TodoListState();
+  State<Note> createState() => _NoteState();
 }
 
-class _TodoListState extends State<TodoList>
-    with SingleTickerProviderStateMixin {
+class _NoteState extends State<Note> with SingleTickerProviderStateMixin {
   late final DatabaseService _database;
   late AnimationController _animationController;
   late Animation<double> _animation;
@@ -53,25 +52,21 @@ class _TodoListState extends State<TodoList>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(
+            SlideRightRoute(
+              page: const AddNote(),
+            ),
+          );
+        },
+        child: const Icon(
+          Icons.add,
+          size: 30.0,
+        ),
+      ),
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: const Text("Todo List"),
-        elevation: 0.0,
-        actions: <Widget>[
-          InkWell(
-            onTap: _showAddTodoBottomSheet,
-            child: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Icon(
-                Icons.add,
-                size: 28.0,
-              ),
-            ),
-          ),
-        ],
-      ),
       body: Container(
         height: double.infinity,
         width: double.infinity,
@@ -88,7 +83,10 @@ class _TodoListState extends State<TodoList>
             }
             final todos = snapshot.data != null ? [...snapshot.data!] : [];
             if (todos.isEmpty) {
-              return emptyTodos();
+              return emptyWidget(
+                icon: Icons.library_books_outlined,
+                message: "Empty Notes",
+              );
             }
             return Container(
               decoration: null,
@@ -99,15 +97,6 @@ class _TodoListState extends State<TodoList>
           },
         ),
       ),
-    );
-  }
-
-  void _showAddTodoBottomSheet() {
-    showModalBottomSheet(
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      context: context,
-      builder: (_) => const MyBottomSheet(),
     );
   }
 
@@ -139,7 +128,7 @@ class _TodoListState extends State<TodoList>
                 minVerticalPadding: 15.0,
                 onTap: () => Navigator.push(
                   context,
-                  SlideRightRoute(page: const AddTodo(), arguments: todo),
+                  SlideRightRoute(page: const AddNote(), arguments: todo),
                 ),
                 title: SizedBox(
                   height: 25.0,
@@ -198,32 +187,6 @@ class _TodoListState extends State<TodoList>
           ),
         );
       },
-    );
-  }
-
-  Center emptyTodos() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: const <Widget>[
-          Icon(
-            Icons.work,
-            size: 60.0,
-            color: Colors.grey,
-          ),
-          SizedBox(
-            height: 10.0,
-          ),
-          Text(
-            "Empty Todos",
-            style: TextStyle(
-              fontSize: 20.0,
-              color: Colors.grey,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

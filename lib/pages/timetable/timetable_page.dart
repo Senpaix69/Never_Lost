@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:my_timetable/pages/add_subject_page.dart';
+import 'package:my_timetable/pages/timetable/add_subject_page.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/utils.dart'
-    show isCurrentSlot, isNextSlot, sortTimeTables, weekdays;
+    show isCurrentSlot, isNextSlot, sortTimeTables, weekdays, emptyWidget;
 import 'package:my_timetable/widgets/animate_route.dart' show SlideRightRoute;
-import 'package:my_timetable/widgets/dialog_boxs.dart';
+import 'package:my_timetable/widgets/dialog_boxs.dart' show confirmDialogue;
 import 'package:my_timetable/widgets/timetable_box.dart';
 
-class TimeTablesPage extends StatefulWidget {
-  const TimeTablesPage({super.key});
+class TimeTablePage extends StatefulWidget {
+  const TimeTablePage({super.key});
   @override
-  State<TimeTablesPage> createState() => _TimeTablesPageState();
+  State<TimeTablePage> createState() => _TimeTablePageState();
 }
 
-class _TimeTablesPageState extends State<TimeTablesPage> {
+class _TimeTablePageState extends State<TimeTablePage> {
   late final DatabaseService _database;
   late final PageController _pageController;
   final int _today = DateTime.now().weekday - 1;
@@ -181,7 +181,10 @@ class _TimeTablesPageState extends State<TimeTablesPage> {
 
                   setNextSlot(timeTables);
                   if (timeTables.isEmpty) {
-                    return noTimeTableAdded();
+                    return emptyWidget(
+                      icon: Icons.calendar_today,
+                      message: "No TimeTable Added Yet",
+                    );
                   }
                   return Container(
                     margin: const EdgeInsets.all(6.0),
@@ -209,31 +212,4 @@ class _TimeTablesPageState extends State<TimeTablesPage> {
       ),
     );
   }
-}
-
-Center noTimeTableAdded() {
-  return Center(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: const <Widget>[
-        Icon(
-          Icons.calendar_today,
-          size: 80.0,
-          color: Colors.grey,
-        ),
-        SizedBox(
-          height: 15.0,
-        ),
-        Text(
-          "No TimeTable Added Yet",
-          style: TextStyle(
-            color: Colors.grey,
-            letterSpacing: 1.0,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
-    ),
-  );
 }

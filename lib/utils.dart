@@ -80,3 +80,29 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
     return child;
   }
 }
+
+Center emptyWidget({required IconData icon, required String message}) {
+  return Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Icon(
+          icon,
+          size: 60.0,
+          color: Colors.grey,
+        ),
+        const SizedBox(
+          height: 10.0,
+        ),
+        Text(
+          message,
+          style: const TextStyle(
+            fontSize: 16.0,
+            color: Colors.grey,
+          ),
+        ),
+      ],
+    ),
+  );
+}

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:my_timetable/pages/add_subject_page.dart';
+import 'package:my_timetable/pages/timetable/add_subject_page.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/daytime.dart';
 import 'package:my_timetable/utils.dart' show weekdays;
