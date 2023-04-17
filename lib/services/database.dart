@@ -60,7 +60,7 @@ class DatabaseService {
     // await db.execute("DROP TABLE IF EXISTS $subTable");
     // await db.execute("DROP TABLE IF EXISTS $dayTimeTable");
     // await db.execute("DROP TABLE IF EXISTS $professorTable");
-    // await db.execute("DROP TABLE IF EXISTS $noteTable");
+    await db.execute("DROP TABLE IF EXISTS $noteTable");
     await db.execute(createSubTable);
     await db.execute(createDayTimeTable);
     await db.execute(createProfessorTable);

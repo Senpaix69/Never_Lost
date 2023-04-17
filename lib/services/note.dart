@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:my_timetable/constants/services.dart';
 
 @immutable
@@ -8,14 +8,14 @@ class Note {
   final String title;
   final String body;
   final String date;
-  final List<String>? images;
+  final List<String> images;
 
   const Note({
     this.id,
-    this.images,
     required this.title,
     required this.body,
     required this.date,
+    this.images = const [],
   });
 
   Map<String, Object?> toMap() {
@@ -35,7 +35,9 @@ class Note {
       body: map[noteBodyColumn] as String,
       date: map[noteDateColumn] as String,
       images: List<String>.from(
-        json.decode(map[noteImagesColumn] as String),
+        json.decode(
+          map[noteImagesColumn] as String,
+        ) as Iterable<dynamic>,
       ),
     );
   }

@@ -69,6 +69,6 @@ CREATE TABLE IF NOT EXISTS "$noteTable" (
   "$noteTitleColumn" TEXT NOT NULL,
   "$noteBodyColumn" TEXT NOT NULL,
   "$noteDateColumn" TEXT NOT NULL,
-  "$noteImagesColumn" TEXT NULL,
+  "$noteImagesColumn" TEXT NOT NULL,
   PRIMARY KEY("$noteIdColumn" AUTOINCREMENT)
 );''';

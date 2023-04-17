@@ -1,3 +1,4 @@
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:my_timetable/services/database.dart';
@@ -120,7 +121,7 @@ class _AddNoteState extends State<AddNote> {
           decoration: null,
           width: double.infinity,
           height: double.infinity,
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(
                 parent: BouncingScrollPhysics()),
@@ -174,6 +175,10 @@ class _AddNoteState extends State<AddNote> {
                         color: Colors.grey[300],
                       ),
                     ),
+                    const SizedBox(
+                      height: 100,
+                    ),
+                    insertImage(),
                   ]),
             ),
           ),
@@ -181,4 +186,32 @@ class _AddNoteState extends State<AddNote> {
       ),
     );
   }
+}
+
+Padding insertImage() {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+    child: DottedBorder(
+      color: const Color.fromARGB(255, 76, 76, 76),
+      strokeWidth: 2,
+      borderType: BorderType.RRect,
+      dashPattern: const [3, 4],
+      radius: const Radius.circular(20.0),
+      child: Container(
+        width: double.infinity,
+        height: 200,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        child: const Center(
+          child: Text(
+            "Insert Image",
+            style: TextStyle(
+              color: Colors.grey,
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }
