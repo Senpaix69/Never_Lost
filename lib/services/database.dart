@@ -1,9 +1,9 @@
 import 'package:my_timetable/constants/services.dart';
-import 'package:my_timetable/services/note.dart';
-import 'package:my_timetable/services/timetable/daytime.dart';
-import 'package:my_timetable/services/timetable/professor.dart';
-import 'package:my_timetable/services/timetable/subject.dart';
-import 'package:my_timetable/services/timetable/timetable.dart';
+import 'package:my_timetable/services/note_services/note.dart';
+import 'package:my_timetable/services/timetable_services/daytime.dart';
+import 'package:my_timetable/services/timetable_services/professor.dart';
+import 'package:my_timetable/services/timetable_services/subject.dart';
+import 'package:my_timetable/services/timetable_services/timetable.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'dart:async';

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:my_timetable/pages/timetable/add_subject_page.dart';
 import 'package:my_timetable/services/database.dart';
-import 'package:my_timetable/services/timetable/daytime.dart';
-import 'package:my_timetable/services/timetable/timetable.dart';
+import 'package:my_timetable/services/timetable_services/daytime.dart';
+import 'package:my_timetable/services/timetable_services/timetable.dart';
 import 'package:my_timetable/utils.dart' show weekdays;
 import 'package:my_timetable/widgets/animate_route.dart'
     show SlideRightRoute, SlideFromBottomTransition;

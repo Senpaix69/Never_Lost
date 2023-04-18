@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_timetable/services/timetable/daytime.dart';
+import 'package:my_timetable/services/timetable_services/daytime.dart';
 
 class DayTimeList extends StatefulWidget {
   final List<DayTime> days;

@@ -2,7 +2,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:my_timetable/services/database.dart';
-import 'package:my_timetable/services/note.dart';
+import 'package:my_timetable/services/note_services/note.dart';
 import 'package:my_timetable/utils.dart' show GetArgument, textValidate;
 import 'package:my_timetable/widgets/dialog_boxs.dart';
 

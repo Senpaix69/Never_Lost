@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:my_timetable/services/database.dart';
-import 'package:my_timetable/services/timetable/daytime.dart';
+import 'package:my_timetable/services/timetable_services/daytime.dart';
 import 'package:my_timetable/services/notification_service.dart';
-import 'package:my_timetable/services/timetable/professor.dart';
-import 'package:my_timetable/services/timetable/subject.dart';
-import 'package:my_timetable/services/timetable/timetable.dart';
+import 'package:my_timetable/services/timetable_services/professor.dart';
+import 'package:my_timetable/services/timetable_services/subject.dart';
+import 'package:my_timetable/services/timetable_services/timetable.dart';
 import 'package:my_timetable/utils.dart'
     show GetArgument, textValidate, weekdays;
 import 'package:my_timetable/widgets/daytime_list.dart';
