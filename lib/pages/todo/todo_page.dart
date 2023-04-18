@@ -54,8 +54,7 @@ class _TodoListState extends State<TodoList>
   Future<void> handleCheckBox(Todo todo) async {
     if (todo.complete == 0) {
       await NotificationService.cancelScheduleNotification(id: todo.id!);
-    }
-    if (todo.date != null) {
+    } else if (todo.date != null) {
       final time = DateTime.parse(todo.date!);
       final nowTime = DateTime.now();
       if (time.isAfter(nowTime)) {

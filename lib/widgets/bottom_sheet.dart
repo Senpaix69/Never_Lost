@@ -92,6 +92,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
         pickedTime.minute,
       );
       _date = pickedDateTime;
+      setState(() => emptyText = false);
     }
   }
 
