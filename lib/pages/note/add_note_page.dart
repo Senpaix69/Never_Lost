@@ -203,7 +203,7 @@ class _AddNoteState extends State<AddNote> {
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         hintStyle: TextStyle(color: Colors.grey[500]),
-                        hintText: 'write todo here...',
+                        hintText: 'write note here...',
                       ),
                       controller: _body,
                       validator: textValidate,
