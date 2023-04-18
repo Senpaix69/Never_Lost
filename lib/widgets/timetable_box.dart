@@ -107,12 +107,14 @@ class _TimeTableBoxState extends State<TimeTableBox>
         today.day + (targetWeekday - todayWeekday) % 7,
         startTime.hour,
         startTime.minute,
-      ).subtract(const Duration(minutes: 10));
+      ).subtract(
+        const Duration(minutes: 10),
+      );
 
       await NotificationService.weeklyNotification(
         id: day.id!,
         title: widget.timeTable.subject.name,
-        body: "Your class is being held in room: ${day.roomNo} after 10 mins",
+        body: "Your class is in room: ${day.roomNo} after 10 mins",
         scheduleDate: scheduleDate,
       );
     }
@@ -120,7 +122,8 @@ class _TimeTableBoxState extends State<TimeTableBox>
       subject: widget.timeTable.subject.copyWith(sched: 1),
     );
     showSnackBar(
-        'The reminders for ${widget.timeTable.subject.name} has been set daily');
+      'The reminders for ${widget.timeTable.subject.name} has been set daily',
+    );
   }
 
   Future cancelSchedule(List<DayTime> list) async {
