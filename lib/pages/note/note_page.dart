@@ -51,7 +51,6 @@ class _NoteListState extends State<NoteList>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
       body: Container(
         height: double.infinity,

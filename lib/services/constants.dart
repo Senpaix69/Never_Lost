@@ -72,3 +72,20 @@ CREATE TABLE IF NOT EXISTS "$noteTable" (
   "$noteImagesColumn" TEXT NOT NULL,
   PRIMARY KEY("$noteIdColumn" AUTOINCREMENT)
 );''';
+
+//! Todo Constants
+const todoTable = 'todo';
+const todoIdColumn = 'todo_id';
+const todoTextColumn = 'todo_text';
+const todoDateColumn = 'todo_date';
+const todoCompleteColumn = 'todo_complete';
+const todoReminderColumn = 'todo_reminder';
+const createTodoTable = '''
+CREATE TABLE IF NOT EXISTS "$todoTable" (
+  "$todoIdColumn" INTEGER NOT NULL,
+  "$todoTextColumn" TEXT NOT NULL,
+  "$todoDateColumn" TEXT NULL,
+  "$todoCompleteColumn" INTEGER DEFAULT 0,
+  "$todoReminderColumn" INTEGER DEFAULT 0,
+  PRIMARY KEY("$todoIdColumn" AUTOINCREMENT)
+);''';

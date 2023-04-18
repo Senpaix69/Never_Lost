@@ -69,10 +69,7 @@ class _AddNoteState extends State<AddNote> {
       } else {
         await _database.insertNote(note: todo);
       }
-      Future.delayed(
-        const Duration(milliseconds: 100),
-        () => Navigator.of(context).pop(),
-      );
+      goBack();
     }
   }
 
@@ -81,12 +78,11 @@ class _AddNoteState extends State<AddNote> {
         context: context, message: "Do you really want to delete this todo?");
     if (isDel && _isNote != null) {
       await _database.deleteNote(id: _isNote!.id!);
-      Future.delayed(
-        const Duration(milliseconds: 100),
-        () => Navigator.of(context).pop(),
-      );
+      goBack();
     }
   }
+
+  void goBack() => Navigator.of(context).pop();
 
   void backPage() async {
     if (_isEditing) {
@@ -99,10 +95,7 @@ class _AddNoteState extends State<AddNote> {
         return;
       }
     }
-    Future.delayed(
-      const Duration(milliseconds: 50),
-      () => Navigator.of(context).pop(),
-    );
+    goBack();
   }
 
   void checkNote(String value) {

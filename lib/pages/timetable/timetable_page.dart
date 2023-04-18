@@ -88,7 +88,7 @@ class _TimeTablePageState extends State<TimeTablePage> {
     bool confirmDel = await confirmDialogue(
         context: context, message: "Do you really want to delete timetable?");
     if (confirmDel) {
-      _database.deleteTimeTable(id: id);
+      await _database.deleteTimeTable(id: id);
     }
   }
 

@@ -1,5 +1,6 @@
-import 'package:my_timetable/constants/services.dart';
+import 'package:my_timetable/services/constants.dart';
 import 'package:my_timetable/services/note_services/note.dart';
+import 'package:my_timetable/services/note_services/todo.dart';
 import 'package:my_timetable/services/timetable_services/daytime.dart';
 import 'package:my_timetable/services/timetable_services/professor.dart';
 import 'package:my_timetable/services/timetable_services/subject.dart';
@@ -22,25 +23,25 @@ class DatabaseService {
   static final DatabaseService _instance = DatabaseService._internal();
   static Database? _database;
 
-  List<TimeTable> _cachedTimeTables = [];
-  late final StreamController<List<TimeTable>> _timeTableController;
-  Stream<List<TimeTable>> get allTimeTable => _timeTableController.stream;
-
-  List<Note> _cachedNotes = [];
-  late final StreamController<List<Note>> _notesController;
-  Stream<List<Note>> get allNotes => _notesController.stream;
-
   factory DatabaseService() {
     return _instance;
   }
 
   DatabaseService._internal() {
+    // *timetable stream
     _timeTableController =
         StreamController<List<TimeTable>>.broadcast(onListen: () {
       _timeTableController.sink.add(_cachedTimeTables);
     });
+
+    // !notes stream
     _notesController = StreamController<List<Note>>.broadcast(onListen: () {
       _notesController.sink.add(_cachedNotes);
+    });
+
+    // todos stream
+    _todosController = StreamController<List<Todo>>.broadcast(onListen: () {
+      _todosController.sink.add(_cachedTodos);
     });
   }
 
@@ -61,20 +62,17 @@ class DatabaseService {
     // await db.execute("DROP TABLE IF EXISTS $dayTimeTable");
     // await db.execute("DROP TABLE IF EXISTS $professorTable");
     // await db.execute("DROP TABLE IF EXISTS $noteTable");
+    // await db.execute("DROP TABLE IF EXISTS $todoTable");
     await db.execute(createSubTable);
     await db.execute(createDayTimeTable);
     await db.execute(createProfessorTable);
     await db.execute(createNoteTable);
+    await db.execute(createTodoTable);
     await db.execute('PRAGMA foreign_keys = ON;');
     _catchAllTimeTables();
     _catchAllNotes();
+    _catchAllTodos();
     _database = db;
-  }
-
-  Future<void> _catchAllTimeTables() async {
-    final allTimeTables = await getTimeTableStream();
-    _cachedTimeTables = allTimeTables.toList();
-    _timeTableController.add(_cachedTimeTables);
   }
 
   Future<void> close() async {
@@ -83,6 +81,19 @@ class DatabaseService {
       await db.close();
       _database = null;
     }
+  }
+
+  // ! -------------------------------------------------------------
+  // *                      TimeTable Section
+
+  List<TimeTable> _cachedTimeTables = [];
+  late final StreamController<List<TimeTable>> _timeTableController;
+  Stream<List<TimeTable>> get allTimeTable => _timeTableController.stream;
+
+  Future<void> _catchAllTimeTables() async {
+    final allTimeTables = await getTimeTableStream();
+    _cachedTimeTables = allTimeTables.toList();
+    _timeTableController.add(_cachedTimeTables);
   }
 
   Future<void> insertTimeTable({
@@ -221,6 +232,13 @@ class DatabaseService {
     _timeTableController.add(_cachedTimeTables);
   }
 
+  // ! -------------------------------------------------------------
+  // *                      Notes Section
+
+  List<Note> _cachedNotes = [];
+  late final StreamController<List<Note>> _notesController;
+  Stream<List<Note>> get allNotes => _notesController.stream;
+
   Future<Iterable<TimeTable>> getTimeTableStream() async {
     if (_cachedTimeTables.isNotEmpty) {
       return _cachedTimeTables;
@@ -309,5 +327,64 @@ class DatabaseService {
     final notes = await getNotesStream();
     _cachedNotes = notes.toList();
     _notesController.add(_cachedNotes);
+  }
+
+  // ! -------------------------------------------------------------
+  // *                      Todos Section
+
+  List<Todo> _cachedTodos = [];
+  late final StreamController<List<Todo>> _todosController;
+  Stream<List<Todo>> get allTodos => _todosController.stream;
+
+  Future<Todo> insertTodo({required Todo todo}) async {
+    final db = await open();
+    final id = await db.insert(todoTable, todo.toMap());
+    final toDo = todo.copyWith(id: id);
+    _cachedTodos.add(toDo);
+    _todosController.add(_cachedTodos);
+    return toDo;
+  }
+
+  Future<void> updateTodo({required Todo todo}) async {
+    final db = await open();
+    final updatedRows = await db.update(
+      todoTable,
+      todo.toMap(),
+      where: "$todoIdColumn = ?",
+      whereArgs: [todo.id],
+    );
+    if (updatedRows == 0) {
+      return;
+    }
+    final index = _cachedTodos.indexWhere((t) => t.id == todo.id);
+    if (index >= 0) {
+      _cachedTodos[index] = todo;
+      _todosController.add(_cachedTodos);
+    }
+  }
+
+  Future<int> deleteTodo({required int id}) async {
+    final db = await open();
+    final changes =
+        await db.delete(todoTable, where: "$todoIdColumn = ?", whereArgs: [id]);
+    _cachedTodos.removeWhere((todo) => todo.id == id);
+    _todosController.add(_cachedTodos);
+    return changes;
+  }
+
+  Future<void> _catchAllTodos() async {
+    final todos = await getTodosStream();
+    _cachedTodos = todos.toList();
+    _todosController.add(_cachedTodos);
+  }
+
+  Future<Iterable<Todo>> getTodosStream() async {
+    if (_cachedTodos.isNotEmpty) {
+      return _cachedTodos;
+    }
+    final db = await open();
+    final todos = await db.query(todoTable);
+    _cachedTodos = todos.map((todoMap) => Todo.fromMap(todoMap)).toList();
+    return _cachedTodos;
   }
 }

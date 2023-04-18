@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:my_timetable/constants/services.dart';
+import 'package:my_timetable/services/constants.dart';
 
 @immutable
 class Note {

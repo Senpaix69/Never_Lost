@@ -44,6 +44,25 @@ class NotificationService {
         payload: payload,
       );
 
+  static Future scheduleNotification({
+    required int id,
+    required String title,
+    required String body,
+    String? payload,
+    required DateTime scheduleDate,
+  }) async =>
+      _notification.zonedSchedule(
+        id,
+        title,
+        body,
+        tz.TZDateTime.from(scheduleDate, tz.local),
+        await _notificationDetails(),
+        payload: payload,
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+      );
+
   static Future weeklyNotification({
     required int id,
     required String title,
@@ -82,5 +101,5 @@ class NotificationService {
       );
 
   static Future cancelScheduleNotification({required int id}) async =>
-      _notification.cancel(id);
+      await _notification.cancel(id);
 }

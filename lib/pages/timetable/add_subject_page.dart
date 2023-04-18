@@ -164,11 +164,10 @@ class _AddSubjectState extends State<AddSubject> {
         return;
       }
     }
-    Future.delayed(
-      const Duration(milliseconds: 50),
-      () => Navigator.of(context).pop(),
-    );
+    goBack();
   }
+
+  void goBack() => Navigator.of(context).pop();
 
   Future<void> deleteTimeTable() async {
     bool isDel = await confirmDialogue(
@@ -176,8 +175,7 @@ class _AddSubjectState extends State<AddSubject> {
         message: "Do you really want to delete this timetable?");
     if (isDel && _timeTable != null) {
       await _database.deleteTimeTable(id: _timeTable!.subject.id!);
-      Future.delayed(
-          const Duration(milliseconds: 100), () => Navigator.of(context).pop());
+      goBack();
     }
   }
 
@@ -223,10 +221,7 @@ class _AddSubjectState extends State<AddSubject> {
         professor: professor,
       );
     }
-    Future.delayed(
-      const Duration(milliseconds: 200),
-      () => Navigator.of(context).pop(),
-    );
+    goBack();
   }
 
   @override
