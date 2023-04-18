@@ -4,6 +4,7 @@ import 'package:my_timetable/services/timetable/daytime.dart';
 import 'package:my_timetable/services/notification_service.dart';
 import 'package:my_timetable/services/timetable/professor.dart';
 import 'package:my_timetable/services/timetable/subject.dart';
+import 'package:my_timetable/services/timetable/timetable.dart';
 import 'package:my_timetable/utils.dart'
     show GetArgument, textValidate, weekdays;
 import 'package:my_timetable/widgets/daytime_list.dart';
@@ -66,7 +67,7 @@ class _AddSubjectState extends State<AddSubject> {
   }
 
   void setArgument() {
-    final widgetTable = context.getArgument<dynamic>();
+    final widgetTable = context.getArgument<TimeTable>();
     if (widgetTable != null) {
       _timeTable = widgetTable;
       _subjectName.text = widgetTable.subject.name;

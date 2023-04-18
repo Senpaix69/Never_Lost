@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:my_timetable/pages/timetable/add_subject_page.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/timetable/daytime.dart';
+import 'package:my_timetable/services/timetable/timetable.dart';
 import 'package:my_timetable/utils.dart' show weekdays;
 import 'package:my_timetable/widgets/animate_route.dart'
     show SlideRightRoute, SlideFromBottomTransition;
@@ -66,7 +67,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
       context,
       SlideRightRoute(
         page: const AddSubject(),
-        arguments: widget.timeTable,
+        arguments: widget.timeTable as TimeTable,
       ),
     );
   }
