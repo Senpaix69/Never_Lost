@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/note_services/todo.dart';
 import 'package:my_timetable/services/notification_service.dart';
-import 'package:my_timetable/utils.dart';
+import 'package:my_timetable/utils.dart' show emptyWidget, getFormattedTime;
 import 'package:my_timetable/widgets/animate_route.dart'
     show SlideFromBottomTransition;
 import 'package:my_timetable/widgets/bottom_sheet.dart';
-import 'package:my_timetable/widgets/dialog_boxs.dart';
+import 'package:my_timetable/widgets/dialog_boxs.dart' show confirmDialogue;
 
 class TodoList extends StatefulWidget {
   const TodoList({super.key});
@@ -80,6 +80,12 @@ class _TodoListState extends State<TodoList>
     );
   }
 
+  void sortTodosAsComplete(List<Todo> todos) {
+    todos.sort(
+      (a, b) => a.complete.compareTo(b.complete),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,6 +112,7 @@ class _TodoListState extends State<TodoList>
                 message: "Empty Todos",
               );
             }
+            sortTodosAsComplete(todos);
             return Container(
               decoration: null,
               height: double.infinity,
@@ -126,6 +133,7 @@ class _TodoListState extends State<TodoList>
       itemCount: todos.length,
       itemBuilder: (context, index) {
         final todo = todos[index];
+        final timeSchedule = getFormattedTime(todo.date);
         return FadeTransition(
           opacity: _animation,
           child: SlideFromBottomTransition(
@@ -153,16 +161,18 @@ class _TodoListState extends State<TodoList>
                   style: TextStyle(
                     color: todo.complete == 1 ? Colors.grey : Colors.grey[200],
                     fontSize: 16.0,
-                    decorationThickness: 3.0,
+                    decorationThickness: 6.0,
                     decoration:
                         todo.complete == 1 ? TextDecoration.lineThrough : null,
                   ),
                 ),
                 subtitle: Text(
-                  '${todo.reminder == 1 ? "Passed: " : "Reminder: "}${todo.date ?? "Not Set"}',
+                  '${todo.reminder == 1 ? "Passed: " : "Reminder: "}${timeSchedule ?? "Not Set"}',
                   style: TextStyle(
                     fontSize: 12.0,
-                    color: todo.reminder == 1 ? Colors.red : Colors.grey,
+                    color: todo.reminder == 1 && todo.complete == 0
+                        ? Colors.redAccent
+                        : Colors.grey,
                   ),
                 ),
                 trailing: (todo.date != null &&

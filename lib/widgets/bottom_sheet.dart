@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/note_services/todo.dart';
 import 'package:my_timetable/services/notification_service.dart';
+import 'package:my_timetable/utils.dart' show getFormattedTime;
 
 class MyBottomSheet extends StatefulWidget {
   final Todo? todo;
@@ -81,7 +82,11 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
   Future<void> saveDate(DateTime pickedDate) async {
     final TimeOfDay? pickedTime = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: TimeOfDay.fromDateTime(
+        DateTime.now().add(
+          const Duration(minutes: 1),
+        ),
+      ),
     );
     if (pickedTime != null) {
       final DateTime pickedDateTime = DateTime(
@@ -139,14 +144,12 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
                     color: Colors.grey[300],
                   ),
                   label: Text(
-                    _date == null ? "Set reminder" : _date!.toString(),
+                    _date == null
+                        ? "Set reminder"
+                        : getFormattedTime(_date.toString())!,
                     style: TextStyle(
                       fontSize: 16,
-                      color: _date != null
-                          ? widget.todo?.reminder == 1
-                              ? Colors.red
-                              : Colors.amber
-                          : Colors.grey[300],
+                      color: _date != null ? Colors.amber : Colors.grey[300],
                     ),
                   ),
                   onPressed: _date == null

@@ -60,6 +60,20 @@ void sortTimeTables(List<dynamic> timeTables) {
   });
 }
 
+String _getDaysLater(int day) {
+  if (day == 0) return "Today";
+  if (day == 1) return "Tomorrow";
+  return "$day days remain";
+}
+
+String? getFormattedTime(String? date) {
+  if (date == null) return null;
+  DateTime parsedate = DateTime.parse(date);
+  String isToday = _getDaysLater(parsedate.day - DateTime.now().day);
+  String time = DateFormat("hh:mm a").format(parsedate);
+  return '$time $isToday';
+}
+
 extension GetArgument on BuildContext {
   T? getArgument<T>() {
     final modalRoute = ModalRoute.of(this);

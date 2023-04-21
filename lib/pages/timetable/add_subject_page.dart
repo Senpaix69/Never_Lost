@@ -186,6 +186,9 @@ class _AddSubjectState extends State<AddSubject> {
       errorDialogue(context, "You need to enter timings");
       return;
     }
+    _days.sort(
+      (a, b) => a.startTime.compareTo(b.startTime),
+    );
     Subject sub = Subject(
       name: _subjectName.text,
       section: _section.text,
