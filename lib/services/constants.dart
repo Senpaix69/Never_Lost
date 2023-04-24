@@ -61,6 +61,7 @@ const noteTable = 'note';
 const noteIdColumn = 'note_id';
 const noteTitleColumn = 'note_title';
 const noteBodyColumn = 'note_body';
+const noteCategoryColumn = 'note_category';
 const noteDateColumn = 'note_date';
 const noteImagesColumn = 'note_images';
 const createNoteTable = '''
@@ -68,6 +69,7 @@ CREATE TABLE IF NOT EXISTS "$noteTable" (
   "$noteIdColumn" INTEGER NOT NULL,
   "$noteTitleColumn" TEXT NOT NULL,
   "$noteBodyColumn" TEXT NOT NULL,
+  "$noteCategoryColumn" TEXT,
   "$noteDateColumn" TEXT NOT NULL,
   "$noteImagesColumn" TEXT NOT NULL,
   PRIMARY KEY("$noteIdColumn" AUTOINCREMENT)
@@ -88,4 +90,15 @@ CREATE TABLE IF NOT EXISTS "$todoTable" (
   "$todoCompleteColumn" INTEGER DEFAULT 0,
   "$todoReminderColumn" INTEGER DEFAULT 0,
   PRIMARY KEY("$todoIdColumn" AUTOINCREMENT)
+);''';
+
+//! Folder Constants
+const folderTable = 'folder';
+const folderIdColumn = 'folder_id';
+const folderNameColumn = 'folder_name';
+const createFolderTable = '''
+CREATE TABLE IF NOT EXISTS "$folderTable" (
+  "$folderIdColumn" INTEGER NOT NULL,
+  "$folderNameColumn" TEXT NOT NULL,
+  PRIMARY KEY("$folderIdColumn" AUTOINCREMENT)
 );''';

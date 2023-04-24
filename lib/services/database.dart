@@ -1,4 +1,5 @@
 import 'package:my_timetable/services/constants.dart';
+import 'package:my_timetable/services/note_services/folder.dart';
 import 'package:my_timetable/services/note_services/note.dart';
 import 'package:my_timetable/services/note_services/todo.dart';
 import 'package:my_timetable/services/timetable_services/daytime.dart';
@@ -43,6 +44,11 @@ class DatabaseService {
     _todosController = StreamController<List<Todo>>.broadcast(onListen: () {
       _todosController.sink.add(_cachedTodos);
     });
+
+    // !folders stream
+    _foldersController = StreamController<List<Folder>>.broadcast(onListen: () {
+      _foldersController.sink.add(_cachedFolders);
+    });
   }
 
   Future<Database> open() async {
@@ -68,10 +74,12 @@ class DatabaseService {
     await db.execute(createProfessorTable);
     await db.execute(createNoteTable);
     await db.execute(createTodoTable);
+    await db.execute(createFolderTable);
     await db.execute('PRAGMA foreign_keys = ON;');
     _catchAllTimeTables();
     _catchAllNotes();
     _catchAllTodos();
+    _catchAllFolders();
     _database = db;
   }
 
@@ -365,8 +373,11 @@ class DatabaseService {
 
   Future<int> deleteTodo({required int id}) async {
     final db = await open();
-    final changes =
-        await db.delete(todoTable, where: "$todoIdColumn = ?", whereArgs: [id]);
+    final changes = await db.delete(
+      todoTable,
+      where: "$todoIdColumn = ?",
+      whereArgs: [id],
+    );
     _cachedTodos.removeWhere((todo) => todo.id == id);
     _todosController.add(_cachedTodos);
     return changes;
@@ -386,5 +397,54 @@ class DatabaseService {
     final todos = await db.query(todoTable);
     _cachedTodos = todos.map((todoMap) => Todo.fromMap(todoMap)).toList();
     return _cachedTodos;
+  }
+
+  // ! -------------------------------------------------------------
+  // *                      Folders Section
+
+  List<Folder> _cachedFolders = [];
+  late final StreamController<List<Folder>> _foldersController;
+  Stream<List<Folder>> get allFolder => _foldersController.stream;
+
+  Future<void> addFolder({required String name}) async {
+    final db = await open();
+    int id = await db.insert(
+      folderTable,
+      {
+        folderNameColumn: name,
+      },
+    );
+    _cachedFolders.add(
+      Folder(name: name, id: id),
+    );
+    _foldersController.add(_cachedFolders);
+  }
+
+  Future<void> removeFolder({required int id}) async {
+    final db = await open();
+    await db.delete(
+      folderTable,
+      where: "$folderIdColumn = ?",
+      whereArgs: [id],
+    );
+    _cachedFolders.removeWhere((f) => f.id == id);
+    _foldersController.add(_cachedFolders);
+  }
+
+  Future<void> _catchAllFolders() async {
+    final folders = await getFoldersStream();
+    _cachedFolders = folders.toList();
+    _foldersController.add(_cachedFolders);
+  }
+
+  Future<Iterable<Folder>> getFoldersStream() async {
+    if (_cachedFolders.isNotEmpty) {
+      return _cachedFolders;
+    }
+    final db = await open();
+    final folders = await db.query(folderTable);
+    _cachedFolders =
+        folders.map((folderMap) => Folder.fromMap(folderMap)).toList();
+    return _cachedFolders;
   }
 }

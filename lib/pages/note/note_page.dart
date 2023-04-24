@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:my_timetable/pages/note/add_note_page.dart';
 import 'package:my_timetable/services/database.dart';
+import 'package:my_timetable/services/note_services/folder.dart';
 import 'package:my_timetable/services/note_services/note.dart';
 import 'package:my_timetable/utils.dart' show emptyWidget;
+import 'package:my_timetable/widgets/add_folder.dart';
 import 'package:my_timetable/widgets/animate_route.dart'
     show SlideFromBottomTransition, SlideRightRoute;
+import 'package:my_timetable/widgets/dialog_boxs.dart';
 
 class NoteList extends StatefulWidget {
   const NoteList({super.key});
@@ -17,6 +20,8 @@ class _NoteListState extends State<NoteList>
   late final DatabaseService _database;
   late AnimationController _animationController;
   late Animation<double> _animation;
+  String _folderName = "";
+  List<Folder> _folders = [];
 
   @override
   void initState() {
@@ -48,9 +53,114 @@ class _NoteListState extends State<NoteList>
     super.dispose();
   }
 
+  Future<void> deleteFolder(int id) async {
+    bool confirmDel =
+        await confirmDialogue(context: context, message: "Delete this folder?");
+    if (confirmDel) {
+      await _database.removeFolder(id: id);
+    }
+  }
+
+  List<Note> filterNotes(List<Note> list) {
+    if (_folderName.isEmpty) {
+      return list;
+    }
+    return list.where((note) => note.category == _folderName).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(40.0),
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          flexibleSpace: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 6.0),
+            physics: const BouncingScrollPhysics(),
+            child: Row(
+              children: <Widget>[
+                TextButton.icon(
+                  onPressed: () async {
+                    String? name = await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return const AddFolderDialog();
+                      },
+                    );
+                    if (name != null) await _database.addFolder(name: name);
+                  },
+                  icon: const Icon(Icons.add),
+                  label: const Text("Folder"),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6.0, vertical: 3),
+                  child: TextButton(
+                    onPressed: () => setState(() => _folderName = ""),
+                    style: ButtonStyle(
+                      backgroundColor: _folderName.isEmpty
+                          ? MaterialStateColor.resolveWith(
+                              (states) => Colors.grey,
+                            )
+                          : null,
+                    ),
+                    child: Text(
+                      "All",
+                      style: TextStyle(
+                        color: _folderName.isEmpty ? Colors.white : Colors.grey,
+                      ),
+                    ),
+                  ),
+                ),
+                StreamBuilder(
+                  stream: _database.allFolder,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done ||
+                        snapshot.connectionState == ConnectionState.waiting) {
+                      return const SizedBox();
+                    }
+                    final folders = snapshot.data!;
+                    _folders = folders;
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: folders.length,
+                      itemBuilder: (context, index) => Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6.0, vertical: 3),
+                        child: TextButton(
+                          style: ButtonStyle(
+                            backgroundColor: _folderName == folders[index].name
+                                ? MaterialStateColor.resolveWith(
+                                    (states) => Colors.grey,
+                                  )
+                                : null,
+                          ),
+                          onLongPress: () async =>
+                              await deleteFolder(folders[index].id!),
+                          onPressed: () {
+                            setState(() => _folderName = folders[index].name);
+                          },
+                          child: Text(
+                            folders[index].name,
+                            style: TextStyle(
+                              color: _folderName == folders[index].name
+                                  ? Colors.white
+                                  : Colors.grey,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
       backgroundColor: Colors.transparent,
       body: Container(
         height: double.infinity,
@@ -67,7 +177,7 @@ class _NoteListState extends State<NoteList>
                 ),
               );
             }
-            final notes = snapshot.data!;
+            final notes = filterNotes(snapshot.data!);
             if (notes.isEmpty) {
               return emptyWidget(
                 icon: Icons.library_books_outlined,
@@ -144,6 +254,30 @@ class _NoteListState extends State<NoteList>
                       ),
                     ),
                   ],
+                ),
+                trailing: PopupMenuButton<String>(
+                  initialValue: note.category.isEmpty ? note.category : null,
+                  itemBuilder: (BuildContext context) {
+                    return _folders.map((Folder item) {
+                      return PopupMenuItem<String>(
+                        value: item.name,
+                        child: Text(
+                          item.name,
+                          style: TextStyle(
+                            color: note.category == item.name
+                                ? Colors.amber
+                                : Colors.grey,
+                          ),
+                        ),
+                      );
+                    }).toList();
+                  },
+                  child: const Icon(Icons.more_vert),
+                  onSelected: (value) async {
+                    await _database.updateNote(
+                      note: note.copyWith(category: value),
+                    );
+                  },
                 ),
               ),
             ),

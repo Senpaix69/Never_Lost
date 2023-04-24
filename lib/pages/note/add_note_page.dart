@@ -16,6 +16,7 @@ class _AddNoteState extends State<AddNote> {
   late final DatabaseService _database;
   late final TextEditingController _title;
   late final TextEditingController _body;
+
   Note? _isNote;
   final _formKey = GlobalKey<FormState>();
   bool _isEditing = false;
@@ -115,30 +116,7 @@ class _AddNoteState extends State<AddNote> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => backPage(),
-        ),
-        backgroundColor: Colors.transparent,
-        title: Text(_isNote != null ? "Edit Note" : "Add Note"),
-        elevation: 0.0,
-        actions: <Widget>[
-          if (_isNote != null)
-            IconButton(
-              onPressed: () => deleteNote(),
-              icon: const Icon(
-                Icons.delete,
-              ),
-            ),
-          if (_isEditing)
-            IconButton(
-              onPressed: () => saveNote(),
-              icon: const Icon(Icons.check),
-            ),
-        ],
-      ),
+      appBar: myAppBar(),
       body: GestureDetector(
         onTap: () {
           FocusScopeNode currentFocus = FocusScope.of(context);
@@ -215,6 +193,33 @@ class _AddNoteState extends State<AddNote> {
           ),
         ),
       ),
+    );
+  }
+
+  AppBar myAppBar() {
+    return AppBar(
+      automaticallyImplyLeading: false,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () => backPage(),
+      ),
+      backgroundColor: Colors.transparent,
+      title: Text(_isNote != null ? "Edit Note" : "Add Note"),
+      elevation: 0.0,
+      actions: <Widget>[
+        if (_isNote != null)
+          IconButton(
+            onPressed: () => deleteNote(),
+            icon: const Icon(
+              Icons.delete,
+            ),
+          ),
+        if (_isEditing)
+          IconButton(
+            onPressed: () => saveNote(),
+            icon: const Icon(Icons.check),
+          ),
+      ],
     );
   }
 }
