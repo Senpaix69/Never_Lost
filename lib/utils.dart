@@ -120,3 +120,18 @@ Center emptyWidget({required IconData icon, required String message}) {
     ),
   );
 }
+
+void showSnackBar(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      behavior: SnackBarBehavior.floating,
+      margin: const EdgeInsets.only(bottom: 20.0, left: 5.0, right: 5.0),
+      backgroundColor: Colors.grey[900],
+      showCloseIcon: true,
+      content: Text(
+        message,
+        style: TextStyle(color: Colors.grey[300]),
+      ),
+    ),
+  );
+}

@@ -4,7 +4,7 @@ import 'package:my_timetable/pages/timetable/add_subject_page.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/timetable_services/daytime.dart';
 import 'package:my_timetable/services/timetable_services/timetable.dart';
-import 'package:my_timetable/utils.dart' show weekdays;
+import 'package:my_timetable/utils.dart' show weekdays, showSnackBar;
 import 'package:my_timetable/widgets/animate_route.dart'
     show SlideRightRoute, SlideFromBottomTransition;
 import 'package:my_timetable/widgets/daytime_list.dart';
@@ -78,18 +78,10 @@ class _TimeTableBoxState extends State<TimeTableBox>
     super.dispose();
   }
 
-  void showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        behavior: SnackBarBehavior.floating,
-        margin: const EdgeInsets.only(bottom: 20.0, left: 5.0, right: 5.0),
-        backgroundColor: Colors.grey[900],
-        showCloseIcon: true,
-        content: Text(
-          message,
-          style: TextStyle(color: Colors.grey[300]),
-        ),
-      ),
+  void showUpdate(String message) {
+    showSnackBar(
+      context,
+      message,
     );
   }
 
@@ -121,7 +113,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
     await _service.updateSubject(
       subject: widget.timeTable.subject.copyWith(sched: 1),
     );
-    showSnackBar(
+    showUpdate(
       'The reminders for ${widget.timeTable.subject.name} has been set daily',
     );
   }
@@ -153,7 +145,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
       _service.updateSubjectOfTimeTable(
         newSubject: timeTable.subject.copyWith(sched: 0),
       );
-      showSnackBar(
+      showUpdate(
           'The reminders for ${timeTable.subject.name} has been removed');
     }
   }
