@@ -59,6 +59,7 @@ class _AddNoteState extends State<AddNote> {
         title: _title.text,
         body: _body.text,
         date: _isNote != null ? _isNote!.date : _date(),
+        category: _isNote != null ? _isNote!.category : "",
       );
 
       if (_isNote != null) {

@@ -72,7 +72,7 @@ class _NoteListState extends State<NoteList>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(40.0),
+        preferredSize: const Size.fromHeight(50.0),
         child: AppBar(
           backgroundColor: Colors.transparent,
           flexibleSpace: SingleChildScrollView(
@@ -96,7 +96,7 @@ class _NoteListState extends State<NoteList>
                 ),
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 6.0, vertical: 3),
+                      const EdgeInsets.symmetric(horizontal: 6.0, vertical: 10),
                   child: TextButton(
                     onPressed: () => setState(() => _folderName = ""),
                     style: ButtonStyle(
@@ -223,16 +223,28 @@ class _NoteListState extends State<NoteList>
                   context,
                   SlideRightRoute(page: const AddNote(), arguments: note),
                 ),
-                title: SizedBox(
-                  height: 25.0,
-                  child: Text(
-                    note.title,
-                    style: TextStyle(
-                      color: Colors.grey[300],
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
+                title: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      note.title,
+                      style: TextStyle(
+                        color: Colors.grey[300],
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
+                    if (_folderName.isEmpty && note.category.isNotEmpty)
+                      Text(
+                        note.category,
+                        style: TextStyle(
+                          color: Colors.grey[400],
+                          fontSize: 10.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                  ],
                 ),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -274,9 +286,15 @@ class _NoteListState extends State<NoteList>
                   },
                   child: const Icon(Icons.more_vert),
                   onSelected: (value) async {
-                    await _database.updateNote(
-                      note: note.copyWith(category: value),
-                    );
+                    if (value == note.category) {
+                      await _database.updateNote(
+                        note: note.copyWith(category: ""),
+                      );
+                    } else {
+                      await _database.updateNote(
+                        note: note.copyWith(category: value),
+                      );
+                    }
                   },
                 ),
               ),
