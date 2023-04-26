@@ -172,6 +172,7 @@ class _TimeTablePageState extends State<TimeTablePage> {
                 controller: _pageController,
                 onPageChanged: (value) {
                   _currentPage = value;
+                  setState(() {});
                 },
                 itemBuilder: (context, ind) {
                   final timeTables = [...snapshot.data!];

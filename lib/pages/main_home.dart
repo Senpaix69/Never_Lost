@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_timetable/pages/second_home.dart';
 import 'package:my_timetable/pages/timetable/timetable_page.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:my_timetable/utils.dart';
-// import 'package:my_timetable/utils.dart' show MyCustomScrollBehavior;
+import 'package:my_timetable/utils.dart' show MyCustomScrollBehavior;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);

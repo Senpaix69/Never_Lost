@@ -6,10 +6,7 @@ import 'package:my_timetable/utils.dart' show getFormattedTime;
 
 class MyBottomSheet extends StatefulWidget {
   final Todo? todo;
-  const MyBottomSheet({
-    super.key,
-    this.todo,
-  });
+  const MyBottomSheet({super.key, this.todo});
   @override
   State<MyBottomSheet> createState() => _MyBottomSheetState();
 }
@@ -131,8 +128,11 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          myTextField(),
-          const SizedBox(height: 30.0),
+          Padding(
+            padding: const EdgeInsets.only(right: 10.0),
+            child: myTextField(),
+          ),
+          const SizedBox(height: 40.0),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14.0),
             child: Row(
@@ -205,6 +205,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
     return TextField(
       onChanged: handleChange,
       autofocus: true,
+      maxLines: null,
       controller: _textController,
       decoration: InputDecoration(
         prefixIcon: Icon(

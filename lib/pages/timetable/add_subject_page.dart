@@ -6,7 +6,7 @@ import 'package:my_timetable/services/timetable_services/professor.dart';
 import 'package:my_timetable/services/timetable_services/subject.dart';
 import 'package:my_timetable/services/timetable_services/timetable.dart';
 import 'package:my_timetable/utils.dart'
-    show GetArgument, textValidate, weekdays;
+    show GetArgument, textValidate, weekdays, sortDayTimes;
 import 'package:my_timetable/widgets/daytime_list.dart';
 import 'package:my_timetable/widgets/dialog_boxs.dart';
 import 'package:my_timetable/widgets/styles.dart'
@@ -186,9 +186,7 @@ class _AddSubjectState extends State<AddSubject> {
       errorDialogue(context, "You need to enter timings");
       return;
     }
-    _days.sort(
-      (a, b) => a.startTime.compareTo(b.startTime),
-    );
+    sortDayTimes(_days);
     Subject sub = Subject(
       name: _subjectName.text,
       section: _section.text,

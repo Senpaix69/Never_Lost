@@ -46,6 +46,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
     _filteredDays = widget.timeTable.dayTime
         .where((day) => day.day == widget.currentDay)
         .toList();
+
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 600),

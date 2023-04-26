@@ -135,3 +135,17 @@ void showSnackBar(BuildContext context, String message) {
     ),
   );
 }
+
+void sortDayTimes(dynamic list) {
+  for (int i = 0; i < list.length; i++) {
+    final aTime = DateFormat("hh:mm a").parse(list[i].startTime);
+    for (int j = 0; j < list.length; j++) {
+      final bTime = DateFormat("hh:mm a").parse(list[j].startTime);
+      if (bTime.isAfter(aTime)) {
+        final temp = list[i];
+        list[i] = list[j];
+        list[j] = temp;
+      }
+    }
+  }
+}

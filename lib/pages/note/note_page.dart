@@ -129,7 +129,7 @@ class _NoteListState extends State<NoteList>
                       itemCount: folders.length,
                       itemBuilder: (context, index) => Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 6.0, vertical: 3),
+                            horizontal: 6.0, vertical: 10),
                         child: TextButton(
                           style: ButtonStyle(
                             backgroundColor: _folderName == folders[index].name
