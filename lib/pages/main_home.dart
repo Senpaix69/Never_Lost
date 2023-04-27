@@ -36,10 +36,11 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("assets/bg-2.jpg"),
-          fit: BoxFit.cover,
-        ),
+        // image: DecorationImage(
+        //   image: AssetImage("assets/bg-2.jpg"),
+        //   fit: BoxFit.cover,
+        // ),
+        color: Colors.black,
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,

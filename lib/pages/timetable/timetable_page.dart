@@ -185,8 +185,8 @@ class _TimeTablePageState extends State<TimeTablePage> {
                     );
                   }
                   return Container(
-                    margin: const EdgeInsets.all(6.0),
-                    padding: const EdgeInsets.all(6.0),
+                    margin: const EdgeInsets.symmetric(horizontal: 6.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 6.0),
                     decoration: null,
                     child: ListView.builder(
                       physics: const AlwaysScrollableScrollPhysics(
