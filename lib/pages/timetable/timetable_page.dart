@@ -2,7 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:my_timetable/pages/timetable/add_subject_page.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/utils.dart'
-    show isCurrentSlot, isNextSlot, sortTimeTables, weekdays, emptyWidget;
+    show
+        isCurrentSlot,
+        isNextSlot,
+        sortTimeTables,
+        weekdays,
+        emptyWidget,
+        MyCustomScrollBehavior;
 import 'package:my_timetable/widgets/animate_route.dart' show SlideRightRoute;
 import 'package:my_timetable/widgets/dialog_boxs.dart' show confirmDialogue;
 import 'package:my_timetable/widgets/timetable_box.dart';
@@ -167,23 +173,25 @@ class _TimeTablePageState extends State<TimeTablePage> {
                 );
               }
               return PageView.builder(
-                physics: const NeverScrollableScrollPhysics(),
+                scrollBehavior: MyCustomScrollBehavior(),
                 itemCount: weekdays.length,
                 controller: _pageController,
-                onPageChanged: (value) => _currentPage = value,
+                onPageChanged: (value) => setState(() {
+                  _currentPage = value;
+                }),
                 itemBuilder: (context, ind) {
                   final timeTables = [...snapshot.data!];
                   final currentDay = weekdays[ind];
                   timeTables.retainWhere((timeTable) => timeTable.dayTime
                       .any((dayTime) => dayTime.day == currentDay));
 
-                  setNextSlot(timeTables);
                   if (timeTables.isEmpty) {
                     return emptyWidget(
                       icon: Icons.calendar_today,
                       message: "No TimeTable Added Yet",
                     );
                   }
+                  setNextSlot(timeTables);
                   return Container(
                     margin: const EdgeInsets.symmetric(horizontal: 6.0),
                     padding: const EdgeInsets.symmetric(horizontal: 6.0),

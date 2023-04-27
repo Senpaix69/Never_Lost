@@ -4,7 +4,7 @@ import 'package:my_timetable/pages/timetable/add_subject_page.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/timetable_services/daytime.dart';
 import 'package:my_timetable/services/timetable_services/timetable.dart';
-import 'package:my_timetable/utils.dart' show weekdays, showSnackBar;
+import 'package:my_timetable/utils.dart' show showSnackBar;
 import 'package:my_timetable/widgets/animate_route.dart'
     show SlideRightRoute, SlideFromBottomTransition;
 import 'package:my_timetable/widgets/daytime_list.dart';
@@ -43,9 +43,9 @@ class _TimeTableBoxState extends State<TimeTableBox>
       setState(() => _height = 0);
     });
     _service = DatabaseService();
-    _filteredDays = widget.timeTable.dayTime
-        .where((day) => day.day == widget.currentDay)
-        .toList();
+    // _filteredDays = widget.timeTable.dayTime
+    //     .where((day) => day.day == widget.currentDay)
+    //     .toList();
 
     _animationController = AnimationController(
       vsync: this,
@@ -89,15 +89,12 @@ class _TimeTableBoxState extends State<TimeTableBox>
   void setSchedule() async {
     for (int i = 0; i < _filteredDays.length; i++) {
       final day = _filteredDays[i];
-
       final startTime = DateFormat.jm().parse(day.startTime);
-      final targetWeekday = weekdays.indexOf(day.day) + 1;
       final today = DateTime.now();
-      final todayWeekday = today.weekday;
       final scheduleDate = DateTime(
         today.year,
         today.month,
-        today.day + (targetWeekday - todayWeekday) % 7,
+        today.day,
         startTime.hour,
         startTime.minute,
       ).subtract(
@@ -107,7 +104,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
       await NotificationService.weeklyNotification(
         id: day.id!,
         title: widget.timeTable.subject.name,
-        body: "Your class is in room: ${day.roomNo} after 10 mins",
+        body: "Your class is in room: ${day.roomNo} after 10 minutes",
         scheduleDate: scheduleDate,
       );
     }
@@ -115,7 +112,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
       subject: widget.timeTable.subject.copyWith(sched: 1),
     );
     showUpdate(
-      'The reminders for ${widget.timeTable.subject.name} has been set daily',
+      'Weekly reminders for ${widget.timeTable.subject.name} has been set',
     );
   }
 
@@ -155,6 +152,9 @@ class _TimeTableBoxState extends State<TimeTableBox>
   Widget build(BuildContext context) {
     final subject = widget.timeTable.subject;
     final professor = widget.timeTable.professor;
+    _filteredDays = widget.timeTable.dayTime
+        .where((day) => day.day == widget.currentDay)
+        .toList();
     return FadeTransition(
       opacity: _animation,
       child: SlideFromBottomTransition(
@@ -212,7 +212,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
                     ),
                     AnimatedContainer(
                       height: _height,
-                      duration: const Duration(milliseconds: 400),
+                      duration: const Duration(milliseconds: 700),
                       curve: Curves.ease,
                       child: SingleChildScrollView(
                         physics: const NeverScrollableScrollPhysics(),

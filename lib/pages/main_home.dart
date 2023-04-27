@@ -46,6 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.transparent,
         body: PageView(
           scrollBehavior: MyCustomScrollBehavior(),
+          physics: const NeverScrollableScrollPhysics(),
           controller: _pageController,
           onPageChanged: _onPageChanged,
           children: _pages,
