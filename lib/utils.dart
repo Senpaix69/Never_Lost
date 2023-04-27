@@ -53,11 +53,19 @@ bool isCurrentSlot(String startTime, String endTime) {
 }
 
 void sortTimeTables(List<dynamic> timeTables) {
-  timeTables.sort((a, b) {
-    final timeA = DateFormat('hh:mm a').parse(a.dayTime[0].startTime);
-    final timeB = DateFormat('hh:mm a').parse(b.dayTime[0].startTime);
-    return timeA.compareTo(timeB);
-  });
+  for (int i = 0; i < timeTables.length; i++) {
+    final aTime =
+        DateFormat("hh:mm a").parse(timeTables[i].dayTime[0].startTime);
+    for (int j = 0; j < timeTables.length; j++) {
+      final bTime =
+          DateFormat("hh:mm a").parse(timeTables[j].dayTime[0].startTime);
+      if (bTime.isAfter(aTime)) {
+        final temp = timeTables[i];
+        timeTables[i] = timeTables[j];
+        timeTables[j] = temp;
+      }
+    }
+  }
 }
 
 String _getDaysLater(int day) {

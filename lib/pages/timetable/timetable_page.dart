@@ -170,10 +170,7 @@ class _TimeTablePageState extends State<TimeTablePage> {
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: weekdays.length,
                 controller: _pageController,
-                onPageChanged: (value) {
-                  _currentPage = value;
-                  setState(() {});
-                },
+                onPageChanged: (value) => _currentPage = value,
                 itemBuilder: (context, ind) {
                   final timeTables = [...snapshot.data!];
                   final currentDay = weekdays[ind];
