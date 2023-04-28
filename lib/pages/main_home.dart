@@ -67,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
               _pageController.animateToPage(
                 index,
                 duration: const Duration(milliseconds: 400),
-                curve: Curves.easeOut,
+                curve: Curves.easeInOut,
               );
             });
           },
