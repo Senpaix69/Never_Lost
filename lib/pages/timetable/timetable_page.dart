@@ -43,7 +43,7 @@ class _TimeTablePageState extends State<TimeTablePage> {
       _pageController.animateToPage(
         _currentPage,
         duration: const Duration(milliseconds: 400),
-        curve: Curves.ease,
+        curve: Curves.easeInOut,
       );
     }
     Future.delayed(

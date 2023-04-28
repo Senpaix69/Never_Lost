@@ -157,6 +157,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
         animation: _animation,
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 6.0),
+          padding: const EdgeInsets.only(bottom: 6.0),
           decoration: BoxDecoration(
             color: Colors.black.withAlpha(180),
             borderRadius: BorderRadius.circular(10.0),
