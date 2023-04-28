@@ -36,11 +36,10 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        // image: DecorationImage(
-        //   image: AssetImage("assets/bg-2.jpg"),
-        //   fit: BoxFit.cover,
-        // ),
-        color: Colors.black,
+        image: DecorationImage(
+          image: AssetImage("assets/bg-2.jpg"),
+          fit: BoxFit.cover,
+        ),
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -67,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
               _currentPageIndex = index;
               _pageController.animateToPage(
                 index,
-                duration: const Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 500),
                 curve: Curves.easeInOut,
               );
             });
