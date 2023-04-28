@@ -11,6 +11,28 @@ const List<String> weekdays = [
   'Sunday',
 ];
 
+Map<String, int> getDate(String day) {
+  final today = DateTime.now();
+  final weekDay = weekdays.indexOf(day) + 1;
+  final difference = (weekDay - today.weekday) % 7;
+  int date = today.day + difference;
+  var month = today.month;
+  var year = today.year;
+  if (date > 31) {
+    date -= 31;
+    month += 1;
+    if (month > 12) {
+      month = 1;
+      year += 1;
+    }
+  }
+  return {
+    "year": year,
+    "month": month,
+    "day": date,
+  };
+}
+
 String? textValidate(String? value) {
   if (value == null || value.isEmpty) {
     return "Please fill this field";

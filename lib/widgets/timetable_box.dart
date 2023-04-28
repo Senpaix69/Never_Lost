@@ -4,7 +4,7 @@ import 'package:my_timetable/pages/timetable/add_subject_page.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/timetable_services/daytime.dart';
 import 'package:my_timetable/services/timetable_services/timetable.dart';
-import 'package:my_timetable/utils.dart' show showSnackBar;
+import 'package:my_timetable/utils.dart' show showSnackBar, getDate;
 import 'package:my_timetable/widgets/animate_route.dart'
     show SlideRightRoute, SlideFromBottomTransition;
 import 'package:my_timetable/widgets/daytime_list.dart';
@@ -82,15 +82,15 @@ class _TimeTableBoxState extends State<TimeTableBox>
     );
   }
 
-  void setSchedule() async {
-    for (int i = 0; i < _filteredDays.length; i++) {
-      final day = _filteredDays[i];
+  void setSchedule(List<DayTime> list) async {
+    for (int i = 0; i < list.length; i++) {
+      final day = list[i];
+      final date = getDate(day.day);
       final startTime = DateFormat.jm().parse(day.startTime);
-      final today = DateTime.now();
       final scheduleDate = DateTime(
-        today.year,
-        today.month,
-        today.day,
+        date['year']!,
+        date['month']!,
+        date['day']!,
         startTime.hour,
         startTime.minute,
       ).subtract(
@@ -127,12 +127,12 @@ class _TimeTableBoxState extends State<TimeTableBox>
       await cancelSchedule(timeTable.dayTime);
       widget.callback(timeTable.subject.id);
     } else if (value == 'reminder') {
-      setSchedule();
+      setSchedule(timeTable.dayTime);
       _service.updateSubjectOfTimeTable(
         newSubject: timeTable.subject.copyWith(sched: 1),
       );
     } else if (value == 'cancelReminder') {
-      cancelSchedule(_filteredDays);
+      cancelSchedule(timeTable.dayTime);
       await _service.updateSubject(
         subject: timeTable.subject.copyWith(sched: 0),
       );
