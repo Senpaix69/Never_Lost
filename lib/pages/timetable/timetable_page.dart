@@ -108,8 +108,6 @@ class _TimeTablePageState extends State<TimeTablePage> {
           "Time Table",
           style: TextStyle(color: Colors.white),
         ),
-        centerTitle: true,
-        elevation: 0.0,
         actions: <Widget>[
           Container(
             margin: const EdgeInsets.all(8.0),
@@ -129,50 +127,50 @@ class _TimeTablePageState extends State<TimeTablePage> {
             ),
           )
         ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(50),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  iconSize: 40.0,
+                  onPressed: () => handlePage(-1),
+                  icon: const Icon(
+                    Icons.arrow_left,
+                    color: Colors.white,
+                  ),
+                ),
+                Text(
+                  weekdays[_currentPage],
+                  style: TextStyle(
+                    letterSpacing: 1.0,
+                    color: _today == _currentPage
+                        ? Colors.blue[100]
+                        : Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => handlePage(1),
+                  padding: EdgeInsets.zero,
+                  iconSize: 40.0,
+                  icon: const Icon(
+                    Icons.arrow_right,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
       body: Column(
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: SizedBox(
-              height: 50.0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  IconButton(
-                    padding: EdgeInsets.zero,
-                    iconSize: 40.0,
-                    onPressed: () => handlePage(-1),
-                    icon: const Icon(
-                      Icons.arrow_left,
-                      color: Colors.black,
-                    ),
-                  ),
-                  Text(
-                    weekdays[_currentPage],
-                    style: TextStyle(
-                      letterSpacing: 1.0,
-                      color: _today == _currentPage
-                          ? Colors.blue[900]
-                          : Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => handlePage(1),
-                    padding: EdgeInsets.zero,
-                    iconSize: 40.0,
-                    icon: const Icon(
-                      Icons.arrow_right,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
           Expanded(
               child: StreamBuilder(
             stream: _database.allTimeTable,
