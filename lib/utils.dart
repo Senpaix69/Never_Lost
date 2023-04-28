@@ -134,7 +134,7 @@ Center emptyWidget({required IconData icon, required String message}) {
         Icon(
           icon,
           size: 60.0,
-          color: Colors.grey,
+          color: Colors.black,
         ),
         const SizedBox(
           height: 10.0,
@@ -143,7 +143,8 @@ Center emptyWidget({required IconData icon, required String message}) {
           message,
           style: const TextStyle(
             fontSize: 16.0,
-            color: Colors.grey,
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ],

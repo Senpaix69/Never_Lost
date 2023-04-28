@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_timetable/widgets/styles.dart' show decorationFormField;
 
 class AddFolderDialog extends StatefulWidget {
   const AddFolderDialog({Key? key}) : super(key: key);
@@ -18,10 +19,10 @@ class _AddFolderDialogState extends State<AddFolderDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Colors.grey[900],
+      backgroundColor: Colors.black,
       contentPadding: const EdgeInsets.symmetric(
         horizontal: 20,
-        vertical: 10.0,
+        vertical: 20.0,
       ),
       actionsPadding: const EdgeInsets.symmetric(
         horizontal: 20,
@@ -29,14 +30,18 @@ class _AddFolderDialogState extends State<AddFolderDialog> {
       ),
       content: TextField(
         controller: _folderNameController,
-        decoration: const InputDecoration(hintText: 'Enter folder name'),
+        autofocus: true,
+        decoration: decorationFormField(Icons.folder, "Enter Folder Name"),
       ),
       actions: <Widget>[
         TextButton(
           onPressed: () {
             Navigator.of(context).pop(null);
           },
-          child: const Text('Cancel'),
+          child: const Text(
+            'Cancel',
+            style: TextStyle(color: Colors.white),
+          ),
         ),
         ElevatedButton(
           onPressed: () {
@@ -46,7 +51,7 @@ class _AddFolderDialogState extends State<AddFolderDialog> {
             }
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.grey[800],
+            backgroundColor: Colors.blue[700],
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),

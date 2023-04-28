@@ -158,7 +158,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 6.0),
           decoration: BoxDecoration(
-            color: Colors.grey.withAlpha(40),
+            color: Colors.black.withAlpha(180),
             borderRadius: BorderRadius.circular(10.0),
           ),
           child: Column(
@@ -217,7 +217,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
                           padding: const EdgeInsets.all(15.0),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(6.0),
-                            color: Colors.grey.withAlpha(30),
+                            color: Colors.white.withAlpha(30),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -248,7 +248,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
                     ),
                     Divider(
                       height: 8.0,
-                      color: Colors.grey[600],
+                      color: Colors.white.withAlpha(20),
                       thickness: 1.0,
                     )
                   ],
@@ -279,13 +279,13 @@ class _TimeTableBoxState extends State<TimeTableBox>
               fontSize: 12,
               letterSpacing: 0.5,
               fontWeight: head ? FontWeight.bold : FontWeight.normal,
-              color: changeColor ? Colors.grey[400] : Colors.grey[200],
+              color: changeColor ? Colors.white : Colors.grey[200],
             ),
             children: <TextSpan>[
               TextSpan(
                 text: detail.isEmpty ? "not provided" : detail,
                 style: TextStyle(
-                  color: Colors.grey[200],
+                  color: Colors.grey[300],
                 ),
               ),
             ],

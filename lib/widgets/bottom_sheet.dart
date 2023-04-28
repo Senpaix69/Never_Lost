@@ -121,7 +121,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
         bottom: MediaQuery.of(context).viewInsets.bottom + 15,
       ),
       decoration: BoxDecoration(
-        color: Colors.grey[900],
+        color: Colors.black,
         borderRadius: BorderRadius.circular(20.0),
       ),
       padding: const EdgeInsets.all(10.0),
@@ -141,7 +141,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
                 ElevatedButton.icon(
                   icon: Icon(
                     Icons.alarm,
-                    color: Colors.grey[300],
+                    color: _date != null ? Colors.white : Colors.grey[300],
                   ),
                   label: Text(
                     _date == null
@@ -149,14 +149,15 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
                         : getFormattedTime(_date.toString())!,
                     style: TextStyle(
                       fontSize: 16,
-                      color: _date != null ? Colors.amber : Colors.grey[300],
+                      color: _date != null ? Colors.white : Colors.grey[300],
                     ),
                   ),
                   onPressed: _date == null
                       ? () async => await pickDateAndTime()
                       : () => handleReminder(),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey[800],
+                    backgroundColor:
+                        _date != null ? Colors.blue : Colors.grey[900],
                     textStyle: const TextStyle(fontSize: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(7.0),
@@ -169,7 +170,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
                     "Done",
                     style: TextStyle(
                       fontSize: 16.0,
-                      color: emptyText ? Colors.grey : Colors.amber,
+                      color: emptyText ? Colors.grey : Colors.blue,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -210,7 +211,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
       decoration: InputDecoration(
         prefixIcon: Icon(
           Icons.trip_origin_outlined,
-          color: emptyText ? Colors.grey : Colors.amber,
+          color: emptyText ? Colors.grey : Colors.blue,
         ),
         contentPadding: EdgeInsets.zero,
         hintText: "Add Todo",

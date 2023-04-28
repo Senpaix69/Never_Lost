@@ -144,7 +144,7 @@ class _TodoListState extends State<TodoList>
                 horizontal: 10.0,
               ),
               decoration: BoxDecoration(
-                color: Colors.grey.withAlpha(60),
+                color: Colors.black.withAlpha(180),
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: ListTile(

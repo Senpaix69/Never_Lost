@@ -332,7 +332,7 @@ class _AddSubjectState extends State<AddSubject> {
                       Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: Colors.grey[900],
+                          color: Colors.blue,
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         child: TextButton.icon(
@@ -358,7 +358,7 @@ class _AddSubjectState extends State<AddSubject> {
                 Container(
                   margin: const EdgeInsets.only(top: 20.0),
                   decoration: BoxDecoration(
-                    color: Colors.grey.withAlpha(80),
+                    color: Colors.blue.withAlpha(80),
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   child: Column(
@@ -558,7 +558,7 @@ class _AddSubjectState extends State<AddSubject> {
           );
         }
       },
-      cursorColor: Colors.grey[200],
+      cursorColor: Colors.blue[600],
       style: const TextStyle(color: Colors.white),
       decoration: decorationFormField(prefix, hint),
       validator: validator,

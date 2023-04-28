@@ -5,7 +5,7 @@ Future<void> errorDialogue(BuildContext context, String message) {
     context: context,
     builder: (context) {
       return AlertDialog(
-        backgroundColor: Colors.grey[900],
+        backgroundColor: Colors.black,
         content: Text(
           message,
           style: const TextStyle(
@@ -17,7 +17,7 @@ Future<void> errorDialogue(BuildContext context, String message) {
             padding: const EdgeInsets.only(right: 8.0),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey[800],
+                backgroundColor: Colors.blue[700],
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -41,7 +41,7 @@ Future<bool> confirmDialogue(
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: Colors.grey[900],
+          backgroundColor: Colors.black,
           content: Text(
             message,
             style: const TextStyle(
@@ -62,7 +62,7 @@ Future<bool> confirmDialogue(
               padding: const EdgeInsets.only(right: 8.0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[800],
+                  backgroundColor: Colors.blue[700],
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),

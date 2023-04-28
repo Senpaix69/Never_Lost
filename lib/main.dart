@@ -18,19 +18,19 @@ void main() {
 ThemeData myTheme() {
   return ThemeData(
     brightness: Brightness.dark,
-    primaryColor: Colors.grey,
+    primaryColor: Colors.blue,
     colorScheme: const ColorScheme.dark(
-      primary: Colors.grey,
-      secondary: Colors.grey,
+      primary: Colors.blue,
+      secondary: Colors.blue,
     ),
     textTheme: const TextTheme(
-      bodyLarge: TextStyle(color: Colors.white),
-      bodyMedium: TextStyle(color: Colors.white),
-      bodySmall: TextStyle(color: Colors.white),
-      labelLarge: TextStyle(color: Colors.white),
-      displayLarge: TextStyle(color: Colors.white),
-      displayMedium: TextStyle(color: Colors.white),
-      displaySmall: TextStyle(color: Colors.white),
+      bodyLarge: TextStyle(color: Colors.black),
+      bodyMedium: TextStyle(color: Colors.black),
+      bodySmall: TextStyle(color: Colors.black),
+      labelLarge: TextStyle(color: Colors.black),
+      displayLarge: TextStyle(color: Colors.black),
+      displayMedium: TextStyle(color: Colors.black),
+      displaySmall: TextStyle(color: Colors.black),
     ),
   );
 }

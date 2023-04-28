@@ -44,27 +44,35 @@ class _DayTimeListState extends State<DayTimeList> {
     return ListTile(
       leading: Padding(
         padding: const EdgeInsets.symmetric(vertical: 14.0),
-        child: Icon(
-          isReminder ? Icons.add_alert_rounded : Icons.crisis_alert_sharp,
-          size: 30.0,
-          color: day.currentSlot
-              ? Colors.yellow
-              : day.nextSlot
-                  ? Colors.red
-                  : Colors.grey[600],
-        ),
+        child: isAdding
+            ? Text(
+                day.roomNo,
+                style: TextStyle(
+                  color: Colors.grey[200],
+                  fontWeight: FontWeight.bold,
+                ),
+              )
+            : Icon(
+                isReminder ? Icons.add_alert_rounded : Icons.crisis_alert_sharp,
+                size: 30.0,
+                color: day.currentSlot
+                    ? Colors.yellow
+                    : day.nextSlot
+                        ? Colors.red
+                        : Colors.blue,
+              ),
       ),
       title: Text(
         isAdding ? day.day : day.roomNo,
         style: TextStyle(
-          color: Colors.grey[300],
+          color: Colors.grey[200],
           fontWeight: FontWeight.bold,
         ),
       ),
       subtitle: Text(
         '${day.startTime} - ${day.endTime}',
         style: TextStyle(
-          color: Colors.grey[300],
+          color: Colors.grey[200],
         ),
       ),
       trailing: widget.callBack != null

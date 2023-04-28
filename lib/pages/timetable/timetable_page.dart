@@ -104,17 +104,30 @@ class _TimeTablePageState extends State<TimeTablePage> {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: const Text("Time Table"),
+        title: const Text(
+          "Time Table",
+          style: TextStyle(color: Colors.white),
+        ),
+        centerTitle: true,
         elevation: 0.0,
         actions: <Widget>[
-          IconButton(
+          Container(
+            margin: const EdgeInsets.all(8.0),
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.blue,
+            ),
+            child: IconButton(
               onPressed: () {
                 Navigator.of(context)
                     .push(SlideRightRoute(page: const AddSubject()));
               },
               icon: const Icon(
                 Icons.add,
-              ))
+                color: Colors.white,
+              ),
+            ),
+          )
         ],
       ),
       body: Column(
@@ -131,9 +144,9 @@ class _TimeTablePageState extends State<TimeTablePage> {
                     padding: EdgeInsets.zero,
                     iconSize: 40.0,
                     onPressed: () => handlePage(-1),
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.arrow_left,
-                      color: Colors.grey[400],
+                      color: Colors.black,
                     ),
                   ),
                   Text(
@@ -141,8 +154,8 @@ class _TimeTablePageState extends State<TimeTablePage> {
                     style: TextStyle(
                       letterSpacing: 1.0,
                       color: _today == _currentPage
-                          ? Colors.red[400]
-                          : Colors.white,
+                          ? Colors.blue[900]
+                          : Colors.black,
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
                     ),
@@ -151,9 +164,9 @@ class _TimeTablePageState extends State<TimeTablePage> {
                     onPressed: () => handlePage(1),
                     padding: EdgeInsets.zero,
                     iconSize: 40.0,
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.arrow_right,
-                      color: Colors.grey[400],
+                      color: Colors.black,
                     ),
                   ),
                 ],
@@ -168,7 +181,7 @@ class _TimeTablePageState extends State<TimeTablePage> {
                   snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
                   child: CircularProgressIndicator(
-                    color: Colors.grey,
+                    color: Colors.black,
                   ),
                 );
               }

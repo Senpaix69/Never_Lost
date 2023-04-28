@@ -71,6 +71,7 @@ class _NoteListState extends State<NoteList>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(50.0),
         child: AppBar(
@@ -81,19 +82,6 @@ class _NoteListState extends State<NoteList>
             physics: const BouncingScrollPhysics(),
             child: Row(
               children: <Widget>[
-                TextButton.icon(
-                  onPressed: () async {
-                    String? name = await showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return const AddFolderDialog();
-                      },
-                    );
-                    if (name != null) await _database.addFolder(name: name);
-                  },
-                  icon: const Icon(Icons.add),
-                  label: const Text("Folder"),
-                ),
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 6.0, vertical: 10),
@@ -102,14 +90,16 @@ class _NoteListState extends State<NoteList>
                     style: ButtonStyle(
                       backgroundColor: _folderName.isEmpty
                           ? MaterialStateColor.resolveWith(
-                              (states) => Colors.grey,
+                              (states) => Colors.blue,
                             )
                           : null,
                     ),
                     child: Text(
                       "All",
                       style: TextStyle(
-                        color: _folderName.isEmpty ? Colors.white : Colors.grey,
+                        color: _folderName.isEmpty
+                            ? Colors.white
+                            : Colors.grey[200],
                       ),
                     ),
                   ),
@@ -134,7 +124,7 @@ class _NoteListState extends State<NoteList>
                           style: ButtonStyle(
                             backgroundColor: _folderName == folders[index].name
                                 ? MaterialStateColor.resolveWith(
-                                    (states) => Colors.grey,
+                                    (states) => Colors.blue,
                                   )
                                 : null,
                           ),
@@ -148,7 +138,7 @@ class _NoteListState extends State<NoteList>
                             style: TextStyle(
                               color: _folderName == folders[index].name
                                   ? Colors.white
-                                  : Colors.grey,
+                                  : Colors.grey[200],
                             ),
                           ),
                         ),
@@ -156,12 +146,12 @@ class _NoteListState extends State<NoteList>
                     );
                   },
                 ),
+                addFolder(context),
               ],
             ),
           ),
         ),
       ),
-      backgroundColor: Colors.transparent,
       body: Container(
         height: double.infinity,
         width: double.infinity,
@@ -173,7 +163,7 @@ class _NoteListState extends State<NoteList>
                 snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
                 child: CircularProgressIndicator(
-                  color: Colors.grey,
+                  color: Colors.black,
                 ),
               );
             }
@@ -196,6 +186,28 @@ class _NoteListState extends State<NoteList>
     );
   }
 
+  TextButton addFolder(BuildContext context) {
+    return TextButton.icon(
+      onPressed: () async {
+        String? name = await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return const AddFolderDialog();
+          },
+        );
+        if (name != null) await _database.addFolder(name: name);
+      },
+      icon: const Icon(
+        Icons.add,
+        color: Colors.white,
+      ),
+      label: const Text(
+        "Folder",
+        style: TextStyle(color: Colors.white),
+      ),
+    );
+  }
+
   ListView myListBuilder(List<Note> notes) {
     return ListView.builder(
       physics: const AlwaysScrollableScrollPhysics(
@@ -214,7 +226,7 @@ class _NoteListState extends State<NoteList>
                 horizontal: 10.0,
               ),
               decoration: BoxDecoration(
-                color: Colors.grey.withAlpha(60),
+                color: Colors.black.withAlpha(180),
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: ListTile(
@@ -246,28 +258,31 @@ class _NoteListState extends State<NoteList>
                       ),
                   ],
                 ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      note.body.toString().split("\n").join(""),
-                      softWrap: true,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 14.0,
+                subtitle: Padding(
+                  padding: const EdgeInsets.only(top: 6.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        note.body.toString().split("\n").join(""),
+                        softWrap: true,
+                        overflow: TextOverflow.ellipsis,
+                        style:
+                            TextStyle(fontSize: 14.0, color: Colors.grey[200]),
                       ),
-                    ),
-                    const SizedBox(height: 6.0),
-                    Text(
-                      note.date,
-                      style: const TextStyle(
-                        fontSize: 12.0,
-                        color: Colors.grey,
+                      const SizedBox(height: 6.0),
+                      Text(
+                        note.date,
+                        style: TextStyle(
+                          fontSize: 12.0,
+                          color: Colors.grey[400],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 trailing: PopupMenuButton<String>(
+                  color: Colors.black,
                   initialValue: note.category.isEmpty ? note.category : null,
                   itemBuilder: (BuildContext context) {
                     return _folders.map((Folder item) {
@@ -277,8 +292,8 @@ class _NoteListState extends State<NoteList>
                           item.name,
                           style: TextStyle(
                             color: note.category == item.name
-                                ? Colors.amber
-                                : Colors.grey,
+                                ? Colors.blue
+                                : Colors.white,
                           ),
                         ),
                       );

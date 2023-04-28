@@ -92,9 +92,11 @@ class _SecondHomePageState extends State<SecondHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _selectedIndex == 0 ? _addNotePage : _showAddTodoBottomSheet,
+        backgroundColor: Colors.black,
         child: const Icon(
           Icons.add,
           size: 30.0,
+          color: Colors.white,
         ),
       ),
     );

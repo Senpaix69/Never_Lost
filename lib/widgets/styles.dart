@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 InputDecoration decorationFormField(prefixIcon, hintText) {
   return InputDecoration(
     contentPadding: const EdgeInsets.all(15.0),
-    prefixIcon: Icon(prefixIcon, color: Colors.grey),
+    prefixIcon: Icon(prefixIcon, color: Colors.grey[200]),
     hintText: hintText,
     hintStyle: TextStyle(
-      color: Colors.grey[400],
+      color: Colors.grey[200],
     ),
     filled: true,
-    fillColor: Colors.grey.withAlpha(40),
+    fillColor: Colors.blue.withAlpha(100),
     border: const OutlineInputBorder(
       borderRadius: BorderRadius.all(
         Radius.circular(8.0),
@@ -46,9 +46,9 @@ Container headerContainer({
     padding: const EdgeInsets.symmetric(vertical: 8.0),
     width: double.infinity,
     height: 45,
-    decoration: BoxDecoration(
-      color: Colors.grey[900],
-      borderRadius: const BorderRadius.only(
+    decoration: const BoxDecoration(
+      color: Colors.black,
+      borderRadius: BorderRadius.only(
           topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
     ),
     child: Row(
@@ -65,10 +65,12 @@ Container headerContainer({
                   Icon(
                     reminder ? Icons.alarm : Icons.alarm_off_rounded,
                     size: 20.0,
-                    color: reminder ? Colors.amber : Colors.grey[300],
+                    color: reminder ? Colors.yellow : Colors.grey[300],
                   ),
                   PopupMenuButton(
                     padding: EdgeInsets.zero,
+                    offset: const Offset(-13, 30),
+                    elevation: 12,
                     itemBuilder: (BuildContext context) {
                       return <PopupMenuEntry>[
                         const PopupMenuItem(
@@ -87,7 +89,7 @@ Container headerContainer({
                       ];
                     },
                     onSelected: (value) => onClick(value),
-                    color: Colors.grey[800],
+                    color: Colors.black,
                     shadowColor: Colors.black,
                     icon: Icon(
                       Icons.menu_open_rounded,
@@ -100,7 +102,7 @@ Container headerContainer({
                 padding: const EdgeInsets.only(right: 10.0),
                 child: Icon(
                   Icons.calendar_today,
-                  color: Colors.grey[300],
+                  color: Colors.blue[300],
                 ),
               ),
       ],
