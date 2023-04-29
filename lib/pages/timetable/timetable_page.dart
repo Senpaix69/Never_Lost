@@ -12,7 +12,7 @@ import 'package:my_timetable/utils.dart'
 import 'package:my_timetable/widgets/animate_route.dart' show SlideRightRoute;
 import 'package:my_timetable/widgets/dialog_boxs.dart' show confirmDialogue;
 import 'package:my_timetable/widgets/timetable_box.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TimeTablePage extends StatefulWidget {
   const TimeTablePage({super.key});
@@ -99,6 +99,13 @@ class _TimeTablePageState extends State<TimeTablePage> {
     }
   }
 
+  void _launchURL(String url) async {
+    final uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      throw "can not launch $url";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -165,14 +172,7 @@ class _TimeTablePageState extends State<TimeTablePage> {
                           fontSize: 14.0,
                         ),
                       ),
-                      onTap: () async {
-                        const url = "https://github.com/Senpaix69";
-                        if (await canLaunchUrlString(url)) {
-                          await launchUrlString(url);
-                        } else {
-                          throw 'Could not launch $url';
-                        }
-                      },
+                      onTap: () => _launchURL("https://github.com/Senpaix69"),
                     ),
                     const SizedBox(
                       height: 10.0,
@@ -190,15 +190,8 @@ class _TimeTablePageState extends State<TimeTablePage> {
                           fontSize: 14.0,
                         ),
                       ),
-                      onTap: () async {
-                        const url =
-                            "https://instagram.com/senpaii_x69?igshid=YmMyMTA2M2Y=";
-                        if (await canLaunchUrlString(url)) {
-                          await launchUrlString(url);
-                        } else {
-                          throw 'Could not launch $url';
-                        }
-                      },
+                      onTap: () => _launchURL(
+                          "https://instagram.com/senpaii_x69?igshid=YmMyMTA2M2Y="),
                     ),
                     const SizedBox(
                       height: 10.0,
