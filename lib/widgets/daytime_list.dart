@@ -53,7 +53,9 @@ class _DayTimeListState extends State<DayTimeList> {
                 ),
               )
             : Icon(
-                isReminder ? Icons.add_alert_rounded : Icons.crisis_alert_sharp,
+                isReminder
+                    ? Icons.notifications_active_sharp
+                    : Icons.wysiwyg_outlined,
                 size: 30.0,
                 color: day.currentSlot
                     ? Colors.yellow

@@ -63,7 +63,7 @@ Container headerContainer({
             ? Row(
                 children: [
                   Icon(
-                    reminder ? Icons.alarm : Icons.alarm_off_rounded,
+                    reminder ? Icons.notifications_active : Icons.notifications,
                     size: 20.0,
                     color: reminder ? Colors.yellow : Colors.grey[300],
                   ),

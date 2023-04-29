@@ -12,6 +12,7 @@ import 'package:my_timetable/utils.dart'
 import 'package:my_timetable/widgets/animate_route.dart' show SlideRightRoute;
 import 'package:my_timetable/widgets/dialog_boxs.dart' show confirmDialogue;
 import 'package:my_timetable/widgets/timetable_box.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class TimeTablePage extends StatefulWidget {
   const TimeTablePage({super.key});
@@ -108,64 +109,118 @@ class _TimeTablePageState extends State<TimeTablePage> {
           "Time Table",
           style: TextStyle(color: Colors.white),
         ),
-        actions: <Widget>[
-          Container(
-            margin: const EdgeInsets.all(8.0),
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.blue,
-            ),
-            child: IconButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .push(SlideRightRoute(page: const AddSubject()));
-              },
-              icon: const Icon(
-                Icons.add,
-                color: Colors.white,
+        actions: <Widget>[actions(context)],
+        bottom: navigatorDays(),
+      ),
+      drawer: SafeArea(
+        child: Drawer(
+          backgroundColor: Colors.black,
+          child: ListView(
+            physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                decoration: const BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(30),
+                    bottomLeft: Radius.circular(30),
+                  ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: const <Widget>[
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage: AssetImage(
+                        'assets/prof.png',
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'Projected By Senpai',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          )
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(50),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  iconSize: 40.0,
-                  onPressed: () => handlePage(-1),
-                  icon: const Icon(
-                    Icons.arrow_left,
-                    color: Colors.white,
-                  ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Column(
+                  children: <Widget>[
+                    ListTile(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      tileColor: Colors.blue.withAlpha(200),
+                      title: const Text(
+                        'Check My Github',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14.0,
+                        ),
+                      ),
+                      onTap: () async {
+                        const url = "https://github.com/Senpaix69";
+                        if (await canLaunchUrlString(url)) {
+                          await launchUrlString(url);
+                        } else {
+                          throw 'Could not launch $url';
+                        }
+                      },
+                    ),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    ListTile(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      tileColor: Colors.blue.withAlpha(200),
+                      title: const Text(
+                        'Check My Insta',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14.0,
+                        ),
+                      ),
+                      onTap: () async {
+                        const url =
+                            "https://instagram.com/senpaii_x69?igshid=YmMyMTA2M2Y=";
+                        if (await canLaunchUrlString(url)) {
+                          await launchUrlString(url);
+                        } else {
+                          throw 'Could not launch $url';
+                        }
+                      },
+                    ),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    ListTile(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      tileColor: Colors.blue.withAlpha(200),
+                      title: const Text(
+                        'Rest Coming Soon 😃',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14.0,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                Text(
-                  weekdays[_currentPage],
-                  style: TextStyle(
-                    letterSpacing: 1.0,
-                    color: _today == _currentPage
-                        ? Colors.blue[100]
-                        : Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () => handlePage(1),
-                  padding: EdgeInsets.zero,
-                  iconSize: 40.0,
-                  icon: const Icon(
-                    Icons.arrow_right,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -226,6 +281,67 @@ class _TimeTablePageState extends State<TimeTablePage> {
             },
           )),
         ],
+      ),
+    );
+  }
+
+  Container actions(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(8.0),
+      decoration: const BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.blue,
+      ),
+      child: IconButton(
+        onPressed: () {
+          Navigator.of(context).push(SlideRightRoute(page: const AddSubject()));
+        },
+        icon: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  PreferredSize navigatorDays() {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(50),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            IconButton(
+              padding: EdgeInsets.zero,
+              iconSize: 40.0,
+              onPressed: () => handlePage(-1),
+              icon: const Icon(
+                Icons.arrow_left,
+                color: Colors.white,
+              ),
+            ),
+            Text(
+              weekdays[_currentPage],
+              style: TextStyle(
+                letterSpacing: 1.0,
+                color: _today == _currentPage ? Colors.blue[100] : Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+            IconButton(
+              onPressed: () => handlePage(1),
+              padding: EdgeInsets.zero,
+              iconSize: 40.0,
+              icon: const Icon(
+                Icons.arrow_right,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -378,7 +378,7 @@ class _AddSubjectState extends State<AddSubject> {
                                         vertical: 25.0),
                                     child: Center(
                                       child: Text(
-                                        "Add Time First",
+                                        "No Time Added",
                                         style: TextStyle(
                                           color: Colors.grey[400],
                                           letterSpacing: 1.0,
@@ -474,7 +474,7 @@ class _AddSubjectState extends State<AddSubject> {
             iconSize: 0.0,
             value: day.text,
             onChanged: (value) => day.text = value!,
-            dropdownColor: Colors.grey[900],
+            dropdownColor: Colors.black,
             style: const TextStyle(color: Colors.white),
             decoration: decorationFormField(Icons.weekend, "Select Day"),
             items: weekdays.map<DropdownMenuItem<String>>((weekday) {
