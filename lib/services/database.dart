@@ -63,19 +63,20 @@ class DatabaseService {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'subject.db');
 
-    final db = await openDatabase(path);
-    // await db.execute("DROP TABLE IF EXISTS $subTable");
-    // await db.execute("DROP TABLE IF EXISTS $dayTimeTable");
-    // await db.execute("DROP TABLE IF EXISTS $professorTable");
-    // await db.execute("DROP TABLE IF EXISTS $noteTable");
-    // await db.execute("DROP TABLE IF EXISTS $todoTable");
-    await db.execute(createSubTable);
-    await db.execute(createDayTimeTable);
-    await db.execute(createProfessorTable);
-    await db.execute(createNoteTable);
-    await db.execute(createTodoTable);
-    await db.execute(createFolderTable);
-    await db.execute('PRAGMA foreign_keys = ON;');
+    final db = await openDatabase(
+      path,
+      version: 2,
+      onCreate: (db, version) async {
+        await db.execute(createSubTable);
+        await db.execute(createDayTimeTable);
+        await db.execute(createProfessorTable);
+        await db.execute(createNoteTable);
+        await db.execute(createTodoTable);
+        await db.execute(createFolderTable);
+        await db.execute('PRAGMA foreign_keys = ON;');
+      },
+    );
+
     _catchAllTimeTables();
     _catchAllNotes();
     _catchAllTodos();

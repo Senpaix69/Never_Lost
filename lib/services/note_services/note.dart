@@ -5,6 +5,7 @@ import 'package:my_timetable/services/constants.dart';
 @immutable
 class Note {
   final int? id;
+  final int imp;
   final String title;
   final String body;
   final String date;
@@ -16,6 +17,7 @@ class Note {
     required this.title,
     required this.body,
     required this.date,
+    this.imp = 0,
     this.category = "",
     this.images = const [],
   });
@@ -26,6 +28,7 @@ class Note {
       noteTitleColumn: title,
       noteBodyColumn: body,
       noteDateColumn: date,
+      noteImpColumn: imp,
       noteCategoryColumn: category,
       noteImagesColumn: json.encode(images),
     };
@@ -38,6 +41,7 @@ class Note {
       body: map[noteBodyColumn] as String,
       date: map[noteDateColumn] as String,
       category: map[noteCategoryColumn] as String,
+      imp: map[noteImpColumn] as int,
       images: List<String>.from(
         json.decode(
           map[noteImagesColumn] as String,
@@ -48,6 +52,7 @@ class Note {
 
   Note copyWith({
     int? id,
+    int? imp,
     String? title,
     String? body,
     String? date,
@@ -59,6 +64,7 @@ class Note {
       title: title ?? this.title,
       body: body ?? this.body,
       date: date ?? this.date,
+      imp: imp ?? this.imp,
       category: category ?? this.category,
       images: images ?? this.images,
     );
@@ -66,6 +72,6 @@ class Note {
 
   @override
   String toString() {
-    return "Todo: {id: $id, title: $title, body: $body, date: $date, category: $category, images: [${json.encode(images)}]\n";
+    return "Todo: {id: $id, title: $title, body: $body, date: $date, category: $category, important: $imp, images: [${json.encode(images)}]\n";
   }
 }

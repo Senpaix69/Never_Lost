@@ -64,11 +64,13 @@ const noteBodyColumn = 'note_body';
 const noteCategoryColumn = 'note_category';
 const noteDateColumn = 'note_date';
 const noteImagesColumn = 'note_images';
+const noteImpColumn = 'note_imp';
 const createNoteTable = '''
 CREATE TABLE IF NOT EXISTS "$noteTable" (
   "$noteIdColumn" INTEGER NOT NULL,
   "$noteTitleColumn" TEXT NOT NULL,
   "$noteBodyColumn" TEXT NOT NULL,
+  "$noteImpColumn" INTEGER NOT NULL DEFAULT 0,
   "$noteCategoryColumn" TEXT,
   "$noteDateColumn" TEXT NOT NULL,
   "$noteImagesColumn" TEXT NOT NULL,

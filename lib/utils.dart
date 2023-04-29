@@ -134,16 +134,16 @@ Center emptyWidget({required IconData icon, required String message}) {
         Icon(
           icon,
           size: 60.0,
-          color: Colors.black,
+          color: Colors.grey[200],
         ),
         const SizedBox(
           height: 10.0,
         ),
         Text(
           message,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 16.0,
-            color: Colors.black,
+            color: Colors.grey[200],
             fontWeight: FontWeight.bold,
           ),
         ),

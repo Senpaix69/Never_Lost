@@ -93,6 +93,10 @@ class _TodoListState extends State<TodoList>
       body: Container(
         height: double.infinity,
         width: double.infinity,
+        padding: const EdgeInsets.symmetric(
+          vertical: 10.0,
+          horizontal: 10.0,
+        ),
         decoration: null,
         child: StreamBuilder(
           stream: _database.allTodos,
@@ -139,10 +143,7 @@ class _TodoListState extends State<TodoList>
           child: SlideFromBottomTransition(
             animation: _animation,
             child: Container(
-              margin: const EdgeInsets.symmetric(
-                vertical: 5.0,
-                horizontal: 10.0,
-              ),
+              margin: const EdgeInsets.symmetric(vertical: 5.0),
               decoration: BoxDecoration(
                 color: Colors.black.withAlpha(180),
                 borderRadius: BorderRadius.circular(10.0),
