@@ -157,7 +157,7 @@ class _NoteListState extends State<NoteList>
       body: Container(
         height: double.infinity,
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 10.0),
+        padding: const EdgeInsets.only(top: 10.0),
         decoration: null,
         child: StreamBuilder(
           stream: _database.allNotes,

@@ -156,7 +156,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
       child: SlideFromBottomTransition(
         animation: _animation,
         child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 6.0),
+          margin: const EdgeInsets.symmetric(vertical: 10.0),
           padding: const EdgeInsets.only(bottom: 6.0),
           decoration: BoxDecoration(
             color: Colors.black.withAlpha(180),

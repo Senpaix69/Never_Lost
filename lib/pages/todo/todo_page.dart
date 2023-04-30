@@ -93,9 +93,10 @@ class _TodoListState extends State<TodoList>
       body: Container(
         height: double.infinity,
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(
-          vertical: 10.0,
-          horizontal: 10.0,
+        padding: const EdgeInsets.only(
+          top: 10.0,
+          left: 10.0,
+          right: 10.0,
         ),
         decoration: null,
         child: StreamBuilder(
