@@ -268,9 +268,11 @@ class _TimeTableBoxState extends State<TimeTableBox>
     );
   }
 
-  dynamic detailsProf(
-      {required String text, required String detail, bool head = false}) {
-    bool changeColor = text == "Professor" || text == "Section";
+  dynamic detailsProf({
+    required String text,
+    required String detail,
+    bool head = false,
+  }) {
     return Column(
       children: <Widget>[
         RichText(
@@ -280,13 +282,13 @@ class _TimeTableBoxState extends State<TimeTableBox>
               fontSize: 12,
               letterSpacing: 0.5,
               fontWeight: head ? FontWeight.bold : FontWeight.normal,
-              color: changeColor ? Colors.white : Colors.grey[200],
+              color: Colors.white,
             ),
             children: <TextSpan>[
               TextSpan(
                 text: detail.isEmpty ? "not provided" : detail,
-                style: TextStyle(
-                  color: Colors.grey[300],
+                style: const TextStyle(
+                  color: Colors.white,
                 ),
               ),
             ],
