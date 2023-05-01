@@ -54,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
           height: 50,
           color: Colors.black,
           animationDuration: const Duration(milliseconds: 400),
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.lightBlue,
           buttonBackgroundColor: Colors.black,
           items: const <Widget>[
             Icon(Icons.today, size: 30, color: Colors.white),

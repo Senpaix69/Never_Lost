@@ -165,7 +165,7 @@ class _TimeTablePageState extends State<TimeTablePage> {
                       ),
                       tileColor: Colors.black.withAlpha(200),
                       title: const Text(
-                        'Check My Github',
+                        'Check out Github',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -183,7 +183,7 @@ class _TimeTablePageState extends State<TimeTablePage> {
                       ),
                       tileColor: Colors.black.withAlpha(200),
                       title: const Text(
-                        'Check My Insta',
+                        'Check out Insta',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
