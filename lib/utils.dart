@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:my_timetable/widgets/dialog_boxs.dart' show confirmDialogue;
 
 const List<String> weekdays = [
   'Monday',
@@ -31,6 +32,11 @@ Map<String, int> getDate(String day) {
     "month": month,
     "day": date,
   };
+}
+
+Future<bool> deleteFolder(final folder, BuildContext context) async {
+  return await confirmDialogue(
+      context: context, message: "Delete ${folder.name} folder?");
 }
 
 String? textValidate(String? value) {

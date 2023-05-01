@@ -4,10 +4,9 @@ import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:my_timetable/pages/note/folder_page.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/note_services/note.dart';
-import 'package:my_timetable/utils.dart' show emptyWidget;
+import 'package:my_timetable/utils.dart' show emptyWidget, deleteFolder;
 import 'package:my_timetable/widgets/animate_route.dart'
     show SlideFromBottomTransition, SlideRightRoute;
-import 'package:my_timetable/widgets/dialog_boxs.dart';
 
 class NoteList extends StatefulWidget {
   const NoteList({super.key});
@@ -52,14 +51,6 @@ class _NoteListState extends State<NoteList>
   void dispose() {
     _animationController.dispose();
     super.dispose();
-  }
-
-  Future<void> deleteFolder(int id) async {
-    bool confirmDel =
-        await confirmDialogue(context: context, message: "Delete this folder?");
-    if (confirmDel) {
-      await _database.removeFolder(id: id);
-    }
   }
 
   List<Note> filterNotes(List<Note> list) {
@@ -124,6 +115,14 @@ class _NoteListState extends State<NoteList>
                         padding: const EdgeInsets.symmetric(
                             horizontal: 6.0, vertical: 10),
                         child: ElevatedButton(
+                          onLongPress: () async {
+                            final folder = folders[index];
+                            bool del = await deleteFolder(folder, context);
+                            if (del) {
+                              await _database.removeFolder(id: folder.id!);
+                            }
+                          },
+                          key: ValueKey(folders[index].id),
                           style: ButtonStyle(
                             backgroundColor: _folderName == folders[index].name
                                 ? MaterialStateColor.resolveWith(

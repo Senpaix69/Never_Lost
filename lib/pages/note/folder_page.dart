@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/note_services/folder.dart';
 import 'package:my_timetable/services/note_services/note.dart';
-import 'package:my_timetable/utils.dart' show GetArgument;
+import 'package:my_timetable/utils.dart' show GetArgument, deleteFolder;
 import 'package:my_timetable/widgets/add_folder.dart';
-import 'package:my_timetable/widgets/dialog_boxs.dart';
 
 class FolderPage extends StatefulWidget {
   const FolderPage({Key? key}) : super(key: key);
@@ -49,15 +48,6 @@ class _FolderPageState extends State<FolderPage> {
       note = note!.copyWith(category: value);
     }
     setState(() {});
-  }
-
-  void deleteFolder(Folder folder) async {
-    bool del = await confirmDialogue(
-        context: context,
-        message: "You sure want to delete ${folder.name} folder?");
-    if (del) {
-      await _database.removeFolder(id: folder.id!);
-    }
   }
 
   @override
@@ -140,7 +130,13 @@ class _FolderPageState extends State<FolderPage> {
                   : const SizedBox()
               : null,
           trailing: IconButton(
-            onPressed: () => deleteFolder(folders[index]),
+            onPressed: () async {
+              final folder = folders[index];
+              bool del = await deleteFolder(folder, context);
+              if (del) {
+                await _database.removeFolder(id: folder.id!);
+              }
+            },
             icon: const Icon(Icons.delete),
           ),
         ),
