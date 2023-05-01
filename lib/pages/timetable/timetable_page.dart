@@ -257,7 +257,8 @@ class _TimeTablePageState extends State<TimeTablePage> {
                     decoration: null,
                     child: ListView.builder(
                       physics: const AlwaysScrollableScrollPhysics(
-                          parent: BouncingScrollPhysics()),
+                        parent: BouncingScrollPhysics(),
+                      ),
                       itemCount: timeTables.length,
                       itemBuilder: (context, index) {
                         final timeTable = timeTables[index];

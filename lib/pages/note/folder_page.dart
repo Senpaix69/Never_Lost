@@ -98,7 +98,9 @@ class _FolderPageState extends State<FolderPage> {
 
   ListView folderList(List<Folder> folders, bool isNote) {
     return ListView.separated(
-      physics: const BouncingScrollPhysics(),
+      physics: const AlwaysScrollableScrollPhysics(
+        parent: BouncingScrollPhysics(),
+      ),
       shrinkWrap: true,
       itemCount: folders.length,
       separatorBuilder: (context, index) => const SizedBox(height: 10.0),
