@@ -143,6 +143,7 @@ class _AddNoteState extends State<AddNote> {
                       onChanged: checkNote,
                       enableSuggestions: false,
                       autocorrect: false,
+                      maxLines: null,
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         hintStyle: TextStyle(color: Colors.grey[500]),

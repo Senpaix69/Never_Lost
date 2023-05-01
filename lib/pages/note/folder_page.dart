@@ -56,7 +56,7 @@ class _FolderPageState extends State<FolderPage> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.black,
         title: const Text("Folders"),
       ),
       body: Container(

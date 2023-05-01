@@ -75,15 +75,16 @@ class _NoteListState extends State<NoteList>
             child: Row(
               children: <Widget>[
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 6.0, vertical: 10),
+                  padding: const EdgeInsets.all(6.0),
                   child: ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: _folderName.isEmpty
                           ? MaterialStateColor.resolveWith(
-                              (states) => Colors.red,
+                              (states) => Colors.blue,
                             )
-                          : null,
+                          : MaterialStateColor.resolveWith(
+                              (states) => Colors.black.withAlpha(100),
+                            ),
                     ),
                     child: Text(
                       "All",
@@ -112,8 +113,7 @@ class _NoteListState extends State<NoteList>
                       scrollDirection: Axis.horizontal,
                       itemCount: folders.length,
                       itemBuilder: (context, index) => Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6.0, vertical: 10),
+                        padding: const EdgeInsets.all(6.0),
                         child: ElevatedButton(
                           onLongPress: () async {
                             final folder = folders[index];
@@ -126,9 +126,11 @@ class _NoteListState extends State<NoteList>
                           style: ButtonStyle(
                             backgroundColor: _folderName == folders[index].name
                                 ? MaterialStateColor.resolveWith(
-                                    (states) => Colors.red,
+                                    (states) => Colors.blue,
                                   )
-                                : null,
+                                : MaterialStateColor.resolveWith(
+                                    (states) => Colors.black.withAlpha(100),
+                                  ),
                           ),
                           child: Text(
                             folders[index].name,
@@ -149,18 +151,22 @@ class _NoteListState extends State<NoteList>
                   },
                 ),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 6.0, vertical: 10),
+                  padding: const EdgeInsets.all(6.0),
                   child: ElevatedButton.icon(
                     onPressed: () => Navigator.of(context).push(SlideRightRoute(
                       page: const FolderPage(),
                     )),
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateColor.resolveWith(
+                        (states) => Colors.black.withAlpha(100),
+                      ),
+                    ),
                     icon: Icon(
                       Icons.create_new_folder_sharp,
                       color: Colors.grey[300],
                     ),
                     label: Text(
-                      "Add",
+                      "Add Folder",
                       style: TextStyle(
                         color: Colors.grey[200],
                       ),
@@ -225,9 +231,7 @@ class _NoteListState extends State<NoteList>
                 horizontal: 10.0,
               ),
               decoration: BoxDecoration(
-                color: note.imp == 0
-                    ? Colors.black.withAlpha(180)
-                    : Colors.red.withOpacity(0.9),
+                color: Colors.black.withAlpha(180),
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: GestureDetector(
@@ -260,7 +264,7 @@ class _NoteListState extends State<NoteList>
 
   Padding listSubTitle(Note note) {
     return Padding(
-      padding: const EdgeInsets.only(top: 6.0),
+      padding: const EdgeInsets.only(top: 5.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -271,12 +275,23 @@ class _NoteListState extends State<NoteList>
             style: TextStyle(fontSize: 14.0, color: Colors.grey[200]),
           ),
           const SizedBox(height: 6.0),
-          Text(
-            note.date,
-            style: TextStyle(
-              fontSize: 10.0,
-              color: Colors.grey[300],
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                note.date,
+                style: TextStyle(
+                  fontSize: 10.0,
+                  color: Colors.grey[300],
+                ),
+              ),
+              if (note.imp != 0)
+                const Icon(
+                  Icons.star,
+                  color: Colors.redAccent,
+                  size: 20.0,
+                ),
+            ],
           ),
         ],
       ),
@@ -284,16 +299,21 @@ class _NoteListState extends State<NoteList>
   }
 
   Row listTitle(Note note) {
+    String title = note.title.split("\n").join(" ");
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Text(
-          note.title,
-          style: TextStyle(
-            color: Colors.grey[300],
-            fontSize: 16.0,
-            fontWeight: FontWeight.bold,
+        Expanded(
+          child: Text(
+            title,
+            style: TextStyle(
+              overflow: TextOverflow.ellipsis,
+              color: Colors.grey[300],
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         if (_folderName.isEmpty && note.category.isNotEmpty)
