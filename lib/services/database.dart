@@ -98,6 +98,7 @@ class DatabaseService {
   List<TimeTable> _cachedTimeTables = [];
   late final StreamController<List<TimeTable>> _timeTableController;
   Stream<List<TimeTable>> get allTimeTable => _timeTableController.stream;
+  List<TimeTable> get cachedTimeTables => _cachedTimeTables;
 
   Future<void> _catchAllTimeTables() async {
     final allTimeTables = await getTimeTableStream();

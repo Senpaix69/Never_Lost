@@ -2,17 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:my_timetable/widgets/styles.dart' show decorationFormField;
 
 class AddFolderDialog extends StatefulWidget {
-  const AddFolderDialog({Key? key}) : super(key: key);
+  final List<String> folders;
+  const AddFolderDialog({Key? key, required this.folders}) : super(key: key);
+
   @override
   State<AddFolderDialog> createState() => _AddFolderDialogState();
 }
 
 class _AddFolderDialogState extends State<AddFolderDialog> {
   final TextEditingController _folderNameController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
   @override
   void dispose() {
     _folderNameController.dispose();
     super.dispose();
+  }
+
+  String? folderValidate(String? value) {
+    if (value!.isEmpty) {
+      return 'Please enter a folder name';
+    } else {
+      final String valueLower = value.toLowerCase();
+      for (int i = 0; i < widget.folders.length; i++) {
+        final folderLower = widget.folders[i].toLowerCase();
+        if (folderLower == valueLower) {
+          return 'This folder already exists';
+        }
+      }
+      return null;
+    }
   }
 
   @override
@@ -27,10 +46,15 @@ class _AddFolderDialogState extends State<AddFolderDialog> {
         horizontal: 20,
         vertical: 10.0,
       ),
-      content: TextField(
-        controller: _folderNameController,
-        autofocus: true,
-        decoration: decorationFormField(Icons.folder, "Enter Folder Name"),
+      content: Form(
+        key: _formKey,
+        child: TextFormField(
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          controller: _folderNameController,
+          autofocus: true,
+          decoration: decorationFormField(Icons.folder, "Enter Folder Name"),
+          validator: folderValidate,
+        ),
       ),
       actions: <Widget>[
         TextButton(
@@ -44,8 +68,8 @@ class _AddFolderDialogState extends State<AddFolderDialog> {
         ),
         ElevatedButton(
           onPressed: () {
-            final String folderName = _folderNameController.text.trim();
-            if (folderName.isNotEmpty) {
+            if (_formKey.currentState!.validate()) {
+              final String folderName = _folderNameController.text.trim();
               Navigator.of(context).pop(folderName);
             }
           },

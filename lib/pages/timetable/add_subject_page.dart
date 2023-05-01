@@ -26,6 +26,7 @@ class _AddSubjectState extends State<AddSubject> {
   double _height = 0.0;
   bool _editing = false;
 
+  late final List<TimeTable> _allTimeTables;
   late final DatabaseService _database;
   late final TextEditingController _professorName;
   late final TextEditingController _professorEmail;
@@ -62,6 +63,7 @@ class _AddSubjectState extends State<AddSubject> {
       setState(() {
         setArgument();
         _height = 0.0;
+        _allTimeTables = _database.cachedTimeTables;
       });
     });
   }
@@ -225,6 +227,22 @@ class _AddSubjectState extends State<AddSubject> {
     goBack();
   }
 
+  String? subjectValidate(String? value) {
+    String? valid = textValidate(value);
+    bool isDuplicate = false;
+    for (var timeTable in _allTimeTables) {
+      if (timeTable.subject.name.toLowerCase() == value!.toLowerCase()) {
+        isDuplicate = true;
+        break;
+      }
+    }
+    if (isDuplicate) {
+      return 'This subject already exists';
+    } else {
+      return valid;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -264,7 +282,7 @@ class _AddSubjectState extends State<AddSubject> {
                           prefix: Icons.subject,
                           hint: "Subject name",
                           controller: _subjectName,
-                          validator: textValidate,
+                          validator: subjectValidate,
                         ),
                         const SizedBox(
                           height: 10.0,

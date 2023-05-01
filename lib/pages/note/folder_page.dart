@@ -14,7 +14,8 @@ class FolderPage extends StatefulWidget {
 
 class _FolderPageState extends State<FolderPage> {
   final DatabaseService _database = DatabaseService();
-  Note? note;
+  Note? _note;
+  List<Folder>? _folders;
 
   @override
   void initState() {
@@ -28,31 +29,31 @@ class _FolderPageState extends State<FolderPage> {
   void setArgument() {
     final widgetTable = context.getArgument<Note>();
     if (widgetTable != null) {
-      note = widgetTable;
+      _note = widgetTable;
     }
   }
 
   void updateCategory(String value) async {
-    if (note == null) {
+    if (_note == null) {
       return;
     }
-    if (value == note!.category) {
+    if (value == _note!.category) {
       await _database.updateNote(
-        note: note!.copyWith(category: ""),
+        note: _note!.copyWith(category: ""),
       );
-      note = note!.copyWith(category: "");
+      _note = _note!.copyWith(category: "");
     } else {
       await _database.updateNote(
-        note: note!.copyWith(category: value),
+        note: _note!.copyWith(category: value),
       );
-      note = note!.copyWith(category: value);
+      _note = _note!.copyWith(category: value);
     }
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    bool isNote = note != null;
+    bool isNote = _note != null;
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -73,8 +74,8 @@ class _FolderPageState extends State<FolderPage> {
                 ),
               );
             }
-            final folders = snapshot.data!;
-            return folderList(folders, isNote);
+            _folders = snapshot.data!;
+            return folderList(_folders!, isNote);
           },
         ),
       ),
@@ -84,7 +85,9 @@ class _FolderPageState extends State<FolderPage> {
           String? name = await showDialog(
             context: context,
             builder: (BuildContext context) {
-              return const AddFolderDialog();
+              return AddFolderDialog(
+                folders: _folders!.map((e) => e.name).toList(),
+              );
             },
           );
           if (name != null) await _database.addFolder(name: name);
@@ -114,7 +117,7 @@ class _FolderPageState extends State<FolderPage> {
           ),
           onTap: () => updateCategory(folders[index].name),
           tileColor: isNote
-              ? note!.category == folders[index].name
+              ? _note!.category == folders[index].name
                   ? Colors.red.withAlpha(180)
                   : Colors.lightBlue.withAlpha(180)
               : Colors.lightBlue.withAlpha(180),
@@ -125,7 +128,7 @@ class _FolderPageState extends State<FolderPage> {
             ),
           ),
           leading: isNote
-              ? note!.category == folders[index].name
+              ? _note!.category == folders[index].name
                   ? const Icon(
                       Icons.check,
                       color: Colors.amber,
