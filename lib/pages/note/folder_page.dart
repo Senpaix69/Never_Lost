@@ -79,6 +79,7 @@ class _FolderPageState extends State<FolderPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.lightBlue,
         onPressed: () async {
           String? name = await showDialog(
             context: context,
@@ -115,8 +116,8 @@ class _FolderPageState extends State<FolderPage> {
           tileColor: isNote
               ? note!.category == folders[index].name
                   ? Colors.red.withAlpha(180)
-                  : Colors.blueAccent.withAlpha(180)
-              : Colors.blueAccent.withAlpha(180),
+                  : Colors.lightBlue.withAlpha(180)
+              : Colors.lightBlue.withAlpha(180),
           title: Text(
             folders[index].name,
             style: const TextStyle(

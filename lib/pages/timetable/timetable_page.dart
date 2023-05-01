@@ -121,14 +121,14 @@ class _TimeTablePageState extends State<TimeTablePage> {
       ),
       drawer: SafeArea(
         child: Drawer(
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.lightBlue,
           child: ListView(
             physics: const NeverScrollableScrollPhysics(),
             padding: EdgeInsets.zero,
             children: <Widget>[
               DrawerHeader(
                 decoration: const BoxDecoration(
-                  color: Colors.blue,
+                  color: Colors.black,
                   borderRadius: BorderRadius.only(
                     bottomRight: Radius.circular(30),
                     bottomLeft: Radius.circular(30),
@@ -163,7 +163,7 @@ class _TimeTablePageState extends State<TimeTablePage> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      tileColor: Colors.blue.withAlpha(200),
+                      tileColor: Colors.black.withAlpha(200),
                       title: const Text(
                         'Check My Github',
                         style: TextStyle(
@@ -181,7 +181,7 @@ class _TimeTablePageState extends State<TimeTablePage> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      tileColor: Colors.blue.withAlpha(200),
+                      tileColor: Colors.black.withAlpha(200),
                       title: const Text(
                         'Check My Insta',
                         style: TextStyle(
@@ -200,7 +200,7 @@ class _TimeTablePageState extends State<TimeTablePage> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      tileColor: Colors.blue.withAlpha(200),
+                      tileColor: Colors.black.withAlpha(200),
                       title: const Text(
                         'Rest Coming Soon 😃',
                         style: TextStyle(
@@ -288,7 +288,11 @@ class _TimeTablePageState extends State<TimeTablePage> {
       ),
       child: IconButton(
         onPressed: () {
-          Navigator.of(context).push(SlideRightRoute(page: const AddSubject()));
+          Navigator.of(context).push(
+            SlideRightRoute(
+              page: const AddSubject(),
+            ),
+          );
         },
         icon: const Icon(
           Icons.add,
