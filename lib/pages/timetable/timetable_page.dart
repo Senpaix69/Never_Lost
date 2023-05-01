@@ -172,7 +172,9 @@ class _TimeTablePageState extends State<TimeTablePage> {
                           fontSize: 14.0,
                         ),
                       ),
-                      onTap: () => _launchURL("https://github.com/Senpaix69"),
+                      onTap: () => _launchURL(
+                        "https://github.com/Senpaix69",
+                      ),
                     ),
                     const SizedBox(
                       height: 10.0,
@@ -191,7 +193,8 @@ class _TimeTablePageState extends State<TimeTablePage> {
                         ),
                       ),
                       onTap: () => _launchURL(
-                          "https://instagram.com/senpaii_x69?igshid=YmMyMTA2M2Y="),
+                        "https://instagram.com/senpaii_x69?igshid=YmMyMTA2M2Y=",
+                      ),
                     ),
                     const SizedBox(
                       height: 10.0,
