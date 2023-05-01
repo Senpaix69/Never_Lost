@@ -188,7 +188,7 @@ class _AddNoteState extends State<AddNote> {
                     const SizedBox(
                       height: 100,
                     ),
-                    insertImage(),
+                    insertAttachment(),
                   ]),
             ),
           ),
@@ -225,7 +225,7 @@ class _AddNoteState extends State<AddNote> {
   }
 }
 
-Padding insertImage() {
+Padding insertAttachment() {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 20.0),
     child: DottedBorder(
@@ -242,7 +242,7 @@ Padding insertImage() {
         ),
         child: const Center(
           child: Text(
-            "Insert Image",
+            "Insert Attachment",
             style: TextStyle(
               color: Colors.grey,
             ),

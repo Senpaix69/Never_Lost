@@ -9,7 +9,6 @@ class AddFolderDialog extends StatefulWidget {
 
 class _AddFolderDialogState extends State<AddFolderDialog> {
   final TextEditingController _folderNameController = TextEditingController();
-
   @override
   void dispose() {
     _folderNameController.dispose();

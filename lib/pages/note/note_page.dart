@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:my_timetable/pages/note/add_note_page.dart';
+import 'package:flutter/services.dart' show HapticFeedback;
+import 'package:my_timetable/pages/note/folder_page.dart';
 import 'package:my_timetable/services/database.dart';
-import 'package:my_timetable/services/note_services/folder.dart';
 import 'package:my_timetable/services/note_services/note.dart';
 import 'package:my_timetable/utils.dart' show emptyWidget;
-import 'package:my_timetable/widgets/add_folder.dart';
 import 'package:my_timetable/widgets/animate_route.dart'
     show SlideFromBottomTransition, SlideRightRoute;
 import 'package:my_timetable/widgets/dialog_boxs.dart';
@@ -22,7 +22,6 @@ class _NoteListState extends State<NoteList>
   late Animation<double> _animation;
   Offset _tapPosition = Offset.zero;
   String _folderName = "";
-  List<Folder> _folders = [];
 
   @override
   void initState() {
@@ -87,12 +86,11 @@ class _NoteListState extends State<NoteList>
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 6.0, vertical: 10),
-                  child: TextButton(
-                    onPressed: () => setState(() => _folderName = ""),
+                  child: ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: _folderName.isEmpty
                           ? MaterialStateColor.resolveWith(
-                              (states) => Colors.blue,
+                              (states) => Colors.red,
                             )
                           : null,
                     ),
@@ -102,8 +100,12 @@ class _NoteListState extends State<NoteList>
                         color: _folderName.isEmpty
                             ? Colors.white
                             : Colors.grey[200],
+                        fontWeight: _folderName.isEmpty
+                            ? FontWeight.bold
+                            : FontWeight.normal,
                       ),
                     ),
+                    onPressed: () => setState(() => _folderName = ""),
                   ),
                 ),
                 StreamBuilder(
@@ -114,7 +116,6 @@ class _NoteListState extends State<NoteList>
                       return const SizedBox();
                     }
                     final folders = snapshot.data!;
-                    _folders = folders;
                     return ListView.builder(
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
@@ -122,33 +123,51 @@ class _NoteListState extends State<NoteList>
                       itemBuilder: (context, index) => Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 6.0, vertical: 10),
-                        child: TextButton(
+                        child: ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor: _folderName == folders[index].name
                                 ? MaterialStateColor.resolveWith(
-                                    (states) => Colors.blue,
+                                    (states) => Colors.red,
                                   )
                                 : null,
                           ),
-                          onLongPress: () async =>
-                              await deleteFolder(folders[index].id!),
-                          onPressed: () {
-                            setState(() => _folderName = folders[index].name);
-                          },
                           child: Text(
                             folders[index].name,
                             style: TextStyle(
                               color: _folderName == folders[index].name
                                   ? Colors.white
                                   : Colors.grey[200],
+                              fontWeight: _folderName == folders[index].name
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
                             ),
                           ),
+                          onPressed: () =>
+                              setState(() => _folderName = folders[index].name),
                         ),
                       ),
                     );
                   },
                 ),
-                addFolder(context),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6.0, vertical: 10),
+                  child: ElevatedButton.icon(
+                    onPressed: () => Navigator.of(context).push(SlideRightRoute(
+                      page: const FolderPage(),
+                    )),
+                    icon: Icon(
+                      Icons.create_new_folder_sharp,
+                      color: Colors.grey[300],
+                    ),
+                    label: Text(
+                      "Add",
+                      style: TextStyle(
+                        color: Colors.grey[200],
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -189,28 +208,6 @@ class _NoteListState extends State<NoteList>
     );
   }
 
-  TextButton addFolder(BuildContext context) {
-    return TextButton.icon(
-      onPressed: () async {
-        String? name = await showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return const AddFolderDialog();
-          },
-        );
-        if (name != null) await _database.addFolder(name: name);
-      },
-      icon: const Icon(
-        Icons.add,
-        color: Colors.white,
-      ),
-      label: const Text(
-        "Folder",
-        style: TextStyle(color: Colors.white),
-      ),
-    );
-  }
-
   ListView myListBuilder(List<Note> notes) {
     return ListView.builder(
       physics: const AlwaysScrollableScrollPhysics(
@@ -239,13 +236,17 @@ class _NoteListState extends State<NoteList>
                   _getTapPosition(details);
                 },
                 onLongPress: () {
+                  HapticFeedback.vibrate();
                   _showContextMenu(context, note);
                 },
                 child: ListTile(
                   minVerticalPadding: 15,
                   onTap: () => Navigator.push(
                     context,
-                    SlideRightRoute(page: const AddNote(), arguments: note),
+                    SlideRightRoute(
+                      page: const AddNote(),
+                      arguments: note,
+                    ),
                   ),
                   title: listTitle(note),
                   subtitle: listSubTitle(note),
@@ -337,8 +338,13 @@ class _NoteListState extends State<NoteList>
       constraints: const BoxConstraints(minWidth: 170.0, maxWidth: 170.0),
       items: [
         PopupMenuItem(
-          value: "Folders",
-          child: folderMenu(note),
+          value: "folders",
+          child: Text(
+            "Move To",
+            style: TextStyle(
+              color: Colors.grey[300],
+            ),
+          ),
         ),
         PopupMenuItem(
           value: "important",
@@ -358,57 +364,13 @@ class _NoteListState extends State<NoteList>
           note: note.copyWith(imp: note.imp == 0 ? 1 : 0),
         );
         break;
+      case "folders":
+        Navigator.of(context).push(SlideRightRoute(
+          page: const FolderPage(),
+          arguments: note,
+        ));
+        break;
       default:
     }
-  }
-
-  PopupMenuButton<String> folderMenu(Note note) {
-    return PopupMenuButton<String>(
-      color: Colors.black,
-      initialValue: note.category.isEmpty ? note.category : null,
-      itemBuilder: (BuildContext context) {
-        return _folders.map((Folder item) {
-          return PopupMenuItem<String>(
-            value: item.name,
-            child: Text(
-              item.name,
-              style: TextStyle(
-                color:
-                    note.category == item.name ? Colors.blue : Colors.grey[300],
-              ),
-            ),
-          );
-        }).toList();
-      },
-      child: Container(
-        decoration: null,
-        padding: const EdgeInsets.symmetric(vertical: 12.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Text(
-              "Move To",
-              style: TextStyle(color: Colors.grey[200]),
-            ),
-            Icon(
-              Icons.arrow_forward_ios_sharp,
-              size: 15.0,
-              color: Colors.grey[300],
-            ),
-          ],
-        ),
-      ),
-      onSelected: (value) async {
-        if (value == note.category) {
-          await _database.updateNote(
-            note: note.copyWith(category: ""),
-          );
-        } else {
-          await _database.updateNote(
-            note: note.copyWith(category: value),
-          );
-        }
-      },
-    );
   }
 }

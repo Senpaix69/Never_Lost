@@ -80,7 +80,7 @@ class DatabaseService {
     _catchAllTimeTables();
     _catchAllNotes();
     _catchAllTodos();
-    _catchAllFolders();
+    catchAllFolders();
     _database = db;
   }
 
@@ -432,7 +432,7 @@ class DatabaseService {
     _foldersController.add(_cachedFolders);
   }
 
-  Future<void> _catchAllFolders() async {
+  Future<void> catchAllFolders() async {
     final folders = await getFoldersStream();
     _cachedFolders = folders.toList();
     _foldersController.add(_cachedFolders);
