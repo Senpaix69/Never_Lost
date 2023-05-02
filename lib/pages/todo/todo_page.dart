@@ -59,7 +59,7 @@ class _TodoListState extends State<TodoList>
       final nowTime = DateTime.now();
       if (time.isAfter(nowTime)) {
         await NotificationService.scheduleNotification(
-          scheduleDate: DateTime.parse(todo.date!),
+          scheduleDate: time,
           id: todo.id!,
           title: "Task Reminder",
           body: todo.text,
@@ -132,6 +132,7 @@ class _TodoListState extends State<TodoList>
 
   ListView myListBuilder(List<Todo> todos) {
     return ListView.builder(
+      shrinkWrap: true,
       physics: const AlwaysScrollableScrollPhysics(
         parent: BouncingScrollPhysics(),
       ),
@@ -150,6 +151,7 @@ class _TodoListState extends State<TodoList>
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: ListTile(
+                key: ValueKey(todo.id!),
                 onLongPress: () async => await deleteTodo(todo.id!),
                 onTap: () => _showAddTodoBottomSheet(todo),
                 leading: Checkbox(

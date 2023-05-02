@@ -228,6 +228,9 @@ class _AddSubjectState extends State<AddSubject> {
   }
 
   String? subjectValidate(String? value) {
+    if (_timeTable != null) {
+      return textValidate(value);
+    }
     String? valid = textValidate(value);
     bool isDuplicate = false;
     for (var timeTable in _allTimeTables) {

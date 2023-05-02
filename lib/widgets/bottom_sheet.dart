@@ -21,11 +21,9 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
   void initState() {
     super.initState();
     _textController = TextEditingController();
-    if (widget.todo != null) {
-      _textController.text = widget.todo!.text;
-      _date =
-          widget.todo?.date != null ? DateTime.parse(widget.todo!.date!) : null;
-    }
+    _textController.text = widget.todo?.text ?? "";
+    _date =
+        widget.todo?.date != null ? DateTime.parse(widget.todo!.date!) : null;
     _database = DatabaseService();
   }
 
@@ -38,6 +36,9 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
   void goBack() => Navigator.of(context).pop();
 
   Future<void> setSchedule(Todo todo) async {
+    if (todo.date == null) {
+      return;
+    }
     await NotificationService.scheduleNotification(
       scheduleDate: _date!,
       id: todo.id!,
@@ -60,12 +61,11 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
           complete: widget.todo!.complete,
         ),
       );
-      if (_date == null) {
+      if (_date == null || !isPassedReminder) {
         await NotificationService.cancelScheduleNotification(
           id: widget.todo!.id!,
         );
-      } else if (!isPassedReminder) {
-        await setSchedule(widget.todo!);
+        await setSchedule(todo.copyWith(id: widget.todo!.id!));
       }
     } else {
       final res = await _database.insertTodo(todo: todo);

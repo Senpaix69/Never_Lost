@@ -215,6 +215,7 @@ class _NoteListState extends State<NoteList>
 
   ListView myListBuilder(List<Note> notes) {
     return ListView.builder(
+      shrinkWrap: true,
       physics: const AlwaysScrollableScrollPhysics(
         parent: BouncingScrollPhysics(),
       ),
@@ -243,6 +244,7 @@ class _NoteListState extends State<NoteList>
                   _showContextMenu(context, note);
                 },
                 child: ListTile(
+                  key: ValueKey(note.id!),
                   minVerticalPadding: 15,
                   onTap: () => Navigator.push(
                     context,
@@ -269,7 +271,7 @@ class _NoteListState extends State<NoteList>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            note.body.toString().split("\n").join(""),
+            note.body.toString().split("\n").join(" "),
             softWrap: true,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(fontSize: 14.0, color: Colors.grey[200]),

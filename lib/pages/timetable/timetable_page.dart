@@ -123,6 +123,7 @@ class _TimeTablePageState extends State<TimeTablePage> {
         child: Drawer(
           backgroundColor: Colors.lightBlue,
           child: ListView(
+            shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             padding: EdgeInsets.zero,
             children: <Widget>[
@@ -259,6 +260,7 @@ class _TimeTablePageState extends State<TimeTablePage> {
                     padding: const EdgeInsets.symmetric(horizontal: 6.0),
                     decoration: null,
                     child: ListView.builder(
+                      shrinkWrap: true,
                       physics: const AlwaysScrollableScrollPhysics(
                         parent: BouncingScrollPhysics(),
                       ),
