@@ -147,7 +147,9 @@ class _TodoListState extends State<TodoList>
             child: Container(
               margin: const EdgeInsets.symmetric(vertical: 5.0),
               decoration: BoxDecoration(
-                color: Colors.black.withAlpha(180),
+                color: todo.complete == 1
+                    ? Colors.black.withAlpha(100)
+                    : Colors.black.withAlpha(180),
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: ListTile(
@@ -165,7 +167,7 @@ class _TodoListState extends State<TodoList>
                   style: TextStyle(
                     color: todo.complete == 1 ? Colors.grey : Colors.grey[200],
                     fontSize: 16.0,
-                    decorationThickness: 6.0,
+                    decorationThickness: 2.0,
                     decoration:
                         todo.complete == 1 ? TextDecoration.lineThrough : null,
                   ),
