@@ -290,7 +290,7 @@ class _NoteListState extends State<NoteList>
               if (note.imp != 0)
                 const Icon(
                   Icons.star,
-                  color: Colors.redAccent,
+                  color: Colors.lightBlue,
                   size: 20.0,
                 ),
             ],
