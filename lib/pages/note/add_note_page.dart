@@ -16,6 +16,8 @@ class _AddNoteState extends State<AddNote> {
   late final DatabaseService _database;
   late final TextEditingController _title;
   late final TextEditingController _body;
+  final FocusNode _focusTitle = FocusNode();
+  final FocusNode _focusText = FocusNode();
 
   Note? _isNote;
   final _formKey = GlobalKey<FormState>();
@@ -71,7 +73,12 @@ class _AddNoteState extends State<AddNote> {
       } else {
         await _database.insertNote(note: todo);
       }
-      goBack();
+      _focusTitle.unfocus();
+      _focusText.unfocus();
+      setState(() {
+        _isEditing = false;
+      });
+      // goBack();
     }
   }
 
@@ -140,6 +147,7 @@ class _AddNoteState extends State<AddNote> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     TextFormField(
+                      focusNode: _focusTitle,
                       onChanged: checkNote,
                       enableSuggestions: false,
                       autocorrect: false,
@@ -169,6 +177,7 @@ class _AddNoteState extends State<AddNote> {
                       height: 20.0,
                     ),
                     TextFormField(
+                      focusNode: _focusText,
                       onChanged: checkNote,
                       enableSuggestions: false,
                       autocorrect: false,
@@ -186,10 +195,6 @@ class _AddNoteState extends State<AddNote> {
                         color: Colors.grey[300],
                       ),
                     ),
-                    const SizedBox(
-                      height: 100,
-                    ),
-                    insertAttachment(),
                   ]),
             ),
           ),
@@ -209,6 +214,10 @@ class _AddNoteState extends State<AddNote> {
       title: Text(_isNote != null ? "Edit Note" : "Add Note"),
       elevation: 0.0,
       actions: <Widget>[
+        IconButton(
+          onPressed: () {},
+          icon: const Icon(Icons.attachment),
+        ),
         if (_isNote != null)
           IconButton(
             onPressed: () => deleteNote(),
@@ -221,35 +230,11 @@ class _AddNoteState extends State<AddNote> {
             onPressed: () => saveNote(),
             icon: const Icon(Icons.check),
           ),
+        if (!_isEditing)
+          const SizedBox(
+            width: 10,
+          ),
       ],
     );
   }
-}
-
-Padding insertAttachment() {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-    child: DottedBorder(
-      color: const Color.fromARGB(255, 76, 76, 76),
-      strokeWidth: 2,
-      borderType: BorderType.RRect,
-      dashPattern: const [3, 4],
-      radius: const Radius.circular(20.0),
-      child: Container(
-        width: double.infinity,
-        height: 200,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        child: const Center(
-          child: Text(
-            "Insert Attachment",
-            style: TextStyle(
-              color: Colors.grey,
-            ),
-          ),
-        ),
-      ),
-    ),
-  );
 }
