@@ -46,8 +46,8 @@ class _TodoListState extends State<TodoList>
     bool confirmDel =
         await confirmDialogue(context: context, message: "Delete this todo?");
     if (confirmDel) {
-      await _database.deleteTodo(id: id);
       await NotificationService.cancelScheduleNotification(id: id);
+      await _database.deleteTodo(id: id);
     }
   }
 
