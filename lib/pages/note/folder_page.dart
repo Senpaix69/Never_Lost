@@ -116,10 +116,8 @@ class _FolderPageState extends State<FolderPage> {
             borderRadius: BorderRadius.circular(10.0),
           ),
           onTap: () => updateCategory(folders[index].name),
-          tileColor: isNote
-              ? _note!.category == folders[index].name
-                  ? Colors.blue.withAlpha(180)
-                  : Colors.black.withAlpha(180)
+          tileColor: _note?.category == folders[index].name
+              ? Colors.blue.withAlpha(180)
               : Colors.black.withAlpha(180),
           title: Text(
             folders[index].name,
@@ -131,7 +129,7 @@ class _FolderPageState extends State<FolderPage> {
               ? _note!.category == folders[index].name
                   ? const Icon(
                       Icons.check,
-                      color: Colors.amber,
+                      color: Colors.white,
                       size: 30.0,
                     )
                   : const SizedBox()
