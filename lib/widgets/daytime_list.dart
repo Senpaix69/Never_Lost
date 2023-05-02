@@ -44,7 +44,7 @@ class _DayTimeListState extends State<DayTimeList> {
     return ListTile(
       key: ValueKey(day.id!),
       leading: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 2.0),
+        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
         child: isAdding
             ? Text(
                 day.roomNo,
