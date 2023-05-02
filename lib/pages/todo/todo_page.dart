@@ -165,8 +165,9 @@ class _TodoListState extends State<TodoList>
                   softWrap: true,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: todo.complete == 1 ? Colors.grey : Colors.grey[200],
+                    color: todo.complete == 1 ? Colors.grey : Colors.grey[300],
                     fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
                     decorationThickness: 2.0,
                     decoration:
                         todo.complete == 1 ? TextDecoration.lineThrough : null,
