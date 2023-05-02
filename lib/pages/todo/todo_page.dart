@@ -184,7 +184,7 @@ class _TodoListState extends State<TodoList>
                         todo.reminder != 1)
                     ? const Icon(
                         Icons.alarm_on_sharp,
-                        color: Colors.amber,
+                        color: Colors.lightBlue,
                       )
                     : null,
               ),

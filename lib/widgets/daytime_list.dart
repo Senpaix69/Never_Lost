@@ -44,7 +44,7 @@ class _DayTimeListState extends State<DayTimeList> {
     return ListTile(
       key: ValueKey(day.id!),
       leading: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 14.0),
+        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 2.0),
         child: isAdding
             ? Text(
                 day.roomNo,
@@ -54,10 +54,8 @@ class _DayTimeListState extends State<DayTimeList> {
                 ),
               )
             : Icon(
-                isReminder
-                    ? Icons.notifications_active_sharp
-                    : Icons.wysiwyg_outlined,
-                size: 30.0,
+                isReminder ? Icons.access_time_filled_sharp : Icons.access_time,
+                size: 35.0,
                 color: day.currentSlot
                     ? Colors.yellow
                     : day.nextSlot

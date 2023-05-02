@@ -65,7 +65,7 @@ Container headerContainer({
                   Icon(
                     reminder ? Icons.notifications_active : Icons.notifications,
                     size: 20.0,
-                    color: reminder ? Colors.yellow : Colors.grey[300],
+                    color: reminder ? Colors.lightBlue : Colors.grey[300],
                   ),
                   PopupMenuButton(
                     padding: EdgeInsets.zero,
