@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/note_services/folder.dart';
 import 'package:my_timetable/services/note_services/note.dart';
-import 'package:my_timetable/utils.dart' show GetArgument, deleteFolder;
+import 'package:my_timetable/utils.dart'
+    show GetArgument, deleteFolder, emptyWidget;
 import 'package:my_timetable/widgets/add_folder.dart';
 
 class FolderPage extends StatefulWidget {
@@ -75,6 +76,9 @@ class _FolderPageState extends State<FolderPage> {
               );
             }
             _folders = snapshot.data!;
+            if (_folders!.isEmpty) {
+              return emptyWidget(icon: Icons.folder, message: "No Folders Yet");
+            }
             return folderList(_folders!, isNote);
           },
         ),

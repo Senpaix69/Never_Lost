@@ -287,12 +287,25 @@ class _NoteListState extends State<NoteList>
                   color: Colors.grey[300],
                 ),
               ),
-              if (note.imp != 0)
-                const Icon(
-                  Icons.star,
-                  color: Colors.lightBlue,
-                  size: 20.0,
-                ),
+              Row(
+                children: <Widget>[
+                  if (note.files.isNotEmpty)
+                    const Icon(
+                      Icons.attachment_outlined,
+                      color: Colors.lightBlue,
+                      size: 20.0,
+                    ),
+                  const SizedBox(
+                    width: 6.0,
+                  ),
+                  if (note.imp != 0)
+                    const Icon(
+                      Icons.star,
+                      color: Colors.lightBlue,
+                      size: 20.0,
+                    ),
+                ],
+              )
             ],
           ),
         ],
