@@ -99,6 +99,7 @@ void sortTimeTables(List<dynamic> timeTables) {
 String _getDaysLater(int day) {
   if (day == 0) return "Today";
   if (day == 1) return "Tomorrow";
+  if (day < 0) return "";
   return "$day days remain";
 }
 

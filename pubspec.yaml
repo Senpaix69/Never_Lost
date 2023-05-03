@@ -43,6 +43,8 @@ dependencies:
   timezone: ^0.9.1
   dotted_border: ^2.0.0+3
   url_launcher: ^6.1.10
+  file_picker: ^5.2.11
+  path_provider: ^2.0.14
 
 dev_dependencies:
   flutter_test:

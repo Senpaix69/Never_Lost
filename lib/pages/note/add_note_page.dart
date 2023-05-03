@@ -1,9 +1,13 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/note_services/note.dart';
 import 'package:my_timetable/utils.dart' show GetArgument, textValidate;
 import 'package:my_timetable/widgets/dialog_boxs.dart';
+import 'package:path_provider/path_provider.dart';
 
 class AddNote extends StatefulWidget {
   const AddNote({super.key});
@@ -15,6 +19,7 @@ class _AddNoteState extends State<AddNote> {
   late final DatabaseService _database;
   late final TextEditingController _title;
   late final TextEditingController _body;
+  List<String> _files = [];
   final FocusNode _focusTitle = FocusNode();
   final FocusNode _focusText = FocusNode();
 
@@ -25,6 +30,22 @@ class _AddNoteState extends State<AddNote> {
   String _date() {
     final DateFormat formatter = DateFormat('EEEE MMMM d hh:mm a', 'en_US');
     return formatter.format(DateTime.now());
+  }
+
+  void addFile() async {
+    final result = await FilePicker.platform.pickFiles();
+    if (result != null && result.files.isNotEmpty) {
+      final file = result.files.single;
+      final appDir = await getApplicationDocumentsDirectory();
+      final fileName = '${DateTime.now().toIso8601String()}_${file.name}';
+      final copyPath = '${appDir.path}/$fileName';
+      await File(file.path!).copy(copyPath);
+      if (_isNote != null) {
+        _files = [..._isNote!.files, copyPath];
+      } else {
+        _files.add(copyPath);
+      }
+    }
   }
 
   @override
@@ -55,15 +76,18 @@ class _AddNoteState extends State<AddNote> {
   }
 
   Future<void> saveNote() async {
+    bool updateNote = _isNote != null;
     if (_formKey.currentState!.validate()) {
       final todo = Note(
         title: _title.text,
         body: _body.text,
-        date: _isNote != null ? _isNote!.date : _date(),
-        category: _isNote != null ? _isNote!.category : "",
+        imp: updateNote ? _isNote!.imp : 0,
+        date: updateNote ? _isNote!.date : _date(),
+        category: updateNote ? _isNote!.category : "",
+        files: updateNote ? _isNote!.files : _files,
       );
 
-      if (_isNote != null) {
+      if (updateNote) {
         await _database.updateNote(
           note: todo.copyWith(
             id: _isNote!.id,
@@ -74,10 +98,7 @@ class _AddNoteState extends State<AddNote> {
       }
       _focusTitle.unfocus();
       _focusText.unfocus();
-      setState(() {
-        _isEditing = false;
-      });
-      // goBack();
+      setState(() => _isEditing = false);
     }
   }
 
@@ -142,59 +163,69 @@ class _AddNoteState extends State<AddNote> {
             child: Form(
               key: _formKey,
               child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    TextFormField(
-                      focusNode: _focusTitle,
-                      onChanged: checkNote,
-                      enableSuggestions: false,
-                      autocorrect: false,
-                      maxLines: null,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintStyle: TextStyle(color: Colors.grey[500]),
-                        hintText: 'Title',
-                      ),
-                      controller: _title,
-                      style: TextStyle(
-                        color: Colors.grey[300],
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      validator: textValidate,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  TextFormField(
+                    focusNode: _focusTitle,
+                    onChanged: checkNote,
+                    enableSuggestions: false,
+                    autocorrect: false,
+                    maxLines: null,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintStyle: TextStyle(color: Colors.grey[500]),
+                      hintText: 'Title',
                     ),
+                    controller: _title,
+                    style: TextStyle(
+                      color: Colors.grey[300],
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    validator: textValidate,
+                  ),
+                  Text(
+                    _isNote != null ? _isNote!.date : _date(),
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 12.0,
+                      letterSpacing: 0.6,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20.0,
+                  ),
+                  TextFormField(
+                    focusNode: _focusText,
+                    onChanged: checkNote,
+                    enableSuggestions: false,
+                    autocorrect: false,
+                    maxLines: null,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintStyle: TextStyle(color: Colors.grey[500]),
+                      hintText: 'write note here...',
+                    ),
+                    controller: _body,
+                    validator: textValidate,
+                    style: TextStyle(
+                      fontSize: 15.0,
+                      letterSpacing: 0.3,
+                      color: Colors.grey[300],
+                    ),
+                  ),
+                  if (_files.isNotEmpty)
                     Text(
-                      _isNote != null ? _isNote!.date : _date(),
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 12.0,
-                        letterSpacing: 0.6,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20.0,
-                    ),
-                    TextFormField(
-                      focusNode: _focusText,
-                      onChanged: checkNote,
-                      enableSuggestions: false,
-                      autocorrect: false,
-                      maxLines: null,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintStyle: TextStyle(color: Colors.grey[500]),
-                        hintText: 'write note here...',
-                      ),
-                      controller: _body,
-                      validator: textValidate,
+                      "Attachment",
                       style: TextStyle(
                         fontSize: 15.0,
                         letterSpacing: 0.3,
                         color: Colors.grey[300],
                       ),
                     ),
-                  ]),
+                ],
+              ),
             ),
           ),
         ),
@@ -214,7 +245,7 @@ class _AddNoteState extends State<AddNote> {
       elevation: 0.0,
       actions: <Widget>[
         IconButton(
-          onPressed: () {},
+          onPressed: () => addFile(),
           icon: const Icon(Icons.attachment),
         ),
         if (_isNote != null)

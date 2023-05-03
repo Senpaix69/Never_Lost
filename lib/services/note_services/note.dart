@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:my_timetable/services/constants.dart';
 
@@ -10,7 +9,7 @@ class Note {
   final String body;
   final String date;
   final String category;
-  final List<String> images;
+  final List<String> files;
 
   const Note({
     this.id,
@@ -19,7 +18,7 @@ class Note {
     required this.date,
     this.imp = 0,
     this.category = "",
-    this.images = const [],
+    this.files = const [],
   });
 
   Map<String, Object?> toMap() {
@@ -30,7 +29,7 @@ class Note {
       noteDateColumn: date,
       noteImpColumn: imp,
       noteCategoryColumn: category,
-      noteImagesColumn: json.encode(images),
+      noteFilesColumn: files.join(','),
     };
   }
 
@@ -42,11 +41,7 @@ class Note {
       date: map[noteDateColumn] as String,
       category: map[noteCategoryColumn] as String,
       imp: map[noteImpColumn] as int,
-      images: List<String>.from(
-        json.decode(
-          map[noteImagesColumn] as String,
-        ) as Iterable<dynamic>,
-      ),
+      files: (map[noteFilesColumn] as String?)?.split(',') ?? [],
     );
   }
 
@@ -57,7 +52,7 @@ class Note {
     String? body,
     String? date,
     String? category,
-    List<String>? images,
+    List<String>? files,
   }) {
     return Note(
       id: id ?? this.id,
@@ -66,12 +61,12 @@ class Note {
       date: date ?? this.date,
       imp: imp ?? this.imp,
       category: category ?? this.category,
-      images: images ?? this.images,
+      files: files ?? this.files,
     );
   }
 
   @override
   String toString() {
-    return "Todo: {id: $id, title: $title, body: $body, date: $date, category: $category, important: $imp, images: [${json.encode(images)}]\n";
+    return "Note: {id: $id, title: $title, body: $body, date: $date, category: $category, important: $imp, files: [${files.join(', ')}]\n";
   }
 }

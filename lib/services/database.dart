@@ -76,6 +76,8 @@ class DatabaseService {
         await db.execute('PRAGMA foreign_keys = ON;');
       },
     );
+    // await db.execute('DROP TABLE IF EXISTS $noteTable');
+    // await db.execute(createNoteTable);
 
     _catchAllTimeTables();
     _catchAllNotes();

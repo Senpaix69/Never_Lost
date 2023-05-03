@@ -42,7 +42,7 @@ class _DayTimeListState extends State<DayTimeList> {
     bool isAdding = widget.callBack != null;
     bool isReminder = widget.reminder;
     return ListTile(
-      key: ValueKey(day.id!),
+      key: ValueKey(index),
       leading: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
         child: isAdding
