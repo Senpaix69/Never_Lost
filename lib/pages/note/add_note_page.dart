@@ -172,111 +172,123 @@ class _AddNoteState extends State<AddNote> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: myAppBar(),
-      body: GestureDetector(
-        onTap: () {
-          FocusScopeNode currentFocus = FocusScope.of(context);
-          if (!currentFocus.hasPrimaryFocus) {
-            currentFocus.unfocus();
-          }
-        },
-        child: Container(
-          decoration: null,
-          width: double.infinity,
-          height: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(
-                parent: BouncingScrollPhysics()),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  TextFormField(
-                    focusNode: _focusTitle,
-                    onChanged: checkNote,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    maxLines: null,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintStyle: TextStyle(color: Colors.grey[500]),
-                      hintText: 'Title',
+    return WillPopScope(
+      onWillPop: () async => _files.isNotEmpty && _title.text.isEmpty,
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        appBar: myAppBar(),
+        body: GestureDetector(
+          onTap: () {
+            FocusScopeNode currentFocus = FocusScope.of(context);
+            if (!currentFocus.hasPrimaryFocus) {
+              currentFocus.unfocus();
+            }
+          },
+          child: Container(
+            decoration: null,
+            width: double.infinity,
+            height: double.infinity,
+            padding:
+                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(
+                  parent: BouncingScrollPhysics()),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    TextFormField(
+                      focusNode: _focusTitle,
+                      onChanged: checkNote,
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      maxLines: null,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintStyle: TextStyle(color: Colors.grey[500]),
+                        hintText: 'Title',
+                      ),
+                      controller: _title,
+                      style: TextStyle(
+                        color: Colors.grey[300],
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      validator: textValidate,
                     ),
-                    controller: _title,
-                    style: TextStyle(
-                      color: Colors.grey[300],
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
+                    Text(
+                      _isNote != null ? _isNote!.date : _date(),
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 12.0,
+                        letterSpacing: 0.6,
+                      ),
                     ),
-                    validator: textValidate,
-                  ),
-                  Text(
-                    _isNote != null ? _isNote!.date : _date(),
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 12.0,
-                      letterSpacing: 0.6,
+                    const SizedBox(
+                      height: 20.0,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 20.0,
-                  ),
-                  TextFormField(
-                    focusNode: _focusText,
-                    onChanged: checkNote,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    maxLines: null,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintStyle: TextStyle(color: Colors.grey[500]),
-                      hintText: 'write note here...',
+                    TextFormField(
+                      focusNode: _focusText,
+                      onChanged: checkNote,
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      maxLines: null,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintStyle: TextStyle(color: Colors.grey[500]),
+                        hintText: 'write note here...',
+                      ),
+                      controller: _body,
+                      validator: textValidate,
+                      style: TextStyle(
+                        fontSize: 15.0,
+                        letterSpacing: 0.3,
+                        color: Colors.grey[300],
+                      ),
                     ),
-                    controller: _body,
-                    validator: textValidate,
-                    style: TextStyle(
-                      fontSize: 15.0,
-                      letterSpacing: 0.3,
-                      color: Colors.grey[300],
+                    const SizedBox(
+                      height: 20.0,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 20.0,
-                  ),
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 200,
-                      childAspectRatio: 1,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 200,
+                        childAspectRatio: 1,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                      ),
+                      itemCount: _files.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final file = File(_files[index]);
+                        final basename = file.path.split('/').last;
+                        return Card(
+                          elevation: 3,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: <Widget>[
+                              Expanded(
+                                child:
+                                    file.path.toLowerCase().endsWith('.png') ||
+                                            file.path
+                                                .toLowerCase()
+                                                .endsWith('.jpg') ||
+                                            file.path
+                                                .toLowerCase()
+                                                .endsWith('.jpeg')
+                                        ? imagesTile(context, index, file)
+                                        : files(basename, index, file),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                     ),
-                    itemCount: _files.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      final file = File(_files[index]);
-                      final basename = file.path.split('/').last;
-                      return Card(
-                        elevation: 3,
-                        child: Column(
-                          children: [
-                            file.path.toLowerCase().endsWith('.png') ||
-                                    file.path.toLowerCase().endsWith('.jpg') ||
-                                    file.path.toLowerCase().endsWith('.jpeg')
-                                ? imagesTile(context, index, file)
-                                : files(basename, index, file),
-                          ],
-                        ),
-                      );
-                    },
-                  )
-                ],
+                  ],
+                ),
               ),
             ),
           ),
