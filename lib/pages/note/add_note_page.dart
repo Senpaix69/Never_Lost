@@ -47,6 +47,7 @@ class _AddNoteState extends State<AddNote> {
           } else {
             _files.add(copyPath);
           }
+
           _isEditing = true;
         },
       );
