@@ -5,9 +5,13 @@ import 'package:intl/intl.dart' show DateFormat;
 import 'package:my_timetable/pages/note/image_preview_page.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/note_services/note.dart';
-import 'package:my_timetable/utils.dart' show GetArgument, textValidate;
+import 'package:my_timetable/utils.dart'
+    show GetArgument, textValidate, showSnackBar, removeEmptyFilesAndImages;
+import 'package:my_timetable/widgets/animate_route.dart' show FadeRoute;
 import 'package:my_timetable/widgets/dialog_boxs.dart' show confirmDialogue;
-import 'package:path_provider/path_provider.dart';
+import 'package:path_provider/path_provider.dart'
+    show getExternalStorageDirectory, getApplicationDocumentsDirectory;
+import 'package:path/path.dart' as path show basename;
 
 class AddNote extends StatefulWidget {
   const AddNote({super.key});
@@ -20,6 +24,7 @@ class _AddNoteState extends State<AddNote> {
   late final TextEditingController _title;
   late final TextEditingController _body;
   List<String> _files = [];
+  List<String> _images = [];
   final FocusNode _focusTitle = FocusNode();
   final FocusNode _focusText = FocusNode();
 
@@ -32,46 +37,104 @@ class _AddNoteState extends State<AddNote> {
     return formatter.format(DateTime.now());
   }
 
-  void addFile() async {
-    final result = await FilePicker.platform.pickFiles();
-    if (result != null && result.files.isNotEmpty) {
-      final file = result.files.single;
-      final appDir = await getApplicationDocumentsDirectory();
-      final fileName = '${DateTime.now().toIso8601String()}_${file.name}';
-      final copyPath = '${appDir.path}/$fileName';
-      await File(file.path!).copy(copyPath);
-      setState(
-        () {
-          if (_isNote != null) {
-            _files = [..._isNote!.files, copyPath];
-          } else {
-            _files.add(copyPath);
-          }
+  Future<String> getDownloadDirectoryPath() async {
+    final directory = await getExternalStorageDirectory();
+    return '${directory!.path}/Download';
+  }
 
-          _isEditing = true;
-        },
-      );
+  void addFile() async {
+    final result = await FilePicker.platform.pickFiles(allowMultiple: true);
+    if (result != null && result.files.isNotEmpty) {
+      final appDir = await getApplicationDocumentsDirectory();
+      final newImages = <String>[];
+      final newFiles = <String>[];
+      for (final file in result.files) {
+        final fileName = '${DateTime.now().toIso8601String()}_${file.name}';
+        final copyPath = '${appDir.path}/$fileName';
+        if (file.extension!.toLowerCase() == 'png' ||
+            file.extension!.toLowerCase() == 'jpg' ||
+            file.extension!.toLowerCase() == 'jpeg') {
+          await File(file.path!).copy(copyPath);
+          newImages.add(copyPath);
+        } else if (file.extension!.toLowerCase() != 'mp4' &&
+            file.extension!.toLowerCase() != 'mkv') {
+          await File(file.path!).copy(copyPath);
+          newFiles.add(copyPath);
+        } else {
+          showMessage("You can not select video file");
+        }
+      }
+      setState(() {
+        _images = [..._images, ...newImages];
+        _files = [..._files, ...newFiles];
+        _isEditing = true;
+      });
       if (_isNote != null) {
-        await _database.updateNote(note: _isNote!.copyWith(files: _files));
-        _isNote = _isNote!.copyWith(files: _files);
+        await _database.updateNote(
+          note: _isNote!.copyWith(
+            images: _images,
+            files: _files,
+          ),
+        );
+        _isNote = _isNote!.copyWith(images: _images, files: _files);
       }
     }
   }
 
-  Future<void> deleteFile(String path, int index) async {
+  void showMessage(String message) => showSnackBar(context, message);
+
+  // todo needs to complete this function
+  Future<void> downloadFile(File file, String basename) async {
+    final externalDir = await getExternalStorageDirectory();
+    if (externalDir != null) {
+      final fileName = file.path.split('/').last;
+      final newPath = '${externalDir.path}/$fileName';
+      await file.copy(newPath);
+      showMessage("Downloaded File Successfully");
+    }
+  }
+
+  Future<void> deleteFile(String path, int index, String type) async {
     bool del = await confirmDialogue(
-        context: context, message: "Do you want to delete this file?");
+      context: context,
+      message: "Do you want to delete this file?",
+      title: "Delete File",
+    );
     if (!del) return;
     setState(
       () {
-        _files.removeAt(index);
+        type == "image" ? _images.removeAt(index) : _files.removeAt(index);
         _isEditing = true;
       },
     );
-    await File(path).delete();
-    if (_isNote != null) {
-      await _database.updateNote(note: _isNote!.copyWith(files: _files));
-      _isNote = _isNote!.copyWith(files: _files);
+    final file = File(path);
+    if (!file.existsSync()) {
+      showMessage("Could not delete file");
+      return;
+    }
+    file.delete();
+    if (_isNote == null) return;
+    if (type == "image") {
+      await _database.updateNote(note: _isNote!.copyWith(images: _images));
+      _isNote = _isNote!.copyWith(images: _images);
+      return;
+    }
+    await _database.updateNote(note: _isNote!.copyWith(files: _files));
+    _isNote = _isNote!.copyWith(files: _files);
+  }
+
+  Future<void> deleteAllFiles() async {
+    for (int i = 0; i < _files.length; i++) {
+      final file = File(_files[i]);
+      if (file.existsSync()) {
+        await file.delete();
+      }
+    }
+    for (int i = 0; i < _images.length; i++) {
+      final file = File(_images[i]);
+      if (file.existsSync()) {
+        await file.delete();
+      }
     }
   }
 
@@ -91,7 +154,8 @@ class _AddNoteState extends State<AddNote> {
     if (widgetTable != null) {
       _title.text = widgetTable.title;
       _body.text = widgetTable.body;
-      _files = widgetTable.files;
+      _files = removeEmptyFilesAndImages(widgetTable.files);
+      _images = removeEmptyFilesAndImages(widgetTable.images);
       _isNote = widgetTable;
     }
   }
@@ -106,23 +170,23 @@ class _AddNoteState extends State<AddNote> {
   Future<void> saveNote() async {
     bool updateNote = _isNote != null;
     if (_formKey.currentState!.validate()) {
-      final todo = Note(
+      final note = Note(
         title: _title.text,
         body: _body.text,
         imp: updateNote ? _isNote!.imp : 0,
         date: updateNote ? _isNote!.date : _date(),
         category: updateNote ? _isNote!.category : "",
         files: updateNote ? _isNote!.files : _files,
+        images: updateNote ? _isNote!.images : _images,
       );
-
       if (updateNote) {
         await _database.updateNote(
-          note: todo.copyWith(
+          note: note.copyWith(
             id: _isNote!.id,
           ),
         );
       } else {
-        await _database.insertNote(note: todo);
+        await _database.insertNote(note: note);
       }
       _focusTitle.unfocus();
       _focusText.unfocus();
@@ -132,11 +196,12 @@ class _AddNoteState extends State<AddNote> {
 
   Future<void> deleteNote() async {
     bool isDel = await confirmDialogue(
-        context: context, message: "Do you really want to delete this todo?");
+      context: context,
+      message: "Do you really want to delete this todo?",
+      title: "Delete Note",
+    );
     if (isDel && _isNote != null) {
-      for (int i = 0; i < _files.length; i++) {
-        await File(_files[i]).delete();
-      }
+      await deleteAllFiles();
       await _database.deleteNote(id: _isNote!.id!);
       goBack();
     }
@@ -147,12 +212,15 @@ class _AddNoteState extends State<AddNote> {
   void backPage() async {
     if (_isEditing) {
       bool isChanges = await confirmDialogue(
+        title: "Unsaved changes",
         context: context,
         message: "Some changes have done do you want to save them?",
       );
       if (isChanges) {
         await saveNote();
         return;
+      } else if (_isNote == null && (_files.isNotEmpty || _images.isNotEmpty)) {
+        await deleteAllFiles();
       }
     }
     goBack();
@@ -174,7 +242,7 @@ class _AddNoteState extends State<AddNote> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async => _files.isNotEmpty && _title.text.isEmpty,
+      onWillPop: () async => !_isEditing,
       child: Scaffold(
         backgroundColor: Colors.black,
         appBar: myAppBar(),
@@ -252,42 +320,11 @@ class _AddNoteState extends State<AddNote> {
                     const SizedBox(
                       height: 20.0,
                     ),
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 200,
-                        childAspectRatio: 1,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                      ),
-                      itemCount: _files.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final file = File(_files[index]);
-                        final basename = file.path.split('/').last;
-                        return Card(
-                          elevation: 3,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              Expanded(
-                                child:
-                                    file.path.toLowerCase().endsWith('.png') ||
-                                            file.path
-                                                .toLowerCase()
-                                                .endsWith('.jpg') ||
-                                            file.path
-                                                .toLowerCase()
-                                                .endsWith('.jpeg')
-                                        ? imagesTile(context, index, file)
-                                        : files(basename, index, file),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
+                    imageBuilder(),
+                    const Divider(
+                      height: 20,
                     ),
+                    filesBuilder(),
                   ],
                 ),
               ),
@@ -298,18 +335,49 @@ class _AddNoteState extends State<AddNote> {
     );
   }
 
+  Widget imageBuilder() {
+    if (_images.isEmpty) {
+      return const SizedBox();
+    }
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 200,
+        childAspectRatio: 1,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+      ),
+      itemCount: _images.length,
+      itemBuilder: (BuildContext context, int index) {
+        final image = File(_images[index]);
+        return Card(
+          elevation: 3,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Expanded(
+                child: imagesTile(context, index, image),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   InkWell imagesTile(BuildContext context, int index, File file) {
     return InkWell(
       onTap: () => Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (context) => ImagePreviewScreen(
-            imagePaths: _files,
+        FadeRoute(
+          page: ImagePreviewScreen(
+            imagePaths: _images,
             currentIndex: index,
           ),
         ),
       ),
-      onLongPress: () async => await deleteFile(file.path, index),
+      onLongPress: () async => await deleteFile(file.path, index, "image"),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(5),
         child: Image.file(
@@ -322,16 +390,53 @@ class _AddNoteState extends State<AddNote> {
     );
   }
 
-  ListTile files(String basename, int index, File file) {
+  Widget filesBuilder() {
+    if (_files.isEmpty) {
+      return const SizedBox();
+    }
+    return ListView.separated(
+      shrinkWrap: true,
+      itemCount: _files.length,
+      separatorBuilder: (context, index) => const Divider(
+        height: 10.0,
+      ),
+      itemBuilder: (context, index) {
+        final file = File(_files[index]);
+        return filesTile(path.basename(file.path).split('_')[1], index, file);
+      },
+    );
+  }
+
+  ListTile filesTile(String basename, int index, File file) {
     return ListTile(
+      key: ValueKey(index),
+      minVerticalPadding: 20,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      tileColor: Colors.lightBlue.withAlpha(90),
       leading: Icon(
         Icons.file_open_rounded,
         color: Colors.grey[200],
       ),
-      title: Text(basename),
-      trailing: IconButton(
-          icon: const Icon(Icons.delete),
-          onPressed: () async => await deleteFile(file.path, index)),
+      title: Text(
+        basename,
+        softWrap: true,
+        overflow: TextOverflow.ellipsis,
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () async =>
+                  await deleteFile(file.path, index, "file")),
+          IconButton(
+            icon: const Icon(Icons.file_download),
+            onPressed: () async => await downloadFile(file, basename),
+          ),
+        ],
+      ),
     );
   }
 

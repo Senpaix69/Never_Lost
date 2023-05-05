@@ -12,6 +12,10 @@ const List<String> weekdays = [
   'Sunday',
 ];
 
+List<String> removeEmptyFilesAndImages(List<String> files) {
+  return files.where((file) => file.trim().isNotEmpty).toList();
+}
+
 Map<String, int> getDate(String day) {
   final today = DateTime.now();
   final weekDay = weekdays.indexOf(day) + 1;
@@ -164,7 +168,7 @@ void showSnackBar(BuildContext context, String message) {
     SnackBar(
       behavior: SnackBarBehavior.floating,
       margin: const EdgeInsets.only(bottom: 20.0, left: 5.0, right: 5.0),
-      backgroundColor: Colors.grey[900],
+      backgroundColor: Colors.lightBlue[900],
       showCloseIcon: true,
       content: Text(
         message,

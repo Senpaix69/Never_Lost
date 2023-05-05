@@ -4,7 +4,8 @@ import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:my_timetable/pages/note/folder_page.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/note_services/note.dart';
-import 'package:my_timetable/utils.dart' show emptyWidget, deleteFolder;
+import 'package:my_timetable/utils.dart'
+    show emptyWidget, deleteFolder, removeEmptyFilesAndImages;
 import 'package:my_timetable/widgets/animate_route.dart'
     show SlideFromBottomTransition, SlideRightRoute;
 
@@ -64,120 +65,7 @@ class _NoteListState extends State<NoteList>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(50.0),
-        child: AppBar(
-          backgroundColor: Colors.transparent,
-          flexibleSpace: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 6.0),
-            physics: const BouncingScrollPhysics(),
-            child: Row(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: _folderName.isEmpty
-                          ? MaterialStateColor.resolveWith(
-                              (states) => Colors.blue,
-                            )
-                          : MaterialStateColor.resolveWith(
-                              (states) => Colors.black.withAlpha(100),
-                            ),
-                    ),
-                    child: Text(
-                      "All",
-                      style: TextStyle(
-                        color: _folderName.isEmpty
-                            ? Colors.white
-                            : Colors.grey[200],
-                        fontWeight: _folderName.isEmpty
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                      ),
-                    ),
-                    onPressed: () => setState(() => _folderName = ""),
-                  ),
-                ),
-                StreamBuilder(
-                  stream: _database.allFolder,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done ||
-                        snapshot.connectionState == ConnectionState.waiting) {
-                      return const SizedBox();
-                    }
-                    final folders = snapshot.data!;
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: folders.length,
-                      itemBuilder: (context, index) => Padding(
-                        padding: const EdgeInsets.all(6.0),
-                        child: ElevatedButton(
-                          onLongPress: () async {
-                            final folder = folders[index];
-                            bool del = await deleteFolder(folder, context);
-                            if (del) {
-                              await _database.removeFolder(id: folder.id!);
-                            }
-                          },
-                          key: ValueKey(folders[index].id),
-                          style: ButtonStyle(
-                            backgroundColor: _folderName == folders[index].name
-                                ? MaterialStateColor.resolveWith(
-                                    (states) => Colors.blue,
-                                  )
-                                : MaterialStateColor.resolveWith(
-                                    (states) => Colors.black.withAlpha(100),
-                                  ),
-                          ),
-                          child: Text(
-                            folders[index].name,
-                            style: TextStyle(
-                              color: _folderName == folders[index].name
-                                  ? Colors.white
-                                  : Colors.grey[200],
-                              fontWeight: _folderName == folders[index].name
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
-                            ),
-                          ),
-                          onPressed: () =>
-                              setState(() => _folderName = folders[index].name),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: ElevatedButton.icon(
-                    onPressed: () => Navigator.of(context).push(SlideRightRoute(
-                      page: const FolderPage(),
-                    )),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateColor.resolveWith(
-                        (states) => Colors.black.withAlpha(100),
-                      ),
-                    ),
-                    icon: Icon(
-                      Icons.create_new_folder_sharp,
-                      color: Colors.grey[300],
-                    ),
-                    label: Text(
-                      "Add Folder",
-                      style: TextStyle(
-                        color: Colors.grey[200],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+      appBar: folderBuilder(context),
       body: Container(
         height: double.infinity,
         width: double.infinity,
@@ -208,6 +96,122 @@ class _NoteListState extends State<NoteList>
               child: myListBuilder(sort(notes: notes)),
             );
           },
+        ),
+      ),
+    );
+  }
+
+  PreferredSize folderBuilder(BuildContext context) {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(50.0),
+      child: AppBar(
+        backgroundColor: Colors.transparent,
+        flexibleSpace: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 6.0),
+          physics: const BouncingScrollPhysics(),
+          child: Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(6.0),
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: _folderName.isEmpty
+                        ? MaterialStateColor.resolveWith(
+                            (states) => Colors.blue,
+                          )
+                        : MaterialStateColor.resolveWith(
+                            (states) => Colors.black.withAlpha(100),
+                          ),
+                  ),
+                  child: Text(
+                    "All",
+                    style: TextStyle(
+                      color:
+                          _folderName.isEmpty ? Colors.white : Colors.grey[200],
+                      fontWeight: _folderName.isEmpty
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                    ),
+                  ),
+                  onPressed: () => setState(() => _folderName = ""),
+                ),
+              ),
+              StreamBuilder(
+                stream: _database.allFolder,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done ||
+                      snapshot.connectionState == ConnectionState.waiting) {
+                    return const SizedBox();
+                  }
+                  final folders = snapshot.data!;
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: folders.length,
+                    itemBuilder: (context, index) => Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: ElevatedButton(
+                        onLongPress: () async {
+                          final folder = folders[index];
+                          bool del = await deleteFolder(folder, context);
+                          if (del) {
+                            await _database.removeFolder(id: folder.id!);
+                          }
+                        },
+                        key: ValueKey(folders[index].id),
+                        style: ButtonStyle(
+                          backgroundColor: _folderName == folders[index].name
+                              ? MaterialStateColor.resolveWith(
+                                  (states) => Colors.blue,
+                                )
+                              : MaterialStateColor.resolveWith(
+                                  (states) => Colors.black.withAlpha(100),
+                                ),
+                        ),
+                        child: Text(
+                          folders[index].name,
+                          style: TextStyle(
+                            color: _folderName == folders[index].name
+                                ? Colors.white
+                                : Colors.grey[200],
+                            fontWeight: _folderName == folders[index].name
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
+                        ),
+                        onPressed: () =>
+                            setState(() => _folderName = folders[index].name),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.all(6.0),
+                child: ElevatedButton.icon(
+                  onPressed: () => Navigator.of(context).push(SlideRightRoute(
+                    page: const FolderPage(),
+                  )),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateColor.resolveWith(
+                      (states) => Colors.black.withAlpha(100),
+                    ),
+                  ),
+                  icon: Icon(
+                    Icons.create_new_folder_sharp,
+                    color: Colors.grey[300],
+                  ),
+                  label: Text(
+                    "Add Folder",
+                    style: TextStyle(
+                      color: Colors.grey[200],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -289,7 +293,8 @@ class _NoteListState extends State<NoteList>
               ),
               Row(
                 children: <Widget>[
-                  if (note.files.isNotEmpty)
+                  if (removeEmptyFilesAndImages(note.files).isNotEmpty ||
+                      removeEmptyFilesAndImages(note.images).isNotEmpty)
                     const Icon(
                       Icons.attachment_outlined,
                       color: Colors.lightBlue,

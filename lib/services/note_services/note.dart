@@ -10,6 +10,7 @@ class Note {
   final String date;
   final String category;
   final List<String> files;
+  final List<String> images;
 
   const Note({
     this.id,
@@ -19,6 +20,7 @@ class Note {
     this.imp = 0,
     this.category = "",
     this.files = const [],
+    this.images = const [],
   });
 
   Map<String, Object?> toMap() {
@@ -30,6 +32,7 @@ class Note {
       noteImpColumn: imp,
       noteCategoryColumn: category,
       noteFilesColumn: files.join(','),
+      noteImagesColumn: images.join(','),
     };
   }
 
@@ -42,6 +45,7 @@ class Note {
       category: map[noteCategoryColumn] as String,
       imp: map[noteImpColumn] as int,
       files: (map[noteFilesColumn] as String?)?.split(',') ?? [],
+      images: (map[noteImagesColumn] as String?)?.split(',') ?? [],
     );
   }
 
@@ -53,6 +57,7 @@ class Note {
     String? date,
     String? category,
     List<String>? files,
+    List<String>? images,
   }) {
     return Note(
       id: id ?? this.id,
@@ -62,11 +67,12 @@ class Note {
       imp: imp ?? this.imp,
       category: category ?? this.category,
       files: files ?? this.files,
+      images: images ?? this.images,
     );
   }
 
   @override
   String toString() {
-    return "Note: {id: $id, title: $title, body: $body, date: $date, category: $category, important: $imp, files: [${files.join(', ')}]\n";
+    return "Note: {id: $id, title: $title, body: $body, date: $date, category: $category, important: $imp, files: [${files.join(', ')}], images: [${images.join(', ')}]\n";
   }
 }

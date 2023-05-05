@@ -5,19 +5,16 @@ Future<void> errorDialogue(BuildContext context, String message) {
     context: context,
     builder: (context) {
       return AlertDialog(
-        backgroundColor: Colors.black,
-        content: Text(
-          message,
-          style: const TextStyle(
-            color: Colors.white,
-          ),
-        ),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        backgroundColor: Colors.red.withAlpha(200),
+        content: Text(message),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue[700],
+                backgroundColor: Colors.lightBlue[700],
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -35,20 +32,21 @@ Future<void> errorDialogue(BuildContext context, String message) {
   );
 }
 
-Future<bool> confirmDialogue(
-    {required BuildContext context, required String message}) {
+Future<bool> confirmDialogue({
+  required BuildContext context,
+  required String message,
+  String? title,
+}) {
   return showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: Colors.black,
-          content: Text(
-            message,
-            style: const TextStyle(
-              color: Colors.white,
-            ),
-          ),
-          actions: [
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          backgroundColor: Colors.lightBlue.withAlpha(200),
+          content: Text(message),
+          title: title != null ? Text(title) : null,
+          actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
               child: const Text(
@@ -62,7 +60,7 @@ Future<bool> confirmDialogue(
               padding: const EdgeInsets.only(right: 8.0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue[700],
+                  backgroundColor: Colors.lightBlue[700],
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -76,5 +74,7 @@ Future<bool> confirmDialogue(
             ),
           ],
         );
-      }).then((value) => value ?? false);
+      }).then(
+    (value) => value ?? false,
+  );
 }

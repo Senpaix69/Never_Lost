@@ -64,6 +64,7 @@ const noteBodyColumn = 'note_body';
 const noteCategoryColumn = 'note_category';
 const noteDateColumn = 'note_date';
 const noteFilesColumn = 'note_files';
+const noteImagesColumn = 'note_images';
 const noteImpColumn = 'note_imp';
 const createNoteTable = '''
 CREATE TABLE IF NOT EXISTS "$noteTable" (
@@ -74,6 +75,7 @@ CREATE TABLE IF NOT EXISTS "$noteTable" (
   "$noteCategoryColumn" TEXT,
   "$noteDateColumn" TEXT NOT NULL,
   "$noteFilesColumn" TEXT NOT NULL,
+  "$noteImagesColumn" TEXT NOT NULL,
   PRIMARY KEY("$noteIdColumn" AUTOINCREMENT)
 );''';
 
