@@ -1,17 +1,17 @@
 import 'dart:io';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:intl/intl.dart' show DateFormat;
-import 'package:my_timetable/pages/note/image_preview_page.dart';
 import 'package:my_timetable/services/database.dart';
+import 'package:path/path.dart' as path show basename;
+import 'package:my_timetable/pages/note/image_preview_page.dart';
 import 'package:my_timetable/services/note_services/note.dart';
 import 'package:my_timetable/utils.dart'
     show GetArgument, textValidate, showSnackBar, removeEmptyFilesAndImages;
 import 'package:my_timetable/widgets/animate_route.dart' show FadeRoute;
 import 'package:my_timetable/widgets/dialog_boxs.dart' show confirmDialogue;
 import 'package:path_provider/path_provider.dart'
-    show getExternalStorageDirectory, getApplicationDocumentsDirectory;
-import 'package:path/path.dart' as path show basename;
+    show getApplicationDocumentsDirectory, getExternalStorageDirectory;
 
 class AddNote extends StatefulWidget {
   const AddNote({super.key});
@@ -37,11 +37,6 @@ class _AddNoteState extends State<AddNote> {
     return formatter.format(DateTime.now());
   }
 
-  Future<String> getDownloadDirectoryPath() async {
-    final directory = await getExternalStorageDirectory();
-    return '${directory!.path}/Download';
-  }
-
   void addFile() async {
     final result = await FilePicker.platform.pickFiles(allowMultiple: true);
     if (result != null && result.files.isNotEmpty) {
@@ -64,11 +59,13 @@ class _AddNoteState extends State<AddNote> {
           showMessage("You can not select video file");
         }
       }
-      setState(() {
-        _images = [..._images, ...newImages];
-        _files = [..._files, ...newFiles];
-        _isEditing = true;
-      });
+      setState(
+        () {
+          _images = [..._images, ...newImages];
+          _files = [..._files, ...newFiles];
+          _isEditing = true;
+        },
+      );
       if (_isNote != null) {
         await _database.updateNote(
           note: _isNote!.copyWith(
@@ -83,11 +80,10 @@ class _AddNoteState extends State<AddNote> {
 
   void showMessage(String message) => showSnackBar(context, message);
 
-  // todo needs to complete this function
   Future<void> downloadFile(File file, String basename) async {
     final externalDir = await getExternalStorageDirectory();
     if (externalDir != null) {
-      final fileName = file.path.split('/').last;
+      final fileName = file.path.split('_').last;
       final newPath = '${externalDir.path}/$fileName';
       await file.copy(newPath);
       showMessage("Downloaded File Successfully");
@@ -402,7 +398,7 @@ class _AddNoteState extends State<AddNote> {
       ),
       itemBuilder: (context, index) {
         final file = File(_files[index]);
-        return filesTile(path.basename(file.path).split('_')[1], index, file);
+        return filesTile(path.basename(file.path).split('_').last, index, file);
       },
     );
   }
@@ -426,7 +422,7 @@ class _AddNoteState extends State<AddNote> {
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
-        children: [
+        children: <Widget>[
           IconButton(
               icon: const Icon(Icons.delete),
               onPressed: () async =>
