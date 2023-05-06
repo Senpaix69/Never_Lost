@@ -11,7 +11,8 @@ import 'package:my_timetable/utils.dart'
 import 'package:my_timetable/widgets/animate_route.dart' show FadeRoute;
 import 'package:my_timetable/widgets/dialog_boxs.dart' show confirmDialogue;
 import 'package:path_provider/path_provider.dart'
-    show getApplicationDocumentsDirectory, getExternalStorageDirectory;
+    show getApplicationDocumentsDirectory;
+import 'package:permission_handler/permission_handler.dart';
 
 class AddNote extends StatefulWidget {
   const AddNote({super.key});
@@ -38,6 +39,10 @@ class _AddNoteState extends State<AddNote> {
   }
 
   void addFile() async {
+    if (!await requestPermission()) {
+      showMessage("Storage Permission Denied");
+      return;
+    }
     final result = await FilePicker.platform.pickFiles(allowMultiple: true);
     if (result != null && result.files.isNotEmpty) {
       final appDir = await getApplicationDocumentsDirectory();
@@ -80,13 +85,26 @@ class _AddNoteState extends State<AddNote> {
 
   void showMessage(String message) => showSnackBar(context, message);
 
+  Future<bool> requestPermission() async {
+    final status = await Permission.manageExternalStorage.status;
+    if (status.isPermanentlyDenied || status.isDenied) {
+      final res = await Permission.storage.request();
+      if (res.isDenied) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   Future<void> downloadFile(File file, String basename) async {
-    final externalDir = await getExternalStorageDirectory();
-    if (externalDir != null) {
+    final externalDir = Directory("/storage/emulated/0/Download");
+    if (externalDir.existsSync() && await requestPermission()) {
       final fileName = file.path.split('_').last;
       final newPath = '${externalDir.path}/$fileName';
       await file.copy(newPath);
       showMessage("Downloaded File Successfully");
+    } else {
+      showMessage("Permission Denied");
     }
   }
 
