@@ -444,7 +444,13 @@ class _AddNoteState extends State<AddNote> {
         onPressed: () => backPage(),
       ),
       backgroundColor: Colors.transparent,
-      title: Text(_isNote != null ? "Edit Note" : "Add Note"),
+      title: Text(
+        _isNote != null
+            ? _isEditing
+                ? "Exit Note"
+                : "Note"
+            : "Add Note",
+      ),
       elevation: 0.0,
       actions: <Widget>[
         IconButton(
