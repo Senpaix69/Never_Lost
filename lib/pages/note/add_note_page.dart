@@ -2,13 +2,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:intl/intl.dart' show DateFormat;
-import 'package:my_timetable/services/database.dart';
-import 'package:path/path.dart' as path show basename;
 import 'package:my_timetable/pages/note/image_preview_page.dart';
+import 'package:my_timetable/services/database.dart';
+import 'package:my_timetable/widgets/animate_route.dart' show FadeRoute;
+import 'package:open_file_plus/open_file_plus.dart' show OpenFile;
+import 'package:path/path.dart' as path show basename;
 import 'package:my_timetable/services/note_services/note.dart';
 import 'package:my_timetable/utils.dart'
     show GetArgument, textValidate, showSnackBar, removeEmptyFilesAndImages;
-import 'package:my_timetable/widgets/animate_route.dart' show FadeRoute;
 import 'package:my_timetable/widgets/dialog_boxs.dart' show confirmDialogue;
 import 'package:path_provider/path_provider.dart'
     show getApplicationDocumentsDirectory;
@@ -94,18 +95,6 @@ class _AddNoteState extends State<AddNote> {
       }
     }
     return true;
-  }
-
-  Future<void> downloadFile(File file, String basename) async {
-    final externalDir = Directory("/storage/emulated/0/Download");
-    if (externalDir.existsSync() && await requestPermission()) {
-      final fileName = file.path.split('_').last;
-      final newPath = '${externalDir.path}/$fileName';
-      await file.copy(newPath);
-      showMessage("Downloaded File Successfully");
-    } else {
-      showMessage("Permission Denied");
-    }
   }
 
   Future<void> deleteFile(String path, int index, String type) async {
@@ -200,7 +189,7 @@ class _AddNoteState extends State<AddNote> {
           ),
         );
       } else {
-        await _database.insertNote(note: note);
+        _isNote = await _database.insertNote(note: note);
       }
       _focusTitle.unfocus();
       _focusText.unfocus();
@@ -211,7 +200,7 @@ class _AddNoteState extends State<AddNote> {
   Future<void> deleteNote() async {
     bool isDel = await confirmDialogue(
       context: context,
-      message: "Do you really want to delete this todo?",
+      message: "Do you really want to delete this note?",
       title: "Delete Note",
     );
     if (isDel && _isNote != null) {
@@ -409,6 +398,7 @@ class _AddNoteState extends State<AddNote> {
       return const SizedBox();
     }
     return ListView.separated(
+      physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       itemCount: _files.length,
       separatorBuilder: (context, index) => const Divider(
@@ -425,6 +415,7 @@ class _AddNoteState extends State<AddNote> {
     return ListTile(
       key: ValueKey(index),
       minVerticalPadding: 20,
+      onTap: () => OpenFile.open(file.path),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
@@ -438,18 +429,9 @@ class _AddNoteState extends State<AddNote> {
         softWrap: true,
         overflow: TextOverflow.ellipsis,
       ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: () async =>
-                  await deleteFile(file.path, index, "file")),
-          IconButton(
-            icon: const Icon(Icons.file_download),
-            onPressed: () async => await downloadFile(file, basename),
-          ),
-        ],
+      trailing: IconButton(
+        icon: const Icon(Icons.delete),
+        onPressed: () async => await deleteFile(file.path, index, "file"),
       ),
     );
   }
