@@ -157,7 +157,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
                       : () => handleReminder(),
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
-                        _date != null ? Colors.blue : Colors.grey[900],
+                        _date != null ? Colors.lightBlue : Colors.grey[900],
                     textStyle: const TextStyle(fontSize: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(7.0),
@@ -170,7 +170,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
                     "Done",
                     style: TextStyle(
                       fontSize: 16.0,
-                      color: emptyText ? Colors.grey : Colors.blue,
+                      color: emptyText ? Colors.grey : Colors.lightBlue,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -211,7 +211,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
       decoration: InputDecoration(
         prefixIcon: Icon(
           Icons.trip_origin_outlined,
-          color: emptyText ? Colors.grey : Colors.blue,
+          color: emptyText ? Colors.grey : Colors.lightBlue,
         ),
         contentPadding: EdgeInsets.zero,
         hintText: "Add Todo",

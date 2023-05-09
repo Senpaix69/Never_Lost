@@ -47,7 +47,6 @@ dependencies:
   permission_handler: ^10.2.0
   open_file_plus: ^3.4.1
   photo_view: ^0.14.0
-  flutter_slidable: ^3.0.0
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/note_services/todo.dart';
 import 'package:my_timetable/services/notification_service.dart';
@@ -130,21 +129,19 @@ class _TodoListState extends State<TodoList>
               }
               final notComplete = filterTodosAsComplete(todos, 0);
               final complete = filterTodosAsComplete(todos, 1);
-              return SlidableAutoCloseBehavior(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    if (notComplete.isNotEmpty)
-                      myHeading("Todos ${notComplete.length}"),
-                    myListBuilder(notComplete),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    if (complete.isNotEmpty)
-                      myHeading("Completed ${complete.length}"),
-                    myListBuilder(complete),
-                  ],
-                ),
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  if (notComplete.isNotEmpty)
+                    myHeading("Todos ${notComplete.length}"),
+                  myListBuilder(notComplete),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  if (complete.isNotEmpty)
+                    myHeading("Completed ${complete.length}"),
+                  myListBuilder(complete),
+                ],
               );
             },
           ),
@@ -188,28 +185,7 @@ class _TodoListState extends State<TodoList>
                     : Colors.black.withAlpha(180),
                 borderRadius: BorderRadius.circular(10.0),
               ),
-              child: Slidable(
-                key: ValueKey(index),
-                endActionPane: ActionPane(
-                  extentRatio: 0.3,
-                  motion: const ScrollMotion(),
-                  dismissible: DismissiblePane(
-                    closeOnCancel: true,
-                    confirmDismiss: () async => await deleteTodo(todo.id!),
-                    onDismissed: () {},
-                  ),
-                  children: <Widget>[
-                    SlidableAction(
-                      onPressed: (context) async {},
-                      backgroundColor: Colors.red,
-                      foregroundColor: Colors.white,
-                      icon: Icons.delete,
-                      label: 'Delete',
-                    ),
-                  ],
-                ),
-                child: todoTile(todo, isChecked, timeSchedule),
-              ),
+              child: todoTile(todo, isChecked, timeSchedule),
             ),
           ),
         );
