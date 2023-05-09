@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:my_timetable/services/database.dart';
 import 'package:my_timetable/services/note_services/todo.dart';
 import 'package:my_timetable/services/notification_service.dart';
@@ -42,7 +43,7 @@ class _TodoListState extends State<TodoList>
     super.dispose();
   }
 
-  Future<void> deleteTodo(int id) async {
+  Future<bool> deleteTodo(int id) async {
     bool confirmDel = await confirmDialogue(
       context: context,
       message: "Delete this todo?",
@@ -51,7 +52,9 @@ class _TodoListState extends State<TodoList>
     if (confirmDel) {
       await NotificationService.cancelScheduleNotification(id: id);
       await _database.deleteTodo(id: id);
+      return true;
     }
+    return false;
   }
 
   Future<void> handleCheckBox(Todo todo) async {
@@ -94,19 +97,19 @@ class _TodoListState extends State<TodoList>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(
-          parent: BouncingScrollPhysics(),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        padding: const EdgeInsets.only(
+          top: 10.0,
+          left: 10.0,
+          right: 10.0,
         ),
-        child: Container(
-          width: double.infinity,
-          height: MediaQuery.of(context).size.height,
-          padding: const EdgeInsets.only(
-            top: 10.0,
-            left: 10.0,
-            right: 10.0,
+        decoration: null,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
           ),
-          decoration: null,
           child: StreamBuilder(
             stream: _database.allTodos,
             builder: (context, snapshot) {
@@ -127,9 +130,7 @@ class _TodoListState extends State<TodoList>
               }
               final notComplete = filterTodosAsComplete(todos, 0);
               final complete = filterTodosAsComplete(todos, 1);
-              return Container(
-                decoration: null,
-                width: double.infinity,
+              return SlidableAutoCloseBehavior(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -187,72 +188,93 @@ class _TodoListState extends State<TodoList>
                     : Colors.black.withAlpha(180),
                 borderRadius: BorderRadius.circular(10.0),
               ),
-              child: ListTile(
-                key: ValueKey(todo.id!),
-                onLongPress: () async => await deleteTodo(todo.id!),
-                onTap: () => _showAddTodoBottomSheet(todo),
-                leading: Container(
-                  margin: const EdgeInsets.all(8.0),
-                  width: 24.0,
-                  height: 24.0,
-                  child: InkWell(
-                    onTap: () => handleCheckBox(todo),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(7.0),
-                        shape: BoxShape.rectangle,
-                        color:
-                            isChecked ? Colors.blueAccent : Colors.transparent,
-                        border: Border.all(
-                          color: isChecked ? Colors.blueAccent : Colors.white,
-                        ),
-                      ),
-                      child: isChecked
-                          ? const Center(
-                              child: Icon(
-                                Icons.check,
-                                size: 16.0,
-                                color: Colors.white,
-                              ),
-                            )
-                          : null,
+              child: Slidable(
+                key: ValueKey(index),
+                endActionPane: ActionPane(
+                  extentRatio: 0.3,
+                  motion: const ScrollMotion(),
+                  dismissible: DismissiblePane(
+                    closeOnCancel: true,
+                    confirmDismiss: () async => await deleteTodo(todo.id!),
+                    onDismissed: () {},
+                  ),
+                  children: <Widget>[
+                    SlidableAction(
+                      onPressed: (context) async {},
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                      icon: Icons.delete,
+                      label: 'Delete',
                     ),
-                  ),
+                  ],
                 ),
-                title: Text(
-                  todo.text,
-                  softWrap: true,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: isChecked ? Colors.grey : Colors.grey[300],
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                    decorationThickness: 2.0,
-                    decoration: isChecked ? TextDecoration.lineThrough : null,
-                  ),
-                ),
-                subtitle: Text(
-                  '${todo.reminder == 1 ? "Passed: " : "Reminder: "}${timeSchedule ?? "Not Set"}',
-                  style: TextStyle(
-                    fontSize: 12.0,
-                    color: todo.reminder == 1 && !isChecked
-                        ? Colors.redAccent
-                        : Colors.grey,
-                  ),
-                ),
-                trailing:
-                    (todo.date != null && !isChecked && todo.reminder != 1)
-                        ? const Icon(
-                            Icons.alarm_on_sharp,
-                            color: Colors.lightBlue,
-                          )
-                        : null,
+                child: todoTile(todo, isChecked, timeSchedule),
               ),
             ),
           ),
         );
       },
+    );
+  }
+
+  ListTile todoTile(Todo todo, bool isChecked, String? timeSchedule) {
+    return ListTile(
+      key: ValueKey(todo.id!),
+      onLongPress: () async => await deleteTodo(todo.id!),
+      onTap: () => _showAddTodoBottomSheet(todo),
+      leading: Container(
+        margin: const EdgeInsets.all(8.0),
+        width: 24.0,
+        height: 24.0,
+        child: InkWell(
+          onTap: () => handleCheckBox(todo),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(7.0),
+              shape: BoxShape.rectangle,
+              color: isChecked ? Colors.lightBlue : Colors.transparent,
+              border: Border.all(
+                color: isChecked ? Colors.lightBlue : Colors.white,
+              ),
+            ),
+            child: isChecked
+                ? const Center(
+                    child: Icon(
+                      Icons.check,
+                      size: 16.0,
+                      color: Colors.white,
+                    ),
+                  )
+                : null,
+          ),
+        ),
+      ),
+      title: Text(
+        todo.text,
+        softWrap: true,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          color: isChecked ? Colors.grey : Colors.grey[300],
+          fontSize: 16.0,
+          fontWeight: FontWeight.bold,
+          decorationThickness: 2.0,
+          decoration: isChecked ? TextDecoration.lineThrough : null,
+        ),
+      ),
+      subtitle: Text(
+        '${todo.reminder == 1 ? "Passed: " : "Reminder: "}${timeSchedule ?? "Not Set"}',
+        style: TextStyle(
+          fontSize: 12.0,
+          color:
+              todo.reminder == 1 && !isChecked ? Colors.redAccent : Colors.grey,
+        ),
+      ),
+      trailing: (todo.date != null && !isChecked && todo.reminder != 1)
+          ? const Icon(
+              Icons.alarm_on_sharp,
+              color: Colors.lightBlue,
+            )
+          : null,
     );
   }
 
