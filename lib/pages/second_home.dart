@@ -47,6 +47,7 @@ class _SecondHomePageState extends State<SecondHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    bool selected = _selectedIndex == 0;
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
@@ -59,26 +60,12 @@ class _SecondHomePageState extends State<SecondHomePage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                IconButton(
-                  onPressed: () => gotoPage(0),
-                  icon: Icon(
-                    _selectedIndex == 0
-                        ? Icons.note_alt_rounded
-                        : Icons.note_alt_outlined,
-                  ),
-                  iconSize: 30.0,
-                  color: _selectedIndex == 0 ? Colors.white : Colors.grey,
+                leadingWidget(
+                  selected: !selected,
+                  icon: Icons.note,
+                  page: 0,
                 ),
-                IconButton(
-                  onPressed: () => gotoPage(1),
-                  icon: Icon(
-                    _selectedIndex == 1
-                        ? Icons.check_box_rounded
-                        : Icons.check_box_outlined,
-                  ),
-                  iconSize: 30.0,
-                  color: _selectedIndex == 1 ? Colors.white : Colors.grey,
-                ),
+                leadingWidget(selected: selected, page: 1),
               ],
             ),
           ),
@@ -91,12 +78,43 @@ class _SecondHomePageState extends State<SecondHomePage> {
         children: _pages,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _selectedIndex == 0 ? _addNotePage : _showAddTodoBottomSheet,
+        onPressed: selected ? _addNotePage : _showAddTodoBottomSheet,
         backgroundColor: Colors.black,
         child: const Icon(
           Icons.add,
           size: 30.0,
           color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  SizedBox leadingWidget({
+    required bool selected,
+    required int page,
+    IconData icon = Icons.check,
+  }) {
+    return SizedBox(
+      width: 30.0,
+      height: 30.0,
+      child: InkWell(
+        onTap: () => gotoPage(page),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(7.0),
+            shape: BoxShape.rectangle,
+            color: !selected ? Colors.lightBlue : Colors.transparent,
+            border: Border.all(
+              color: !selected ? Colors.lightBlue : Colors.white,
+            ),
+          ),
+          child: Center(
+            child: Icon(
+              icon,
+              size: 20.0,
+              color: Colors.white,
+            ),
+          ),
         ),
       ),
     );

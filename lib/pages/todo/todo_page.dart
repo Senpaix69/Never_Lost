@@ -85,11 +85,10 @@ class _TodoListState extends State<TodoList>
     );
   }
 
-  List<Todo> filterTodosAsComplete(List<Todo> todos, int complete) {
-    if (complete == 0) {
-      return todos.where((todo) => todo.complete == 0).toList();
-    }
-    return todos.where((todo) => todo.complete == 1).toList();
+  void sortTodosAsComplete(List<Todo> todos) {
+    todos.sort(
+      ((a, b) => a.complete.compareTo(b.complete)),
+    );
   }
 
   @override
@@ -105,46 +104,27 @@ class _TodoListState extends State<TodoList>
           right: 10.0,
         ),
         decoration: null,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(
-            parent: BouncingScrollPhysics(),
-          ),
-          child: StreamBuilder(
-            stream: _database.allTodos,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done ||
-                  snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.black,
-                  ),
-                );
-              }
-              final todos = snapshot.data!;
-              if (todos.isEmpty) {
-                return emptyWidget(
-                  icon: Icons.checklist_outlined,
-                  message: "Empty Todos",
-                );
-              }
-              final notComplete = filterTodosAsComplete(todos, 0);
-              final complete = filterTodosAsComplete(todos, 1);
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  if (notComplete.isNotEmpty)
-                    myHeading("Todos ${notComplete.length}"),
-                  myListBuilder(notComplete),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  if (complete.isNotEmpty)
-                    myHeading("Completed ${complete.length}"),
-                  myListBuilder(complete),
-                ],
+        child: StreamBuilder(
+          stream: _database.allTodos,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done ||
+                snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.black,
+                ),
               );
-            },
-          ),
+            }
+            final todos = snapshot.data!;
+            if (todos.isEmpty) {
+              return emptyWidget(
+                icon: Icons.checklist_outlined,
+                message: "Empty Todos",
+              );
+            }
+            sortTodosAsComplete(todos);
+            return myListBuilder(todos);
+          },
         ),
       ),
     );
