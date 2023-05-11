@@ -62,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
             color: Colors.black,
             borderRadius: BorderRadius.circular(30.0),
           ),
-          margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 6),
+          margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
           padding: const EdgeInsets.symmetric(
             vertical: 10,
           ),
