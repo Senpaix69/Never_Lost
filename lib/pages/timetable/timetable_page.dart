@@ -120,7 +120,7 @@ class _TimeTablePageState extends State<TimeTablePage> {
         actions: <Widget>[actions(context)],
         bottom: navigatorDays(),
       ),
-      drawer: myDrawer(),
+      // drawer: myDrawer(),
       body: Column(
         children: <Widget>[
           Expanded(

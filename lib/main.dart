@@ -23,14 +23,5 @@ ThemeData myTheme() {
       primary: Colors.lightBlue,
       secondary: Colors.lightBlue,
     ),
-    textTheme: const TextTheme(
-      bodyLarge: TextStyle(color: Colors.black),
-      bodyMedium: TextStyle(color: Colors.black),
-      bodySmall: TextStyle(color: Colors.black),
-      labelLarge: TextStyle(color: Colors.black),
-      displayLarge: TextStyle(color: Colors.black),
-      displayMedium: TextStyle(color: Colors.black),
-      displaySmall: TextStyle(color: Colors.black),
-    ),
   );
 }
