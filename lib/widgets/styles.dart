@@ -9,7 +9,7 @@ InputDecoration decorationFormField(prefixIcon, hintText) {
       color: Colors.grey[200],
     ),
     filled: true,
-    fillColor: Colors.blue.withAlpha(100),
+    fillColor: Colors.lightBlue.withAlpha(100),
     border: const OutlineInputBorder(
       borderRadius: BorderRadius.all(
         Radius.circular(8.0),

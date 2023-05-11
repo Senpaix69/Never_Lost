@@ -379,7 +379,7 @@ class _AddSubjectState extends State<AddSubject> {
                 Container(
                   margin: const EdgeInsets.only(top: 20.0),
                   decoration: BoxDecoration(
-                    color: Colors.blue.withAlpha(80),
+                    color: Colors.lightBlue.withAlpha(100),
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   child: Column(
