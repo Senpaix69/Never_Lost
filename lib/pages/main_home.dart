@@ -58,13 +58,11 @@ class _MyHomePageState extends State<MyHomePage> {
           children: _pages,
         ),
         bottomNavigationBar: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: Colors.black,
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(30),
-              topLeft: Radius.circular(30),
-            ),
+            borderRadius: BorderRadius.circular(30.0),
           ),
+          margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 6),
           padding: const EdgeInsets.symmetric(
             vertical: 10,
           ),
@@ -78,7 +76,6 @@ class _MyHomePageState extends State<MyHomePage> {
             iconSize: 25,
             tabBackgroundColor: Colors.lightBlue.shade800,
             padding: const EdgeInsets.all(10),
-            backgroundColor: Colors.transparent,
             tabs: const <GButton>[
               GButton(
                 icon: Icons.calendar_today,
