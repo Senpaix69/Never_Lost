@@ -51,6 +51,7 @@ class _SecondHomePageState extends State<SecondHomePage> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
+        elevation: 0.0,
         toolbarHeight: 0,
         backgroundColor: Colors.transparent,
         bottom: PreferredSize(

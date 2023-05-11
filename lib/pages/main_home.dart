@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:my_timetable/pages/profile/user_profile_page.dart';
 import 'package:my_timetable/pages/second_home.dart';
 import 'package:my_timetable/pages/timetable/timetable_page.dart';
-// import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:my_timetable/utils.dart' show MyCustomScrollBehavior;
 
@@ -12,19 +12,25 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late final PageController _pageController;
   int _currentPageIndex = 0;
 
   final List<Widget> _pages = [
     const TimeTablePage(),
     const SecondHomePage(),
+    const UserProfile(),
   ];
-
-  final PageController _pageController = PageController(initialPage: 0);
 
   void _onPageChanged(int index) {
     setState(() {
       _currentPageIndex = index;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: 0);
   }
 
   @override
@@ -51,28 +57,6 @@ class _MyHomePageState extends State<MyHomePage> {
           onPageChanged: _onPageChanged,
           children: _pages,
         ),
-        // bottomNavigationBar: CurvedNavigationBar(
-        //   height: 50,
-        //   color: Colors.black,
-        //   animationDuration: const Duration(milliseconds: 400),
-        //   backgroundColor: Colors.lightBlue,
-        //   buttonBackgroundColor: Colors.black,
-        //   items: const <Widget>[
-        //     Icon(Icons.today, size: 30, color: Colors.white),
-        //     Icon(Icons.topic, size: 30, color: Colors.white),
-        //   ],
-        //   index: _currentPageIndex,
-        //   onTap: (index) {
-        //     setState(() {
-        //       _currentPageIndex = index;
-        //       _pageController.animateToPage(
-        //         index,
-        //         duration: const Duration(milliseconds: 400),
-        //         curve: Curves.easeInOut,
-        //       );
-        //     });
-        //   },
-        // ),
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
             color: Colors.black,
@@ -108,12 +92,17 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
             onTabChange: (value) => setState(
               () {
+                if (value + 1 == _currentPageIndex ||
+                    value - 1 == _currentPageIndex) {
+                  _pageController.animateToPage(
+                    value,
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
+                  );
+                } else {
+                  _pageController.jumpToPage(value);
+                }
                 _currentPageIndex = value;
-                _pageController.animateToPage(
-                  value,
-                  duration: const Duration(milliseconds: 400),
-                  curve: Curves.easeInOut,
-                );
               },
             ),
           ),

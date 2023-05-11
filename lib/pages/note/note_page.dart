@@ -105,6 +105,7 @@ class _NoteListState extends State<NoteList>
     return PreferredSize(
       preferredSize: const Size.fromHeight(50.0),
       child: AppBar(
+        elevation: 0.0,
         backgroundColor: Colors.transparent,
         flexibleSpace: SingleChildScrollView(
           scrollDirection: Axis.horizontal,

@@ -111,6 +111,7 @@ class _TimeTablePageState extends State<TimeTablePage> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
+        elevation: 0.0,
         backgroundColor: Colors.transparent,
         title: const Text(
           "Time Table",
