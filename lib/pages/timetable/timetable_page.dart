@@ -186,7 +186,7 @@ class _TimeTablePageState extends State<TimeTablePage> {
   SafeArea myDrawer() {
     return SafeArea(
       child: Drawer(
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: Colors.lightBlue[600],
         child: ListView(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
