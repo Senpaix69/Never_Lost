@@ -147,7 +147,9 @@ class _TodoListState extends State<TodoList>
   ListView myListBuilder(List<Todo> todos) {
     return ListView.builder(
       shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
+      physics: const AlwaysScrollableScrollPhysics(
+        parent: BouncingScrollPhysics(),
+      ),
       itemCount: todos.length,
       itemBuilder: (context, index) {
         final todo = todos[index];
@@ -157,7 +159,8 @@ class _TodoListState extends State<TodoList>
           opacity: _animation,
           child: SlideFromBottomTransition(
             animation: _animation,
-            child: Container(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 500),
               margin: const EdgeInsets.symmetric(vertical: 5.0),
               decoration: BoxDecoration(
                 color: isChecked

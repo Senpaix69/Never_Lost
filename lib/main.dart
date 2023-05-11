@@ -18,10 +18,10 @@ void main() {
 ThemeData myTheme() {
   return ThemeData(
     brightness: Brightness.dark,
-    primaryColor: Colors.blue,
+    primaryColor: Colors.lightBlue,
     colorScheme: const ColorScheme.dark(
-      primary: Colors.blue,
-      secondary: Colors.blue,
+      primary: Colors.lightBlue,
+      secondary: Colors.lightBlue,
     ),
     textTheme: const TextTheme(
       bodyLarge: TextStyle(color: Colors.black),
