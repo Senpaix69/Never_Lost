@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:my_timetable/pages/profile/login_screen.dart';
+import 'package:my_timetable/widgets/animate_route.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -10,15 +12,115 @@ class UserProfile extends StatefulWidget {
 class _UserProfileState extends State<UserProfile> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        title: const Text(
-          "User Profile",
-        ),
+    return SafeArea(
+      child: Scaffold(
         backgroundColor: Colors.transparent,
+        body: Container(
+          height: double.infinity,
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(26, 90, 26, 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  const CircleAvatar(
+                    backgroundColor: Colors.black,
+                    radius: 80.0,
+                    backgroundImage: AssetImage("assets/prof.png"),
+                  ),
+                  const SizedBox(
+                    height: 16.0,
+                  ),
+                  const Text(
+                    "Fullname",
+                    style: TextStyle(
+                      fontSize: 26.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 6.0,
+                  ),
+                  const Text(
+                    "@username",
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                  const SizedBox(
+                    height: 16.0,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          padding:
+                              MaterialStateProperty.all<EdgeInsetsGeometry>(
+                            const EdgeInsets.symmetric(
+                              vertical: 12.0,
+                              horizontal: 24.0,
+                            ),
+                          ),
+                          backgroundColor: MaterialStateColor.resolveWith(
+                            (states) => Colors.black.withAlpha(60),
+                          ),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16.0),
+                            ),
+                          ),
+                        ),
+                        onPressed: () => Navigator.of(context).push(
+                          SlideRightRoute(
+                            page: const LoginScreen(),
+                          ),
+                        ),
+                        child: const Text(
+                          "Login",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Column(
+                children: <Widget>[
+                  myTile(title: "Backup", icon: Icons.backup, index: 0),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  myTile(title: "Restore", icon: Icons.restore, index: 1),
+                ],
+              )
+            ],
+          ),
+        ),
       ),
-      backgroundColor: Colors.transparent,
+    );
+  }
+
+  ListTile myTile({
+    required String title,
+    required IconData icon,
+    required int index,
+  }) {
+    return ListTile(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      leading: Icon(
+        icon,
+      ),
+      key: ValueKey(index),
+      tileColor: Colors.black.withAlpha(90),
+      minVerticalPadding: 20.0,
+      title: Text(title),
     );
   }
 }
