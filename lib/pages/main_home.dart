@@ -7,25 +7,20 @@ import 'package:my_timetable/utils.dart' show MyCustomScrollBehavior;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
+
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late final PageController _pageController;
-  int _currentPageIndex = 1;
-
   final List<Widget> _pages = [
     const SecondHomePage(),
     const TimeTablePage(),
     const UserProfile(),
   ];
 
-  void _onPageChanged(int index) {
-    setState(() {
-      _currentPageIndex = index;
-    });
-  }
+  int _currentPageIndex = 1;
+  late final PageController _pageController;
 
   @override
   void initState() {
@@ -37,6 +32,25 @@ class _MyHomePageState extends State<MyHomePage> {
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  void _onPageChanged(int index) {
+    setState(() {
+      _currentPageIndex = index;
+    });
+  }
+
+  void _navigateToPage(int value) {
+    if (value != _currentPageIndex) {
+      setState(() {
+        _currentPageIndex = value;
+        _pageController.animateToPage(
+          value,
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeInOut,
+        );
+      });
+    }
   }
 
   @override
@@ -63,9 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
             borderRadius: BorderRadius.circular(30.0),
           ),
           margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
-          padding: const EdgeInsets.symmetric(
-            vertical: 10,
-          ),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           child: GNav(
             selectedIndex: _currentPageIndex,
             haptic: true,
@@ -90,21 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 text: "Profile",
               ),
             ],
-            onTabChange: (value) => setState(
-              () {
-                if (value + 1 == _currentPageIndex ||
-                    value - 1 == _currentPageIndex) {
-                  _pageController.animateToPage(
-                    value,
-                    duration: const Duration(milliseconds: 400),
-                    curve: Curves.easeInOut,
-                  );
-                } else {
-                  _pageController.jumpToPage(value);
-                }
-                _currentPageIndex = value;
-              },
-            ),
+            onTabChange: _navigateToPage,
           ),
         ),
       ),

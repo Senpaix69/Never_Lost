@@ -3,14 +3,14 @@ import 'package:my_timetable/pages/profile/login_screen.dart';
 import 'package:my_timetable/pages/profile/register_screen.dart';
 
 class TabsScreen extends StatefulWidget {
-  const TabsScreen({super.key});
+  const TabsScreen({Key? key}) : super(key: key);
 
   @override
   State<TabsScreen> createState() => TabsScreenState();
 }
 
 class TabsScreenState extends State<TabsScreen>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late final TabController _controller;
 
   final tabs = <Widget>[
@@ -19,7 +19,11 @@ class TabsScreenState extends State<TabsScreen>
   ];
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       backgroundColor: Colors.black,
       resizeToAvoidBottomInset: false,
