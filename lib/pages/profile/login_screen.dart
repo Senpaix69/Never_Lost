@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_timetable/utils.dart' show textValidate;
-import 'package:my_timetable/widgets/styles.dart' show decorationFormField;
+import 'package:my_timetable/widgets/styles.dart' show textFormField;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -33,33 +33,10 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        title: const Text(
-          "Login",
-        ),
-        elevation: 0.0,
-      ),
-      body: GestureDetector(
-        onTap: () {
-          FocusScopeNode currentFocus = FocusScope.of(context);
-          if (!currentFocus.hasPrimaryFocus) {
-            currentFocus.unfocus();
-          }
-        },
-        child: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/profBg.jpg"),
-              fit: BoxFit.fitWidth,
-            ),
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-          width: double.infinity,
-          height: double.infinity,
+      backgroundColor: Colors.transparent,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 30),
           child: Form(
             key: _formKey,
             child: Center(
@@ -69,45 +46,31 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: <Widget>[
                   Center(
                     child: CircleAvatar(
-                      // backgroundColor: Colors.transparent,
-                      // backgroundImage: AssetImage("assets/prof.png"),
+                      backgroundImage: const AssetImage("assets/prof.png"),
                       backgroundColor: Colors.lightBlue.withAlpha(120),
-                      radius: 80.0,
-                      child: const Icon(
-                        Icons.person,
-                        color: Colors.white,
-                        size: 100.0,
-                      ),
+                      radius: 70.0,
                     ),
                   ),
                   const SizedBox(
                     height: 40.0,
                   ),
-                  TextFormField(
-                    enabled: !_isLogin,
+                  textFormField(
+                    icon: Icons.email,
+                    enable: !_isLogin,
                     controller: _email,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    keyboardType: null,
-                    decoration: decorationFormField(Icons.email, "Enter Email"),
-                    cursorColor: Colors.amber[200],
-                    style: const TextStyle(color: Colors.white),
                     validator: textValidate,
+                    hint: "Enter email",
                   ),
                   const SizedBox(
                     height: 10.0,
                   ),
-                  TextFormField(
-                    enabled: !_isLogin,
+                  textFormField(
+                    icon: Icons.password,
+                    enable: !_isLogin,
                     controller: _password,
-                    obscureText: true,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    decoration:
-                        decorationFormField(Icons.password, "Enter password"),
-                    cursorColor: Colors.amber[200],
-                    style: const TextStyle(color: Colors.white),
                     validator: textValidate,
+                    obsecure: true,
+                    hint: "Enter password",
                   ),
                   const SizedBox(
                     height: 5.0,
@@ -128,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           backgroundColor: MaterialStateColor.resolveWith(
-                            (states) => Colors.lightBlue.withAlpha(200),
+                            (states) => Colors.lightBlue,
                           ),
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -148,22 +111,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ],
-                  ),
-                  TextButton(
-                    // onPressed: _isLogin
-                    //     ? null
-                    //     : () {
-                    //         Navigator.of(context)
-                    //             .pushReplacementNamed(registerRoute);
-                    //       },
-                    onPressed: () {},
-                    child: Text(
-                      "Click here to register",
-                      style: TextStyle(
-                        color: _isLogin ? Colors.grey : Colors.white,
-                        fontSize: 13.0,
-                      ),
-                    ),
                   ),
                 ],
               ),

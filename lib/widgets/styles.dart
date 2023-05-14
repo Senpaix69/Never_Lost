@@ -109,3 +109,29 @@ Container headerContainer({
     ),
   );
 }
+
+Container textFormField({
+  required TextEditingController controller,
+  required String? Function(String?)? validator,
+  required String hint,
+  required IconData icon,
+  bool enable = true,
+  bool obsecure = false,
+}) {
+  return Container(
+    decoration: BoxDecoration(
+      color: Colors.black,
+      borderRadius: BorderRadius.circular(10.0),
+    ),
+    child: TextFormField(
+      enabled: enable,
+      controller: controller,
+      obscureText: obsecure,
+      enableSuggestions: false,
+      autocorrect: false,
+      style: const TextStyle(color: Colors.white),
+      decoration: decorationFormField(icon, hint),
+      validator: validator,
+    ),
+  );
+}

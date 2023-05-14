@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:my_timetable/widgets/dialog_boxs.dart' show confirmDialogue;
+import 'package:url_launcher/url_launcher.dart';
 
 const List<String> weekdays = [
   'Monday',
@@ -125,6 +126,13 @@ extension GetArgument on BuildContext {
       }
     }
     return null;
+  }
+}
+
+void launchURL(String url) async {
+  final uri = Uri.parse(url);
+  if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+    throw "can not launch $url";
   }
 }
 

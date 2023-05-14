@@ -13,11 +13,11 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late final PageController _pageController;
-  int _currentPageIndex = 0;
+  int _currentPageIndex = 1;
 
   final List<Widget> _pages = [
-    const TimeTablePage(),
     const SecondHomePage(),
+    const TimeTablePage(),
     const UserProfile(),
   ];
 
@@ -30,7 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: 0);
+    _pageController = PageController(initialPage: _currentPageIndex);
   }
 
   @override
@@ -78,12 +78,12 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: const EdgeInsets.all(10),
             tabs: const <GButton>[
               GButton(
-                icon: Icons.calendar_today,
-                text: "TimeTables",
-              ),
-              GButton(
                 icon: Icons.notes,
                 text: "Notes",
+              ),
+              GButton(
+                icon: Icons.calendar_today,
+                text: "TimeTables",
               ),
               GButton(
                 icon: Icons.person,

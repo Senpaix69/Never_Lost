@@ -12,7 +12,6 @@ import 'package:my_timetable/utils.dart'
 import 'package:my_timetable/widgets/animate_route.dart' show SlideRightRoute;
 import 'package:my_timetable/widgets/dialog_boxs.dart' show confirmDialogue;
 import 'package:my_timetable/widgets/timetable_box.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class TimeTablePage extends StatefulWidget {
   const TimeTablePage({super.key});
@@ -99,13 +98,6 @@ class _TimeTablePageState extends State<TimeTablePage> {
     }
   }
 
-  void _launchURL(String url) async {
-    final uri = Uri.parse(url);
-    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-      throw "can not launch $url";
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -120,7 +112,6 @@ class _TimeTablePageState extends State<TimeTablePage> {
         actions: <Widget>[actions(context)],
         bottom: navigatorDays(),
       ),
-      // drawer: myDrawer(),
       body: Column(
         children: <Widget>[
           Expanded(
@@ -180,111 +171,6 @@ class _TimeTablePageState extends State<TimeTablePage> {
             },
           )),
         ],
-      ),
-    );
-  }
-
-  SafeArea myDrawer() {
-    return SafeArea(
-      child: Drawer(
-        backgroundColor: Colors.lightBlue[600],
-        child: ListView(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              decoration: const BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(30),
-                  bottomLeft: Radius.circular(30),
-                ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: const <Widget>[
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundImage: AssetImage(
-                      'assets/prof.png',
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    'Projected By Senpai',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Column(
-                children: <Widget>[
-                  ListTile(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    tileColor: Colors.black.withAlpha(100),
-                    title: const Text(
-                      'Check out Github',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14.0,
-                      ),
-                    ),
-                    onTap: () => _launchURL(
-                      "https://github.com/Senpaix69",
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  ListTile(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    tileColor: Colors.black.withAlpha(100),
-                    title: const Text(
-                      'Check out Insta',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14.0,
-                      ),
-                    ),
-                    onTap: () => _launchURL(
-                      "https://instagram.com/senpaii_x69?igshid=YmMyMTA2M2Y=",
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  ListTile(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    tileColor: Colors.black.withAlpha(100),
-                    title: const Text(
-                      'Rest Coming Soon 😃',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14.0,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

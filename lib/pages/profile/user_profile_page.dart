@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_timetable/pages/profile/login_screen.dart';
-import 'package:my_timetable/widgets/animate_route.dart';
+import 'package:my_timetable/pages/profile/tabs_screen.dart';
+import 'package:my_timetable/widgets/animate_route.dart' show FadeRoute;
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -24,10 +24,14 @@ class _UserProfileState extends State<UserProfile> {
             children: <Widget>[
               Column(
                 children: <Widget>[
-                  const CircleAvatar(
-                    backgroundColor: Colors.black,
+                  CircleAvatar(
+                    backgroundColor: Colors.black.withAlpha(120),
                     radius: 80.0,
-                    backgroundImage: AssetImage("assets/prof.png"),
+                    child: const Icon(
+                      Icons.person,
+                      color: Colors.white,
+                      size: 100.0,
+                    ),
                   ),
                   const SizedBox(
                     height: 16.0,
@@ -72,8 +76,8 @@ class _UserProfileState extends State<UserProfile> {
                           ),
                         ),
                         onPressed: () => Navigator.of(context).push(
-                          SlideRightRoute(
-                            page: const LoginScreen(),
+                          FadeRoute(
+                            page: const TabsScreen(),
                           ),
                         ),
                         child: const Text(
