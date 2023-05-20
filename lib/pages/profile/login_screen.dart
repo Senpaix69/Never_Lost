@@ -14,7 +14,7 @@ class _LoginScreenState extends State<LoginScreen> {
   late final TextEditingController _password;
   final _formKey = GlobalKey<FormState>();
   final RegExp regEx = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-  final bool _isLogin = false;
+  bool _isLogin = false;
 
   @override
   void initState() {
@@ -38,6 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 30),
           child: Form(
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             key: _formKey,
             child: Center(
               child: Column(
@@ -100,7 +101,15 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: _isLogin
+                            ? null
+                            : () async {
+                                if (_formKey.currentState!.validate()) {
+                                  setState(() => _isLogin = true);
+                                  // await _createUser();
+                                  setState(() => _isLogin = false);
+                                }
+                              },
                         child: const Text(
                           "Login",
                           style: TextStyle(

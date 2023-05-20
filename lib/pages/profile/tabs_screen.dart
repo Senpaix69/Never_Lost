@@ -10,7 +10,7 @@ class TabsScreen extends StatefulWidget {
 }
 
 class TabsScreenState extends State<TabsScreen>
-    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+    with SingleTickerProviderStateMixin {
   late final TabController _controller;
 
   final tabs = <Widget>[
@@ -19,11 +19,7 @@ class TabsScreenState extends State<TabsScreen>
   ];
 
   @override
-  bool get wantKeepAlive => true;
-
-  @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
       backgroundColor: Colors.black,
       resizeToAvoidBottomInset: false,
