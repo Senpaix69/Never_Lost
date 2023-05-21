@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:my_timetable/services/database.dart';
-import 'package:my_timetable/services/note_services/todo.dart';
-import 'package:my_timetable/services/notification_service.dart';
-import 'package:my_timetable/utils.dart' show getFormattedTime;
+import 'package:neverlost/services/database.dart';
+import 'package:neverlost/services/note_services/todo.dart';
+import 'package:neverlost/services/notification_service.dart';
+import 'package:neverlost/utils.dart' show getFormattedTime;
 
 class MyBottomSheet extends StatefulWidget {
   final Todo? todo;

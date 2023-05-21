@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:my_timetable/pages/profile/user_profile_page.dart';
-import 'package:my_timetable/pages/second_home.dart';
-import 'package:my_timetable/pages/timetable/timetable_page.dart';
+import 'package:neverlost/pages/profile/user_profile_page.dart';
+import 'package:neverlost/pages/second_home.dart';
+import 'package:neverlost/pages/timetable/timetable_page.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:my_timetable/utils.dart' show MyCustomScrollBehavior;
+import 'package:neverlost/utils.dart' show MyCustomScrollBehavior;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);

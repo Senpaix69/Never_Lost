@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:my_timetable/pages/note/add_note_page.dart';
+import 'package:neverlost/pages/note/add_note_page.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
-import 'package:my_timetable/pages/note/folder_page.dart';
-import 'package:my_timetable/services/database.dart';
-import 'package:my_timetable/services/note_services/note.dart';
-import 'package:my_timetable/utils.dart'
+import 'package:neverlost/pages/note/folder_page.dart';
+import 'package:neverlost/services/database.dart';
+import 'package:neverlost/services/note_services/note.dart';
+import 'package:neverlost/utils.dart'
     show emptyWidget, deleteFolder, removeEmptyFilesAndImages;
-import 'package:my_timetable/widgets/animate_route.dart'
+import 'package:neverlost/widgets/animate_route.dart'
     show SlideFromBottomTransition, SlideRightRoute;
 
 class NoteList extends StatefulWidget {

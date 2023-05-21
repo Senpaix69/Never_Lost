@@ -2,15 +2,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:intl/intl.dart' show DateFormat;
-import 'package:my_timetable/pages/note/image_preview_page.dart';
-import 'package:my_timetable/services/database.dart';
-import 'package:my_timetable/widgets/animate_route.dart' show FadeRoute;
+import 'package:neverlost/pages/note/image_preview_page.dart';
+import 'package:neverlost/services/database.dart';
+import 'package:neverlost/widgets/animate_route.dart' show FadeRoute;
 import 'package:open_file_plus/open_file_plus.dart' show OpenFile;
 import 'package:path/path.dart' as path show basename;
-import 'package:my_timetable/services/note_services/note.dart';
-import 'package:my_timetable/utils.dart'
+import 'package:neverlost/services/note_services/note.dart';
+import 'package:neverlost/utils.dart'
     show GetArgument, textValidate, showSnackBar, removeEmptyFilesAndImages;
-import 'package:my_timetable/widgets/dialog_boxs.dart' show confirmDialogue;
+import 'package:neverlost/widgets/dialog_boxs.dart' show confirmDialogue;
 import 'package:path_provider/path_provider.dart'
     show getApplicationDocumentsDirectory;
 import 'package:permission_handler/permission_handler.dart';

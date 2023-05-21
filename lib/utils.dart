@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:my_timetable/widgets/dialog_boxs.dart' show confirmDialogue;
+import 'package:neverlost/widgets/dialog_boxs.dart' show confirmDialogue;
 import 'package:url_launcher/url_launcher.dart';
 
 const List<String> weekdays = [

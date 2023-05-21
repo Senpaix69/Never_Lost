@@ -1,7 +1,7 @@
 import 'dart:io' show File;
 import 'package:flutter/material.dart';
-import 'package:my_timetable/utils.dart' show textValidate;
-import 'package:my_timetable/widgets/styles.dart' show textFormField;
+import 'package:neverlost/utils.dart' show textValidate;
+import 'package:neverlost/widgets/styles.dart' show textFormField;
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});

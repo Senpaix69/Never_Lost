@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_timetable/pages/main_home.dart';
-import 'package:my_timetable/services/notification_service.dart';
+import 'package:neverlost/pages/main_home.dart';
+import 'package:neverlost/services/notification_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

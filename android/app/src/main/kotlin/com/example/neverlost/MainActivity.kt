@@ -1,4 +1,4 @@
-package com.example.my_timetable
+package com.example.neverlost
 
 import io.flutter.embedding.android.FlutterActivity
 

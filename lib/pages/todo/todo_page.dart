@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:my_timetable/services/database.dart';
-import 'package:my_timetable/services/note_services/todo.dart';
-import 'package:my_timetable/services/notification_service.dart';
-import 'package:my_timetable/utils.dart' show emptyWidget, getFormattedTime;
-import 'package:my_timetable/widgets/animate_route.dart'
+import 'package:neverlost/services/database.dart';
+import 'package:neverlost/services/note_services/todo.dart';
+import 'package:neverlost/services/notification_service.dart';
+import 'package:neverlost/utils.dart' show emptyWidget, getFormattedTime;
+import 'package:neverlost/widgets/animate_route.dart'
     show SlideFromBottomTransition;
-import 'package:my_timetable/widgets/bottom_sheet.dart';
-import 'package:my_timetable/widgets/dialog_boxs.dart' show confirmDialogue;
+import 'package:neverlost/widgets/bottom_sheet.dart';
+import 'package:neverlost/widgets/dialog_boxs.dart' show confirmDialogue;
 
 class TodoList extends StatefulWidget {
   const TodoList({super.key});

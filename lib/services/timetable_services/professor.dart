@@ -1,4 +1,4 @@
-import 'package:my_timetable/services/constants.dart';
+import 'package:neverlost/services/constants.dart';
 import 'package:flutter/material.dart';
 
 @immutable

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_timetable/pages/profile/tabs_screen.dart';
-import 'package:my_timetable/widgets/animate_route.dart' show FadeRoute;
+import 'package:neverlost/pages/profile/tabs_screen.dart';
+import 'package:neverlost/widgets/animate_route.dart' show FadeRoute;
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});

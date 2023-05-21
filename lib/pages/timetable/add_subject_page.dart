@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:my_timetable/services/database.dart';
-import 'package:my_timetable/services/timetable_services/daytime.dart';
-import 'package:my_timetable/services/notification_service.dart';
-import 'package:my_timetable/services/timetable_services/professor.dart';
-import 'package:my_timetable/services/timetable_services/subject.dart';
-import 'package:my_timetable/services/timetable_services/timetable.dart';
-import 'package:my_timetable/utils.dart'
+import 'package:neverlost/services/database.dart';
+import 'package:neverlost/services/timetable_services/daytime.dart';
+import 'package:neverlost/services/notification_service.dart';
+import 'package:neverlost/services/timetable_services/professor.dart';
+import 'package:neverlost/services/timetable_services/subject.dart';
+import 'package:neverlost/services/timetable_services/timetable.dart';
+import 'package:neverlost/utils.dart'
     show GetArgument, textValidate, weekdays, sortDayTimes;
-import 'package:my_timetable/widgets/daytime_list.dart';
-import 'package:my_timetable/widgets/dialog_boxs.dart';
-import 'package:my_timetable/widgets/styles.dart'
+import 'package:neverlost/widgets/daytime_list.dart';
+import 'package:neverlost/widgets/dialog_boxs.dart';
+import 'package:neverlost/widgets/styles.dart'
     show decorationFormField, myText, headerContainer;
 
 class AddSubject extends StatefulWidget {

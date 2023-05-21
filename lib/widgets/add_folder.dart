@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_timetable/widgets/styles.dart' show decorationFormField;
+import 'package:neverlost/widgets/styles.dart' show decorationFormField;
 
 class AddFolderDialog extends StatefulWidget {
   final List<String> folders;

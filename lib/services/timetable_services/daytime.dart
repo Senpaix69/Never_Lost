@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_timetable/services/constants.dart';
+import 'package:neverlost/services/constants.dart';
 
 @immutable
 class DayTime {

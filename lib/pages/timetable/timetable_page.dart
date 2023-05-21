@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:my_timetable/pages/timetable/add_subject_page.dart';
-import 'package:my_timetable/services/database.dart';
-import 'package:my_timetable/utils.dart'
+import 'package:neverlost/pages/timetable/add_subject_page.dart';
+import 'package:neverlost/services/database.dart';
+import 'package:neverlost/utils.dart'
     show
         isCurrentSlot,
         isNextSlot,
@@ -9,9 +9,9 @@ import 'package:my_timetable/utils.dart'
         weekdays,
         emptyWidget,
         MyCustomScrollBehavior;
-import 'package:my_timetable/widgets/animate_route.dart' show SlideRightRoute;
-import 'package:my_timetable/widgets/dialog_boxs.dart' show confirmDialogue;
-import 'package:my_timetable/widgets/timetable_box.dart';
+import 'package:neverlost/widgets/animate_route.dart' show SlideRightRoute;
+import 'package:neverlost/widgets/dialog_boxs.dart' show confirmDialogue;
+import 'package:neverlost/widgets/timetable_box.dart';
 
 class TimeTablePage extends StatefulWidget {
   const TimeTablePage({super.key});

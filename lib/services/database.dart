@@ -1,11 +1,11 @@
-import 'package:my_timetable/services/constants.dart';
-import 'package:my_timetable/services/note_services/folder.dart';
-import 'package:my_timetable/services/note_services/note.dart';
-import 'package:my_timetable/services/note_services/todo.dart';
-import 'package:my_timetable/services/timetable_services/daytime.dart';
-import 'package:my_timetable/services/timetable_services/professor.dart';
-import 'package:my_timetable/services/timetable_services/subject.dart';
-import 'package:my_timetable/services/timetable_services/timetable.dart';
+import 'package:neverlost/services/constants.dart';
+import 'package:neverlost/services/note_services/folder.dart';
+import 'package:neverlost/services/note_services/note.dart';
+import 'package:neverlost/services/note_services/todo.dart';
+import 'package:neverlost/services/timetable_services/daytime.dart';
+import 'package:neverlost/services/timetable_services/professor.dart';
+import 'package:neverlost/services/timetable_services/subject.dart';
+import 'package:neverlost/services/timetable_services/timetable.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'dart:async';
@@ -61,11 +61,11 @@ class DatabaseService {
 
   Future<void> _initDatabase() async {
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'subject.db');
+    final path = join(dbPath, 'neverlost.db');
 
     final db = await openDatabase(
       path,
-      version: 2,
+      version: 1,
       onCreate: (db, version) async {
         await db.execute(createSubTable);
         await db.execute(createDayTimeTable);
@@ -92,6 +92,43 @@ class DatabaseService {
       await db.close();
       _database = null;
     }
+  }
+
+  Future<void> cleanDatabase() async {
+    final db = _database;
+    if (db == null) {
+      return;
+    }
+
+    final tables = [
+      {
+        'name': noteTable,
+        'createStatement': createNoteTable,
+      },
+      {
+        'name': subTable,
+        'createStatement': createSubTable,
+      },
+      {
+        'name': dayTimeTable,
+        'createStatement': createDayTimeTable,
+      },
+      {
+        'name': professorTable,
+        'createStatement': createProfessorTable,
+      },
+      {
+        'name': folderTable,
+        'createStatement': createFolderTable,
+      },
+    ];
+
+    await db.transaction((txn) async {
+      for (final table in tables) {
+        await txn.execute('DROP TABLE IF EXISTS ${table['name']}');
+        await txn.execute(table['createStatement']!);
+      }
+    });
   }
 
   // ! -------------------------------------------------------------

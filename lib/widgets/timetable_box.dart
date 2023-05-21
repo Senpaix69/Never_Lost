@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:my_timetable/pages/timetable/add_subject_page.dart';
-import 'package:my_timetable/services/database.dart';
-import 'package:my_timetable/services/timetable_services/daytime.dart';
-import 'package:my_timetable/services/timetable_services/timetable.dart';
-import 'package:my_timetable/utils.dart' show showSnackBar, getDate;
-import 'package:my_timetable/widgets/animate_route.dart'
+import 'package:neverlost/pages/timetable/add_subject_page.dart';
+import 'package:neverlost/services/database.dart';
+import 'package:neverlost/services/timetable_services/daytime.dart';
+import 'package:neverlost/services/timetable_services/timetable.dart';
+import 'package:neverlost/utils.dart' show showSnackBar, getDate;
+import 'package:neverlost/widgets/animate_route.dart'
     show SlideRightRoute, SlideFromBottomTransition;
-import 'package:my_timetable/widgets/daytime_list.dart';
-import 'package:my_timetable/services/notification_service.dart';
-import 'package:my_timetable/widgets/styles.dart' show headerContainer;
+import 'package:neverlost/widgets/daytime_list.dart';
+import 'package:neverlost/services/notification_service.dart';
+import 'package:neverlost/widgets/styles.dart' show headerContainer;
 
 typedef CallbackAction<T> = void Function(T);
 

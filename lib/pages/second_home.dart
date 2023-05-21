@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:my_timetable/pages/note/add_note_page.dart';
-import 'package:my_timetable/pages/note/note_page.dart';
-import 'package:my_timetable/pages/todo/todo_page.dart';
-import 'package:my_timetable/utils.dart' show MyCustomScrollBehavior;
-import 'package:my_timetable/widgets/animate_route.dart';
-import 'package:my_timetable/widgets/bottom_sheet.dart';
+import 'package:neverlost/pages/note/add_note_page.dart';
+import 'package:neverlost/pages/note/note_page.dart';
+import 'package:neverlost/pages/todo/todo_page.dart';
+import 'package:neverlost/utils.dart' show MyCustomScrollBehavior;
+import 'package:neverlost/widgets/animate_route.dart';
+import 'package:neverlost/widgets/bottom_sheet.dart';
 
 class SecondHomePage extends StatefulWidget {
   const SecondHomePage({super.key});

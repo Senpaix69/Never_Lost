@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_timetable/pages/profile/login_screen.dart';
-import 'package:my_timetable/pages/profile/register_screen.dart';
+import 'package:neverlost/pages/profile/login_screen.dart';
+import 'package:neverlost/pages/profile/register_screen.dart';
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({Key? key}) : super(key: key);
