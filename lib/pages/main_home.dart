@@ -43,12 +43,16 @@ class _MyHomePageState extends State<MyHomePage> {
   void _navigateToPage(int value) {
     if (value != _currentPageIndex) {
       setState(() {
+        if (_currentPageIndex + 1 == value || _currentPageIndex - 1 == value) {
+          _pageController.animateToPage(
+            value,
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeInOut,
+          );
+        } else {
+          _pageController.jumpToPage(value);
+        }
         _currentPageIndex = value;
-        _pageController.animateToPage(
-          value,
-          duration: const Duration(milliseconds: 400),
-          curve: Curves.easeInOut,
-        );
       });
     }
   }
