@@ -1,5 +1,5 @@
 import 'package:neverlost/services/constants.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show immutable;
 
 @immutable
 class Professor {

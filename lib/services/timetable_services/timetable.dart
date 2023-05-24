@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show immutable, listEquals;
 import 'package:neverlost/services/timetable_services/daytime.dart';
 import 'package:neverlost/services/timetable_services/professor.dart';
 import 'package:neverlost/services/timetable_services/subject.dart';

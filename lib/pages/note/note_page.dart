@@ -135,7 +135,11 @@ class _NoteListState extends State<NoteList>
                           : FontWeight.normal,
                     ),
                   ),
-                  onPressed: () => setState(() => _folderName = ""),
+                  onPressed: () {
+                    if (_folderName != '') {
+                      setState(() => _folderName = '');
+                    }
+                  },
                 ),
               ),
               StreamBuilder(
@@ -181,8 +185,11 @@ class _NoteListState extends State<NoteList>
                                 : FontWeight.normal,
                           ),
                         ),
-                        onPressed: () =>
-                            setState(() => _folderName = folders[index].name),
+                        onPressed: () {
+                          if (_folderName != folders[index].name) {
+                            setState(() => _folderName = folders[index].name);
+                          }
+                        },
                       ),
                     ),
                   );
