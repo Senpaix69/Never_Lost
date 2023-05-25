@@ -112,6 +112,7 @@ Container headerContainer({
 
 Container textFormField({
   required TextEditingController controller,
+  required int key,
   required String? Function(String?)? validator,
   required String hint,
   required IconData icon,
@@ -124,6 +125,7 @@ Container textFormField({
       borderRadius: BorderRadius.circular(10.0),
     ),
     child: TextFormField(
+      key: ValueKey(key),
       enabled: enable,
       controller: controller,
       obscureText: obsecure,

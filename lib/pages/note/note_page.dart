@@ -8,6 +8,7 @@ import 'package:neverlost/utils.dart'
     show emptyWidget, deleteFolder, removeEmptyFilesAndImages;
 import 'package:neverlost/widgets/animate_route.dart'
     show SlideFromBottomTransition, SlideRightRoute;
+import 'package:neverlost/widgets/folder_button.dart';
 
 class NoteList extends StatefulWidget {
   const NoteList({super.key});
@@ -101,6 +102,19 @@ class _NoteListState extends State<NoteList>
     );
   }
 
+  void selectFolder({required String folder}) {
+    if (_folderName != folder) {
+      setState(() => _folderName = '');
+    }
+  }
+
+  void delFolder({required final folder}) async {
+    bool del = await deleteFolder(folder, context);
+    if (del) {
+      await _database.removeFolder(id: folder.id!);
+    }
+  }
+
   PreferredSize folderBuilder(BuildContext context) {
     return PreferredSize(
       preferredSize: const Size.fromHeight(50.0),
@@ -113,34 +127,9 @@ class _NoteListState extends State<NoteList>
           physics: const BouncingScrollPhysics(),
           child: Row(
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(6.0),
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: _folderName.isEmpty
-                        ? MaterialStateColor.resolveWith(
-                            (states) => Colors.blue,
-                          )
-                        : MaterialStateColor.resolveWith(
-                            (states) => Colors.black.withAlpha(100),
-                          ),
-                  ),
-                  child: Text(
-                    "All",
-                    style: TextStyle(
-                      color:
-                          _folderName.isEmpty ? Colors.white : Colors.grey[200],
-                      fontWeight: _folderName.isEmpty
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                    ),
-                  ),
-                  onPressed: () {
-                    if (_folderName != '') {
-                      setState(() => _folderName = '');
-                    }
-                  },
-                ),
+              FolderButton(
+                selectFolder: () => selectFolder(folder: ''),
+                folderName: '',
               ),
               StreamBuilder(
                 stream: _database.allFolder,
@@ -151,48 +140,17 @@ class _NoteListState extends State<NoteList>
                   }
                   final folders = snapshot.data!;
                   return ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: folders.length,
-                    itemBuilder: (context, index) => Padding(
-                      padding: const EdgeInsets.all(6.0),
-                      child: ElevatedButton(
-                        onLongPress: () async {
-                          final folder = folders[index];
-                          bool del = await deleteFolder(folder, context);
-                          if (del) {
-                            await _database.removeFolder(id: folder.id!);
-                          }
-                        },
-                        key: ValueKey(folders[index].id),
-                        style: ButtonStyle(
-                          backgroundColor: _folderName == folders[index].name
-                              ? MaterialStateColor.resolveWith(
-                                  (states) => Colors.blue,
-                                )
-                              : MaterialStateColor.resolveWith(
-                                  (states) => Colors.black.withAlpha(100),
-                                ),
-                        ),
-                        child: Text(
-                          folders[index].name,
-                          style: TextStyle(
-                            color: _folderName == folders[index].name
-                                ? Colors.white
-                                : Colors.grey[200],
-                            fontWeight: _folderName == folders[index].name
-                                ? FontWeight.bold
-                                : FontWeight.normal,
-                          ),
-                        ),
-                        onPressed: () {
-                          if (_folderName != folders[index].name) {
-                            setState(() => _folderName = folders[index].name);
-                          }
-                        },
-                      ),
-                    ),
-                  );
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: folders.length,
+                      itemBuilder: (context, index) {
+                        final folder = folders[index];
+                        return FolderButton(
+                          selectFolder: () => selectFolder(folder: folder.name),
+                          folderName: folder.name,
+                          deleteFolder: () => delFolder(folder: folder),
+                        );
+                      });
                 },
               ),
               Padding(
@@ -202,6 +160,11 @@ class _NoteListState extends State<NoteList>
                     page: const FolderPage(),
                   )),
                   style: ButtonStyle(
+                    shape: MaterialStateProperty.resolveWith(
+                      (states) => RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
                     backgroundColor: MaterialStateColor.resolveWith(
                       (states) => Colors.black.withAlpha(100),
                     ),

@@ -1,6 +1,10 @@
 import 'dart:io' show File;
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:neverlost/utils.dart' show textValidate;
+import 'package:neverlost/services/firebase_auth_services/firebase_service.dart';
+import 'package:neverlost/utils.dart' show showSnackBar, textValidate;
+import 'package:neverlost/widgets/dialog_boxs.dart' show errorDialogue;
+import 'package:neverlost/widgets/loading/loading_screen.dart';
 import 'package:neverlost/widgets/styles.dart' show textFormField;
 
 class RegisterScreen extends StatefulWidget {
@@ -19,55 +23,60 @@ class _RegisterScreenState extends State<RegisterScreen> {
   late String? _imageFile;
 
   final _formKey = GlobalKey<FormState>();
-  bool _isRegistering = false;
 
-  // void _pickImage() async {
-  //   final pickedFile =
-  //       await ImagePicker().pickImage(source: ImageSource.gallery);
-  //   if (pickedFile != null) {
-  //     setState(() => _imageFile = pickedFile.path);
-  //   }
-  // }
+  void _pickImage() async {
+    final pickedFile = await FilePicker.platform
+        .pickFiles(allowMultiple: false, type: FileType.image);
 
-  // Future<void> _createUser() async {
-  //   try {
-  //     String? profilePic = _imageFile;
-  //     String displayName = '${_fname.text} ${_lname.text}';
-  //     await FirebaseAuth.instance.createUserWithEmailAndPassword(
-  //       email: _email.text,
-  //       password: _password.text,
-  //     );
-  //     if (_imageFile != null) {
-  //       final String downloadUrl = await uploadImage(image: File(_imageFile!));
-  //       await FirebaseAuth.instance.currentUser?.updatePhotoURL(downloadUrl);
-  //     }
-  //     await FirebaseAuth.instance.currentUser?.updateDisplayName(displayName);
+    if (pickedFile != null) {
+      setState(
+        () => _imageFile = pickedFile.files.single.path,
+      );
+    }
+  }
 
-  // creating user in db
-  //     _notesService.createUser(
-  //       email: _email.text,
-  //       fullname: displayName,
-  //       profilePic: profilePic,
-  //     );
+  Future<void> _createUser() async {
+    LoadingScreen.instance().show(
+      context: context,
+      text: "Registering...",
+    );
+    String? profilePic = _imageFile;
+    String displayName = '${_fname.text} ${_lname.text}';
 
-  //     await FirebaseAuth.instance.signOut();
-  //     Future.delayed(const Duration(milliseconds: 500), () {
-  //       Navigator.of(context).pushReplacementNamed('/login');
-  //     });
-  //   } on FirebaseAuthException catch (e) {
-  //     if (e.code == 'weak-password') {
-  //       await errorDialogue(context, "Weak Password");
-  //     } else if (e.code == 'email-already-in-use') {
-  //       await errorDialogue(context, "Email Already In Use");
-  //     } else if (e.code == 'invalid-email') {
-  //       await errorDialogue(context, "Invalid Email");
-  //     } else {
-  //       await errorDialogue(context, 'Error: ${e.code}');
-  //     }
-  //   } catch (e) {
-  //     await errorDialogue(context, e.toString());
-  //   }
-  // }
+    try {
+      final success =
+          await FirebaseService.instance().createUserWithEmailPassword(
+        email: _email.text,
+        password: _password.text,
+        fullName: displayName,
+        profilePicPath: profilePic,
+      );
+
+      if (success != null) {
+        LoadingScreen.instance().hide();
+        Future.delayed(
+          const Duration(milliseconds: 100),
+          () => errorDialogue(
+            context: context,
+            message: success.dialogText,
+            title: success.dialogTitle,
+          ),
+        );
+      } else {
+        LoadingScreen.instance().hide();
+        showSnack(message: "User registered successfully!");
+        Future.delayed(
+          const Duration(milliseconds: 100),
+          () => Navigator.of(context).pop(),
+        );
+      }
+    } catch (e) {
+      LoadingScreen.instance().hide();
+      showSnack(message: "Error occurred during saving SPUser");
+    }
+  }
+
+  void showSnack({required String message}) => showSnackBar(context, message);
 
   @override
   void initState() {
@@ -85,6 +94,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _email.dispose();
     _password.dispose();
     _repassword.dispose();
+    _fname.dispose();
+    _lname.dispose();
     super.dispose();
   }
 
@@ -114,8 +125,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   child: Image.file(
                                     File(_imageFile!),
                                     fit: BoxFit.cover,
-                                    width: 100,
-                                    height: 100,
+                                    width: 150,
+                                    height: 150,
                                   ),
                                 )
                               : const Icon(
@@ -128,18 +139,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           bottom: -5,
                           right: -4,
                           child: Center(
-                            child: _isRegistering
-                                ? null
-                                : IconButton(
-                                    onPressed: () {
-                                      // _pickImage();
-                                    },
-                                    icon: const Icon(
-                                      Icons.camera_alt,
-                                      color: Colors.white,
-                                    ),
-                                    iconSize: 40.0,
-                                  ),
+                            child: IconButton(
+                              onPressed: () => _pickImage(),
+                              icon: const Icon(
+                                Icons.camera_alt,
+                                color: Colors.white,
+                              ),
+                              iconSize: 40.0,
+                            ),
                           ),
                         ),
                       ],
@@ -163,8 +170,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     height: 30.0,
                   ),
                   textFormField(
+                    key: 0,
                     icon: Icons.email,
-                    enable: !_isRegistering,
                     controller: _email,
                     hint: "Enter email",
                     validator: textValidate,
@@ -176,8 +183,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     children: <Widget>[
                       Expanded(
                         child: textFormField(
+                          key: 1,
                           icon: Icons.person_pin,
-                          enable: !_isRegistering,
                           controller: _fname,
                           hint: "First name",
                           validator: textValidate,
@@ -188,9 +195,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       Expanded(
                         child: textFormField(
+                          key: 2,
                           icon: Icons.person_pin,
                           hint: "Last name",
-                          enable: !_isRegistering,
                           controller: _lname,
                           validator: textValidate,
                         ),
@@ -201,8 +208,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     height: 10.0,
                   ),
                   textFormField(
+                    key: 3,
                     icon: Icons.password,
-                    enable: !_isRegistering,
                     controller: _password,
                     hint: "Enter password",
                     obsecure: true,
@@ -212,10 +219,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     height: 10.0,
                   ),
                   textFormField(
+                    key: 4,
                     icon: Icons.password,
                     obsecure: true,
                     hint: "Enter password again",
-                    enable: !_isRegistering,
                     controller: _repassword,
                     validator: textValidate,
                   ),
@@ -244,15 +251,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           ),
                         ),
-                        onPressed: _isRegistering
-                            ? null
-                            : () async {
-                                if (_formKey.currentState!.validate()) {
-                                  setState(() => _isRegistering = true);
-                                  // await _createUser();
-                                  setState(() => _isRegistering = false);
-                                }
-                              },
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            await _createUser();
+                          }
+                        },
                         child: const Text(
                           "Register",
                           style: TextStyle(

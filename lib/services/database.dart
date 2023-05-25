@@ -8,7 +8,7 @@ import 'package:neverlost/services/timetable_services/subject.dart';
 import 'package:neverlost/services/timetable_services/timetable.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'dart:async';
+import 'dart:async' show StreamController;
 
 extension IterableExtensions<T> on Iterable<T> {
   T? firstWhereOrNull(bool Function(T) test) {

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "3943605112",
+    "project_id": "neverlost-by-senpai",
+    "storage_bucket": "neverlost-by-senpai.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:3943605112:android:ab5181a2bdb2c722f1de8d",
+        "android_client_info": {
+          "package_name": "com.example.neverlost"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "3943605112-onhhj5krtbrv6riru754rtgrg3s234el.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDO2HphSuW9fJ2zQL2lU_7DZ0NwfhfLd9w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "3943605112-onhhj5krtbrv6riru754rtgrg3s234el.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

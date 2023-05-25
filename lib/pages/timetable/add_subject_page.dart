@@ -185,7 +185,11 @@ class _AddSubjectState extends State<AddSubject> {
     if (!_formKey.currentState!.validate()) {
       return;
     } else if (_days.isEmpty) {
-      errorDialogue(context, "You need to enter timings");
+      errorDialogue(
+        context: context,
+        message: "You need to enter timings",
+        title: "Required Timings",
+      );
       return;
     }
     sortDayTimes(_days);

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:neverlost/utils.dart' show textValidate;
+import 'package:neverlost/services/firebase_auth_services/firebase_service.dart';
+import 'package:neverlost/utils.dart' show showSnackBar, textValidate;
+import 'package:neverlost/widgets/dialog_boxs.dart' show errorDialogue;
+import 'package:neverlost/widgets/loading/loading_screen.dart';
 import 'package:neverlost/widgets/styles.dart' show textFormField;
 
 class LoginScreen extends StatefulWidget {
@@ -14,7 +17,6 @@ class _LoginScreenState extends State<LoginScreen> {
   late final TextEditingController _password;
   final _formKey = GlobalKey<FormState>();
   final RegExp regEx = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-  bool _isLogin = false;
 
   @override
   void initState() {
@@ -29,6 +31,41 @@ class _LoginScreenState extends State<LoginScreen> {
     _password.dispose();
     super.dispose();
   }
+
+  Future<void> _loginUser() async {
+    LoadingScreen.instance().show(context: context, text: "Login in...");
+    final email = _email.text;
+    final password = _password.text;
+    try {
+      final success = await FirebaseService.instance().loginWithEmailPassword(
+        email: email,
+        password: password,
+      );
+      if (success != null) {
+        LoadingScreen.instance().hide();
+        Future.delayed(
+          const Duration(milliseconds: 100),
+          () => errorDialogue(
+            context: context,
+            message: success.dialogText,
+            title: success.dialogTitle,
+          ),
+        );
+      } else {
+        LoadingScreen.instance().hide();
+        showSnack(message: "Logged_In successfully!");
+        Future.delayed(
+          const Duration(milliseconds: 100),
+          () => Navigator.of(context).pop(),
+        );
+      }
+    } catch (e) {
+      LoadingScreen.instance().hide();
+      showSnack(message: "Error occurred during saving SPUser");
+    }
+  }
+
+  void showSnack({required String message}) => showSnackBar(context, message);
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +93,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 40.0,
                   ),
                   textFormField(
+                    key: 8,
                     icon: Icons.email,
-                    enable: !_isLogin,
                     controller: _email,
                     validator: textValidate,
                     hint: "Enter email",
@@ -66,8 +103,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 10.0,
                   ),
                   textFormField(
+                    key: 9,
                     icon: Icons.password,
-                    enable: !_isLogin,
                     controller: _password,
                     validator: textValidate,
                     obsecure: true,
@@ -101,15 +138,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
-                        onPressed: _isLogin
-                            ? null
-                            : () async {
-                                if (_formKey.currentState!.validate()) {
-                                  setState(() => _isLogin = true);
-                                  // await _createUser();
-                                  setState(() => _isLogin = false);
-                                }
-                              },
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            await _loginUser();
+                          }
+                        },
                         child: const Text(
                           "Login",
                           style: TextStyle(

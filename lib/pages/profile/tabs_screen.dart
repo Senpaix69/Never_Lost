@@ -41,9 +41,6 @@ class TabsScreenState extends State<TabsScreen>
           height: double.infinity,
           width: double.infinity,
           child: TabBarView(
-            physics: const AlwaysScrollableScrollPhysics(
-              parent: BouncingScrollPhysics(),
-            ),
             controller: _controller,
             children: const <Widget>[
               LoginScreen(),
