@@ -104,7 +104,7 @@ class _NoteListState extends State<NoteList>
 
   void selectFolder({required String folder}) {
     if (_folderName != folder) {
-      setState(() => _folderName = '');
+      setState(() => _folderName = folder);
     }
   }
 
@@ -129,6 +129,7 @@ class _NoteListState extends State<NoteList>
               FolderButton(
                 selectFolder: () => selectFolder(folder: ''),
                 folderName: '',
+                activeFolder: _folderName,
               ),
               StreamBuilder(
                 stream: _database.allFolder,
@@ -147,6 +148,7 @@ class _NoteListState extends State<NoteList>
                         return FolderButton(
                           selectFolder: () => selectFolder(folder: folder.name),
                           folderName: folder.name,
+                          activeFolder: _folderName,
                           deleteFolder: () => delFolder(folder: folder),
                         );
                       });

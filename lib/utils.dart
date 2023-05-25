@@ -51,6 +51,26 @@ String? textValidate(String? value) {
   return null;
 }
 
+String? passwordValidate(String? value) {
+  if (value == null || value.isEmpty) {
+    return "Please fill this field";
+  }
+  if (value.length < 6) {
+    return 'Please enter at least 6 characters';
+  }
+  return null;
+}
+
+String? rePasswordValidate(String? value, String pass) {
+  if (value == null || value.isEmpty) {
+    return "Please fill this field";
+  }
+  if (value != pass) {
+    return 'Password does not match';
+  }
+  return null;
+}
+
 bool isNextSlot(String startTime) {
   final dateFormat = DateFormat.jm();
   final parsedStartTime = dateFormat.parse(startTime);

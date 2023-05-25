@@ -2,7 +2,8 @@ import 'dart:io' show File;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:neverlost/services/firebase_auth_services/firebase_service.dart';
-import 'package:neverlost/utils.dart' show showSnackBar, textValidate;
+import 'package:neverlost/utils.dart'
+    show passwordValidate, showSnackBar, textValidate, rePasswordValidate;
 import 'package:neverlost/widgets/dialog_boxs.dart' show errorDialogue;
 import 'package:neverlost/widgets/loading/loading_screen.dart';
 import 'package:neverlost/widgets/styles.dart' show textFormField;
@@ -215,7 +216,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     controller: _password,
                     hint: "Enter password",
                     obsecure: true,
-                    validator: textValidate,
+                    validator: passwordValidate,
                   ),
                   const SizedBox(
                     height: 10.0,
@@ -226,7 +227,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     obsecure: true,
                     hint: "Enter password again",
                     controller: _repassword,
-                    validator: textValidate,
+                    validator: (value) => rePasswordValidate(
+                      value,
+                      _password.text.trim(),
+                    ),
                   ),
                   const SizedBox(
                     height: 10.0,
