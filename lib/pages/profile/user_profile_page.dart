@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:neverlost/pages/profile/tabs_screen.dart';
 import 'package:neverlost/services/firebase_auth_services/firebase_service.dart';
 import 'package:neverlost/widgets/animate_route.dart' show FadeRoute;
+import 'package:neverlost/widgets/dialog_boxs.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -108,9 +109,14 @@ class _UserProfileState extends State<UserProfile> {
                                           ),
                                         )
                                     : () async {
-                                        await FirebaseService.instance()
-                                            .logOut();
-                                        setState(() {});
+                                        if (await confirmDialogue(
+                                            context: context,
+                                            message:
+                                                "Do you really want to logout?",
+                                            title: "Logout")) {
+                                          await FirebaseService.instance()
+                                              .logOut();
+                                        }
                                       },
                                 child: Text(
                                   userData != null ? "Logout" : "Login",
@@ -125,16 +131,20 @@ class _UserProfileState extends State<UserProfile> {
                           ),
                         ],
                       ),
-                      Column(
-                        children: <Widget>[
-                          myTile(title: "Backup", icon: Icons.backup, index: 0),
-                          const SizedBox(
-                            height: 10.0,
-                          ),
-                          myTile(
-                              title: "Restore", icon: Icons.restore, index: 1),
-                        ],
-                      )
+                      if (userData != null)
+                        Column(
+                          children: <Widget>[
+                            myTile(
+                                title: "Backup", icon: Icons.backup, index: 0),
+                            const SizedBox(
+                              height: 10.0,
+                            ),
+                            myTile(
+                                title: "Restore",
+                                icon: Icons.restore,
+                                index: 1),
+                          ],
+                        )
                     ],
                   );
               }

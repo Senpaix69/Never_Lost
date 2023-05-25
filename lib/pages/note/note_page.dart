@@ -124,7 +124,6 @@ class _NoteListState extends State<NoteList>
         flexibleSpace: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: 6.0),
-          physics: const BouncingScrollPhysics(),
           child: Row(
             children: <Widget>[
               FolderButton(
@@ -191,9 +190,6 @@ class _NoteListState extends State<NoteList>
   ListView myListBuilder(List<Note> notes) {
     return ListView.builder(
       shrinkWrap: true,
-      physics: const AlwaysScrollableScrollPhysics(
-        parent: BouncingScrollPhysics(),
-      ),
       itemCount: notes.length,
       itemBuilder: (context, index) {
         final note = notes[index];

@@ -41,13 +41,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
       text: "Registering...",
     );
     String? profilePic = _imageFile;
-    String displayName = '${_fname.text} ${_lname.text}';
+    String displayName = '${_fname.text.trim()} ${_lname.text.trim()}';
 
     try {
       final success =
           await FirebaseService.instance().createUserWithEmailPassword(
-        email: _email.text,
-        password: _password.text,
+        email: _email.text.trim(),
+        password: _password.text.trim(),
         fullName: displayName,
         profilePicPath: profilePic,
       );
@@ -180,6 +180,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     height: 10.0,
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Expanded(
                         child: textFormField(

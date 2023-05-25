@@ -2,13 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:neverlost/pages/timetable/add_subject_page.dart';
 import 'package:neverlost/services/database.dart';
 import 'package:neverlost/utils.dart'
-    show
-        isCurrentSlot,
-        isNextSlot,
-        sortTimeTables,
-        weekdays,
-        emptyWidget,
-        MyCustomScrollBehavior;
+    show isCurrentSlot, isNextSlot, sortTimeTables, weekdays, emptyWidget;
 import 'package:neverlost/widgets/animate_route.dart' show SlideRightRoute;
 import 'package:neverlost/widgets/dialog_boxs.dart' show confirmDialogue;
 import 'package:neverlost/widgets/timetable_box.dart';
@@ -127,7 +121,6 @@ class _TimeTablePageState extends State<TimeTablePage> {
                 );
               }
               return PageView.builder(
-                scrollBehavior: MyCustomScrollBehavior(),
                 itemCount: weekdays.length,
                 controller: _pageController,
                 onPageChanged: (value) => setState(() {
@@ -152,9 +145,6 @@ class _TimeTablePageState extends State<TimeTablePage> {
                     decoration: null,
                     child: ListView.builder(
                       shrinkWrap: true,
-                      physics: const AlwaysScrollableScrollPhysics(
-                        parent: BouncingScrollPhysics(),
-                      ),
                       itemCount: timeTables.length,
                       itemBuilder: (context, index) {
                         final timeTable = timeTables[index];

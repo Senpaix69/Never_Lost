@@ -52,7 +52,6 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
                     ),
                   );
                 },
-                scrollPhysics: const BouncingScrollPhysics(),
                 pageController:
                     PageController(initialPage: widget.currentIndex),
                 onPageChanged: (index) => setState(() => _index = index),

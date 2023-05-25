@@ -263,8 +263,6 @@ class _AddNoteState extends State<AddNote> {
             padding:
                 const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
             child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(
-                  parent: BouncingScrollPhysics()),
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -324,8 +322,9 @@ class _AddNoteState extends State<AddNote> {
                       height: 20.0,
                     ),
                     imageBuilder(),
-                    const Divider(
+                    Divider(
                       height: 20,
+                      color: Colors.grey[900],
                     ),
                     filesBuilder(),
                   ],

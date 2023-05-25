@@ -151,7 +151,7 @@ class _AddSubjectState extends State<AddSubject> {
 
   void _toggleHeight() {
     setState(() {
-      _height = _height == 0 ? 208 : 0;
+      _height = _height == 0 ? 220 : 0;
     });
   }
 
@@ -268,8 +268,6 @@ class _AddSubjectState extends State<AddSubject> {
             }
           },
           child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(
-                parent: AlwaysScrollableScrollPhysics()),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -302,7 +300,7 @@ class _AddSubjectState extends State<AddSubject> {
                         ),
                         Divider(
                           height: 40.0,
-                          color: Colors.grey[600],
+                          color: Colors.grey[900],
                         ),
                         myText(text: "Professor Details"),
                         const SizedBox(
@@ -331,7 +329,7 @@ class _AddSubjectState extends State<AddSubject> {
                         professorDetails(),
                         Divider(
                           height: 40.0,
-                          color: Colors.grey[600],
+                          color: Colors.grey[900],
                         ),
                       ],
                     ),
@@ -496,7 +494,6 @@ class _AddSubjectState extends State<AddSubject> {
       children: <Widget>[
         Expanded(
           child: DropdownButtonFormField<String>(
-            iconSize: 0.0,
             value: day.text,
             onChanged: (value) => day.text = value!,
             dropdownColor: Colors.black,

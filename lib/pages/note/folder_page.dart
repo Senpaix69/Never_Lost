@@ -106,9 +106,6 @@ class _FolderPageState extends State<FolderPage> {
 
   ListView folderList(List<Folder> folders, bool isNote) {
     return ListView.separated(
-      physics: const AlwaysScrollableScrollPhysics(
-        parent: BouncingScrollPhysics(),
-      ),
       shrinkWrap: true,
       itemCount: folders.length,
       separatorBuilder: (context, index) => const SizedBox(height: 10.0),
@@ -121,8 +118,8 @@ class _FolderPageState extends State<FolderPage> {
           ),
           onTap: () => updateCategory(folders[index].name),
           tileColor: _note?.category == folders[index].name
-              ? Colors.blue.withAlpha(180)
-              : Colors.black.withAlpha(180),
+              ? Colors.lightBlue.withAlpha(180)
+              : Colors.lightBlue.withAlpha(80),
           title: Text(
             folders[index].name,
             style: const TextStyle(

@@ -3,7 +3,6 @@ import 'package:neverlost/pages/profile/user_profile_page.dart';
 import 'package:neverlost/pages/second_home.dart';
 import 'package:neverlost/pages/timetable/timetable_page.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:neverlost/utils.dart' show MyCustomScrollBehavior;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -69,7 +68,6 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: PageView(
-          scrollBehavior: MyCustomScrollBehavior(),
           physics: const NeverScrollableScrollPhysics(),
           controller: _pageController,
           onPageChanged: _onPageChanged,

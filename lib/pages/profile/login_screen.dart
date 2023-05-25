@@ -34,8 +34,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _loginUser() async {
     LoadingScreen.instance().show(context: context, text: "Login in...");
-    final email = _email.text;
-    final password = _password.text;
+    final email = _email.text.trim();
+    final password = _password.text.trim();
     try {
       final success = await FirebaseService.instance().loginWithEmailPassword(
         email: email,
