@@ -1,5 +1,6 @@
 import 'dart:io' show File;
 import 'package:file_picker/file_picker.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:neverlost/services/firebase_auth_services/firebase_service.dart';
 import 'package:neverlost/utils.dart'
@@ -36,11 +37,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
+  void notConnectedToInternet() {
+    errorDialogue(
+      context: context,
+      title: "No Internet Connection",
+      message: "You are not connected to internet",
+    );
+    LoadingScreen.instance().hide();
+  }
+
   Future<void> _createUser() async {
     LoadingScreen.instance().show(
       context: context,
       text: "Registering...",
     );
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      notConnectedToInternet();
+      return;
+    }
     String? profilePic = _imageFile;
     String displayName = '${_fname.text.trim()} ${_lname.text.trim()}';
 

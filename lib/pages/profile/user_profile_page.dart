@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:neverlost/pages/profile/tabs_screen.dart';
 import 'package:neverlost/services/firebase_auth_services/firebase_service.dart';
@@ -18,6 +19,38 @@ class _UserProfileState extends State<UserProfile> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FirebaseService.instance().userStr();
     });
+  }
+
+  void notConnectedToInternet() {
+    errorDialogue(
+      context: context,
+      title: "No Internet Connection",
+      message: "You are not connected to internet",
+    );
+  }
+
+  Future<void> logOutUser() async {
+    if (await confirmDialogue(
+        context: context,
+        message: "Do you really want to logout?",
+        title: "Logout")) {
+      final connectivityResult = await (Connectivity().checkConnectivity());
+      if (connectivityResult == ConnectivityResult.none) {
+        notConnectedToInternet();
+        return;
+      }
+      final success = await FirebaseService.instance().logOut();
+      if (success != null) {
+        Future.delayed(
+          const Duration(milliseconds: 100),
+          () => errorDialogue(
+            context: context,
+            message: success.dialogText,
+            title: success.dialogTitle,
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -108,16 +141,7 @@ class _UserProfileState extends State<UserProfile> {
                                             page: const TabsScreen(),
                                           ),
                                         )
-                                    : () async {
-                                        if (await confirmDialogue(
-                                            context: context,
-                                            message:
-                                                "Do you really want to logout?",
-                                            title: "Logout")) {
-                                          await FirebaseService.instance()
-                                              .logOut();
-                                        }
-                                      },
+                                    : () async => logOutUser(),
                                 child: Text(
                                   userData != null ? "Logout" : "Login",
                                   style: const TextStyle(

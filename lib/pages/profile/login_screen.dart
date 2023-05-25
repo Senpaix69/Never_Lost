@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:neverlost/services/firebase_auth_services/firebase_service.dart';
 import 'package:neverlost/utils.dart' show showSnackBar, textValidate;
@@ -32,8 +33,22 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  void notConnectedToInternet() {
+    errorDialogue(
+      context: context,
+      title: "No Internet Connection",
+      message: "You are not connected to internet",
+    );
+    LoadingScreen.instance().hide();
+  }
+
   Future<void> _loginUser() async {
     LoadingScreen.instance().show(context: context, text: "Login in...");
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      notConnectedToInternet();
+      return;
+    }
     final email = _email.text.trim();
     final password = _password.text.trim();
     try {
