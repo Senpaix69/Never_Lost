@@ -27,6 +27,14 @@ class TimeTable {
     );
   }
 
+  Map<String, Object?> toMap() {
+    return {
+      'subject': subject.toMap(),
+      'daytime': dayTime.map((dayTime) => dayTime.toMap()).toList(),
+      'professor': professor.toMap(),
+    };
+  }
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
@@ -42,6 +50,6 @@ class TimeTable {
 
   @override
   String toString() {
-    return '\nSubject: $subject, \nProfessor: $professor, \nDayTimes: ${dayTime.map((dt) => dt.toString()).toList()}';
+    return '\nSubject: ${subject.toString()}, \nProfessor: ${professor.toString()}, \nDayTimes: ${dayTime.map((dt) => dt.toString()).toList()}';
   }
 }

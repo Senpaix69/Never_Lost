@@ -1,6 +1,8 @@
+import 'dart:convert' show jsonEncode, utf8;
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:neverlost/pages/profile/tabs_screen.dart';
+import 'package:neverlost/services/database.dart';
 import 'package:neverlost/services/firebase_auth_services/firebase_service.dart';
 import 'package:neverlost/widgets/animate_route.dart' show FadeRoute;
 import 'package:neverlost/widgets/dialog_boxs.dart';
@@ -12,12 +14,21 @@ class UserProfile extends StatefulWidget {
   State<UserProfile> createState() => _UserProfileState();
 }
 
+enum ProfileActions {
+  backup,
+  restore,
+}
+
 class _UserProfileState extends State<UserProfile> {
+  final DatabaseService _db = DatabaseService();
+  late final List<dynamic> _timetables;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FirebaseService.instance().userStr();
+      _timetables = _db.cachedTimeTables;
     });
   }
 
@@ -31,9 +42,10 @@ class _UserProfileState extends State<UserProfile> {
 
   Future<void> logOutUser() async {
     if (await confirmDialogue(
-        context: context,
-        message: "Do you really want to logout?",
-        title: "Logout")) {
+      context: context,
+      message: "Do you really want to logout?",
+      title: "Logout",
+    )) {
       final connectivityResult = await (Connectivity().checkConnectivity());
       if (connectivityResult == ConnectivityResult.none) {
         notConnectedToInternet();
@@ -51,6 +63,50 @@ class _UserProfileState extends State<UserProfile> {
         );
       }
     }
+  }
+
+  Future<bool> makeBackUp() async {
+    // todo make backup for all the timetables
+    return false;
+  }
+
+  Future<bool> restoreBackup() async {
+    // todo make restorebackup for all the timetables
+    return false;
+  }
+
+  void performProfileActions(ProfileActions action) async {
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      notConnectedToInternet();
+      return;
+    }
+    switch (action) {
+      case ProfileActions.backup:
+        await makeBackUp();
+        break;
+      case ProfileActions.restore:
+        await restoreBackup();
+        break;
+    }
+  }
+
+  String calculateSize(List<dynamic> list) {
+    const List<String> units = ['bytes', 'KB', 'MB', 'GB', 'TB'];
+    double size = 0;
+    int unitIndex = 0;
+    for (int i = 0; i < list.length; i++) {
+      final timetable = list[i].toMap();
+      final jsonString = jsonEncode(timetable);
+      int bytes = utf8.encode(jsonString).length;
+      size += bytes;
+
+      if (size >= 1024 && unitIndex < units.length - 1) {
+        size /= 1024;
+        unitIndex++;
+      }
+    }
+    return '${size.roundToDouble().toStringAsFixed(0)} ${units[unitIndex]}';
   }
 
   @override
@@ -159,14 +215,26 @@ class _UserProfileState extends State<UserProfile> {
                         Column(
                           children: <Widget>[
                             myTile(
-                                title: "Backup", icon: Icons.backup, index: 0),
+                              title: "Backup",
+                              icon: Icons.backup,
+                              index: 0,
+                              size: calculateSize(_timetables),
+                              callback: () => performProfileActions(
+                                ProfileActions.backup,
+                              ),
+                            ),
                             const SizedBox(
                               height: 10.0,
                             ),
                             myTile(
-                                title: "Restore",
-                                icon: Icons.restore,
-                                index: 1),
+                              title: "Restore",
+                              icon: Icons.restore,
+                              size: '0 bytes',
+                              index: 1,
+                              callback: () => performProfileActions(
+                                ProfileActions.restore,
+                              ),
+                            ),
                           ],
                         )
                     ],
@@ -182,7 +250,9 @@ class _UserProfileState extends State<UserProfile> {
   ListTile myTile({
     required String title,
     required IconData icon,
+    required String size,
     required int index,
+    required VoidCallback callback,
   }) {
     return ListTile(
       shape: RoundedRectangleBorder(
@@ -193,8 +263,9 @@ class _UserProfileState extends State<UserProfile> {
       ),
       key: ValueKey(index),
       tileColor: Colors.black.withAlpha(90),
-      minVerticalPadding: 20.0,
       title: Text(title),
+      subtitle: Text(size),
+      onTap: callback,
     );
   }
 }

@@ -17,7 +17,6 @@ class _LoginScreenState extends State<LoginScreen> {
   late final TextEditingController _email;
   late final TextEditingController _password;
   final _formKey = GlobalKey<FormState>();
-  final RegExp regEx = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
 
   @override
   void initState() {
