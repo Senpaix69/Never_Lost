@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart' show immutable, listEquals;
+import 'package:neverlost/services/constants.dart';
 import 'package:neverlost/services/timetable_services/daytime.dart';
 import 'package:neverlost/services/timetable_services/professor.dart';
 import 'package:neverlost/services/timetable_services/subject.dart';
@@ -27,11 +28,28 @@ class TimeTable {
     );
   }
 
+  factory TimeTable.fromMap(Map<String, dynamic> map) {
+    final sub = Subject.fromMap(map[subTable]);
+    final prof = Professor.fromMap(map[professorTable]);
+    final dayTimes = (map[dayTimeTable] as List<dynamic>?)
+            ?.map(
+              (daytime) => DayTime.fromMap(daytime as Map<String, Object?>),
+            )
+            .toList() ??
+        [];
+
+    return TimeTable(
+      subject: sub,
+      professor: prof,
+      dayTime: dayTimes,
+    );
+  }
+
   Map<String, Object?> toMap() {
     return {
-      'subject': subject.toMap(),
-      'daytime': dayTime.map((dayTime) => dayTime.toMap()).toList(),
-      'professor': professor.toMap(),
+      subTable: subject.toMap(),
+      dayTimeTable: dayTime.map((dayTime) => dayTime.toMap()).toList(),
+      professorTable: professor.toMap(),
     };
   }
 

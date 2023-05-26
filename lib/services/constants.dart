@@ -1,3 +1,27 @@
+// ! TableNames
+const tables = [
+  {
+    'name': noteTable,
+    'createStatement': createNoteTable,
+  },
+  {
+    'name': subTable,
+    'createStatement': createSubTable,
+  },
+  {
+    'name': dayTimeTable,
+    'createStatement': createDayTimeTable,
+  },
+  {
+    'name': professorTable,
+    'createStatement': createProfessorTable,
+  },
+  {
+    'name': folderTable,
+    'createStatement': createFolderTable,
+  },
+];
+
 // !Subject Constants
 const subTable = "subject";
 const subIdColumn = "sub_id";

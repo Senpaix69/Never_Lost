@@ -1,9 +1,9 @@
-import 'dart:convert' show jsonEncode, utf8;
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:neverlost/pages/profile/tabs_screen.dart';
 import 'package:neverlost/services/database.dart';
 import 'package:neverlost/services/firebase_auth_services/firebase_service.dart';
+import 'package:neverlost/services/timetable_services/timetable.dart';
 import 'package:neverlost/widgets/animate_route.dart' show FadeRoute;
 import 'package:neverlost/widgets/dialog_boxs.dart';
 
@@ -21,13 +21,16 @@ enum ProfileActions {
 
 class _UserProfileState extends State<UserProfile> {
   final DatabaseService _db = DatabaseService();
-  late final List<dynamic> _timetables;
+  final FirebaseService _firebase = FirebaseService.instance();
+  late final List<TimeTable> _timetables;
+  bool _backUpLoading = false;
+  bool _restoreLoading = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      FirebaseService.instance().userStr();
+      _firebase.userStr();
       _timetables = _db.cachedTimeTables;
     });
   }
@@ -66,12 +69,35 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Future<bool> makeBackUp() async {
-    // todo make backup for all the timetables
+    if (_timetables.isEmpty) {
+      errorDialogue(
+        context: context,
+        title: "No TimeTable Found",
+        message: "There is no timetable found to be saved in backup",
+      );
+      return false;
+    }
+    setState(() => _backUpLoading = true);
+    await _firebase.uploadTimetables(
+      timetables: _timetables,
+    );
+    setState(() => _backUpLoading = false);
     return false;
   }
 
   Future<bool> restoreBackup() async {
-    // todo make restorebackup for all the timetables
+    setState(() => _restoreLoading = true);
+    final List<TimeTable> allTimeTables = await _firebase.getAllTimeTables();
+    await _db.cleanTimeTable();
+    for (int i = 0; i < allTimeTables.length; i++) {
+      final timetable = allTimeTables[i];
+      await _db.insertTimeTable(
+        subject: timetable.subject,
+        professor: timetable.professor,
+        daytimes: timetable.dayTime,
+      );
+    }
+    setState(() => _restoreLoading = false);
     return false;
   }
 
@@ -91,24 +117,6 @@ class _UserProfileState extends State<UserProfile> {
     }
   }
 
-  String calculateSize(List<dynamic> list) {
-    const List<String> units = ['bytes', 'KB', 'MB', 'GB', 'TB'];
-    double size = 0;
-    int unitIndex = 0;
-    for (int i = 0; i < list.length; i++) {
-      final timetable = list[i].toMap();
-      final jsonString = jsonEncode(timetable);
-      int bytes = utf8.encode(jsonString).length;
-      size += bytes;
-
-      if (size >= 1024 && unitIndex < units.length - 1) {
-        size /= 1024;
-        unitIndex++;
-      }
-    }
-    return '${size.roundToDouble().toStringAsFixed(0)} ${units[unitIndex]}';
-  }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -119,7 +127,7 @@ class _UserProfileState extends State<UserProfile> {
           width: double.infinity,
           padding: const EdgeInsets.fromLTRB(26, 90, 26, 20),
           child: StreamBuilder(
-            stream: FirebaseService.instance().userStream,
+            stream: _firebase.userStream,
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
@@ -150,9 +158,7 @@ class _UserProfileState extends State<UserProfile> {
                             height: 16.0,
                           ),
                           Text(
-                            userData != null
-                                ? userData['fullname']
-                                : "Fullname",
+                            userData != null ? userData.fullname : "Fullname",
                             style: const TextStyle(
                               fontSize: 26.0,
                               fontWeight: FontWeight.bold,
@@ -162,7 +168,7 @@ class _UserProfileState extends State<UserProfile> {
                             height: 6.0,
                           ),
                           Text(
-                            "@${userData != null ? userData['username'] : 'username'}",
+                            "@${userData != null ? userData.username : 'username'}",
                             style: const TextStyle(fontSize: 16.0),
                           ),
                           const SizedBox(
@@ -211,32 +217,7 @@ class _UserProfileState extends State<UserProfile> {
                           ),
                         ],
                       ),
-                      if (userData != null)
-                        Column(
-                          children: <Widget>[
-                            myTile(
-                              title: "Backup",
-                              icon: Icons.backup,
-                              index: 0,
-                              size: calculateSize(_timetables),
-                              callback: () => performProfileActions(
-                                ProfileActions.backup,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10.0,
-                            ),
-                            myTile(
-                              title: "Restore",
-                              icon: Icons.restore,
-                              size: '0 bytes',
-                              index: 1,
-                              callback: () => performProfileActions(
-                                ProfileActions.restore,
-                              ),
-                            ),
-                          ],
-                        )
+                      if (userData != null) backUpAndRestore()
                     ],
                   );
               }
@@ -247,25 +228,59 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
-  ListTile myTile({
-    required String title,
-    required IconData icon,
-    required String size,
-    required int index,
-    required VoidCallback callback,
-  }) {
-    return ListTile(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      leading: Icon(
-        icon,
-      ),
-      key: ValueKey(index),
-      tileColor: Colors.black.withAlpha(90),
-      title: Text(title),
-      subtitle: Text(size),
-      onTap: callback,
+  Column backUpAndRestore() {
+    final shape = RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10),
+    );
+    return Column(
+      children: <Widget>[
+        ListTile(
+          shape: shape,
+          leading: const Icon(
+            Icons.backup,
+          ),
+          key: const ValueKey(0),
+          tileColor: Colors.black.withAlpha(90),
+          title: const Text("Backup"),
+          subtitle: Text(_firebase.calculateSize(_timetables)),
+          onTap: () => performProfileActions(
+            ProfileActions.backup,
+          ),
+          trailing: _backUpLoading
+              ? const CircularProgressIndicator()
+              : const Icon(
+                  Icons.chevron_right_rounded,
+                ),
+        ),
+        const SizedBox(
+          height: 10.0,
+        ),
+        ListTile(
+          shape: shape,
+          leading: const Icon(
+            Icons.restore,
+          ),
+          key: const ValueKey(1),
+          tileColor: Colors.black.withAlpha(90),
+          title: const Text("Restore"),
+          subtitle: FutureBuilder(
+            future: _firebase.restoreDataSize(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Text('${snapshot.data}');
+              } else {
+                return const Text("Loading...");
+              }
+            },
+          ),
+          onTap: () => performProfileActions(
+            ProfileActions.restore,
+          ),
+          trailing: _restoreLoading
+              ? const CircularProgressIndicator()
+              : const Icon(Icons.chevron_right_rounded),
+        ),
+      ],
     );
   }
 }

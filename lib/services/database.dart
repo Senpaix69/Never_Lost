@@ -76,9 +76,6 @@ class DatabaseService {
         await db.execute('PRAGMA foreign_keys = ON;');
       },
     );
-    // await db.execute('DROP TABLE IF EXISTS $noteTable');
-    // await db.execute(createNoteTable);
-
     _catchAllTimeTables();
     _catchAllNotes();
     _catchAllTodos();
@@ -94,35 +91,24 @@ class DatabaseService {
     }
   }
 
+  Future<void> cleanTimeTable() async {
+    final db = await open();
+    await db.transaction((txn) async {
+      await txn.execute('DROP TABLE IF EXISTS $subTable');
+      await txn.execute('DROP TABLE IF EXISTS $professorTable');
+      await txn.execute('DROP TABLE IF EXISTS $dayTimeTable');
+      await txn.execute(createSubTable);
+      await txn.execute(createDayTimeTable);
+      await txn.execute(createProfessorTable);
+    }).then((value) {
+      _cachedTimeTables.clear();
+      _timeTableController.add(_cachedTimeTables);
+    });
+    // todo catch error
+  }
+
   Future<void> cleanDatabase() async {
-    final db = _database;
-    if (db == null) {
-      return;
-    }
-
-    final tables = [
-      {
-        'name': noteTable,
-        'createStatement': createNoteTable,
-      },
-      {
-        'name': subTable,
-        'createStatement': createSubTable,
-      },
-      {
-        'name': dayTimeTable,
-        'createStatement': createDayTimeTable,
-      },
-      {
-        'name': professorTable,
-        'createStatement': createProfessorTable,
-      },
-      {
-        'name': folderTable,
-        'createStatement': createFolderTable,
-      },
-    ];
-
+    final db = await open();
     await db.transaction((txn) async {
       for (final table in tables) {
         await txn.execute('DROP TABLE IF EXISTS ${table['name']}');
