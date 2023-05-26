@@ -12,9 +12,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  firebase_core: ^2.8.0
-  firebase_auth: ^4.3.0
-  cloud_firestore: ^4.4.5
+  firebase_core: ^2.13.0
+  firebase_auth: ^4.6.1
+  cloud_firestore: ^4.7.1
   firebase_storage: ^11.0.16
   cupertino_icons: ^1.0.2
   sqflite: ^2.2.6

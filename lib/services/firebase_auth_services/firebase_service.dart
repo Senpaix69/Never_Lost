@@ -99,8 +99,20 @@ class FirebaseService {
         timetable.copyWith(subject: sub).toMap(),
       );
     }
+    String size = calculateSize(timetables);
+    await setSizeToSharePref(size: size);
+    final backUpSizeCollection = _firestore.collection(
+      'users/${_user!.uid}/backupSize',
+    );
+
+    await backUpSizeCollection.add({
+      'size': size,
+    });
+  }
+
+  Future<void> setSizeToSharePref({required String size}) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(restoreSize, calculateSize(timetables));
+    await prefs.setString(restoreSize, size);
   }
 
   Future<void> deleteBackUp() async {
@@ -168,10 +180,23 @@ class FirebaseService {
     return '${size.roundToDouble().toStringAsFixed(0)} ${units[unitIndex]}';
   }
 
-  Future<String> restoreDataSize() async {
+  Future<String?> restoreDataSize() async {
     final prefs = await SharedPreferences.getInstance();
     String? size = prefs.getString(restoreSize);
-    return size ?? "0 bytes";
+    if (size == null) {
+      final backUpSize = await _firestore
+          .collection(
+            'users/${_user!.uid}/backupSize',
+          )
+          .get()
+          .then((snap) => snap.docs.first);
+      if (backUpSize.exists) {
+        await setSizeToSharePref(size: backUpSize['size']);
+        return backUpSize['size'];
+      }
+      return null;
+    }
+    return size;
   }
 
   // Logout

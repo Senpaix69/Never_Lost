@@ -25,6 +25,7 @@ class _UserProfileState extends State<UserProfile> {
   late final List<TimeTable> _timetables;
   bool _backUpLoading = false;
   bool _restoreLoading = false;
+  String? _backUpSize;
 
   @override
   void initState() {
@@ -82,10 +83,18 @@ class _UserProfileState extends State<UserProfile> {
       timetables: _timetables,
     );
     setState(() => _backUpLoading = false);
-    return false;
+    return true;
   }
 
   Future<bool> restoreBackup() async {
+    if (_backUpSize == null) {
+      errorDialogue(
+        context: context,
+        title: "No Backup Found",
+        message: "Ensure that you have made a backup, click on backup!",
+      );
+      return false;
+    }
     setState(() => _restoreLoading = true);
     final List<TimeTable> allTimeTables = await _firebase.getAllTimeTables();
     await _db.cleanTimeTable();
@@ -98,7 +107,7 @@ class _UserProfileState extends State<UserProfile> {
       );
     }
     setState(() => _restoreLoading = false);
-    return false;
+    return true;
   }
 
   void performProfileActions(ProfileActions action) async {
@@ -266,10 +275,12 @@ class _UserProfileState extends State<UserProfile> {
           subtitle: FutureBuilder(
             future: _firebase.restoreDataSize(),
             builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Text('${snapshot.data}');
-              } else {
-                return const Text("Loading...");
+              switch (snapshot.connectionState) {
+                case ConnectionState.done:
+                  _backUpSize = snapshot.data;
+                  return Text(_backUpSize ?? "0 bytes");
+                default:
+                  return const Text("Loading...");
               }
             },
           ),

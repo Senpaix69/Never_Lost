@@ -188,11 +188,16 @@ void showSnackBar(BuildContext context, String message) {
     SnackBar(
       behavior: SnackBarBehavior.floating,
       margin: const EdgeInsets.only(bottom: 20.0, left: 5.0, right: 5.0),
-      backgroundColor: Colors.lightBlue[900],
+      backgroundColor: Colors.lightBlue,
       showCloseIcon: true,
+      closeIconColor: Colors.white,
       content: Text(
         message,
-        style: TextStyle(color: Colors.grey[300]),
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 14.0,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     ),
   );
