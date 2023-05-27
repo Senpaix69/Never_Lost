@@ -8,6 +8,7 @@ import 'package:neverlost/pages/profile/tabs_screen/tabs_screen.dart';
 import 'package:neverlost/services/database.dart';
 import 'package:neverlost/services/firebase_auth_services/firebase_service.dart';
 import 'package:neverlost/services/timetable_services/timetable.dart';
+import 'package:neverlost/utils.dart';
 import 'package:neverlost/widgets/animate_route.dart' show FadeRoute;
 import 'package:neverlost/widgets/dialog_boxs.dart';
 import 'package:neverlost/widgets/loading/loading_screen.dart';
@@ -87,6 +88,7 @@ class _UserProfileState extends State<UserProfile> {
       timetables: _timetables,
     );
     LoadingScreen.instance().hide();
+    showSnak(message: "Backup saved successfully!");
     return true;
   }
 
@@ -114,6 +116,7 @@ class _UserProfileState extends State<UserProfile> {
       );
     }
     LoadingScreen.instance().hide();
+    showSnak(message: "Restoration completed!");
     return true;
   }
 
@@ -292,6 +295,8 @@ class _UserProfileState extends State<UserProfile> {
         context: context,
         text: message,
       );
+
+  void showSnak({required String message}) => showSnackBar(context, message);
 
   void _pickImage() async {
     final pickedFile = await FilePicker.platform.pickFiles(
