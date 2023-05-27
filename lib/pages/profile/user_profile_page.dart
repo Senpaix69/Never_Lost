@@ -274,20 +274,21 @@ class _UserProfileState extends State<UserProfile> {
                 )
               : null,
         ),
-        Positioned(
-          bottom: -6,
-          right: -4,
-          child: Center(
-            child: IconButton(
-              onPressed: () => _pickImage(),
-              icon: const Icon(
-                Icons.camera,
-                color: Colors.white,
+        if (userData != null)
+          Positioned(
+            bottom: -6,
+            right: -4,
+            child: Center(
+              child: IconButton(
+                onPressed: () => _pickImage(),
+                icon: const Icon(
+                  Icons.camera,
+                  color: Colors.white,
+                ),
+                iconSize: 40.0,
               ),
-              iconSize: 40.0,
             ),
           ),
-        ),
       ],
     );
   }

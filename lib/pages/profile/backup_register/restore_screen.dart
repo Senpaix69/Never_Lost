@@ -18,7 +18,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
-            padding: const EdgeInsets.fromLTRB(15, 50, 15, 40),
+            padding: const EdgeInsets.fromLTRB(15, 60, 15, 40),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
@@ -27,7 +27,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
                   size: 24,
                   align: true,
                 ),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: 30.0),
                 const Text(restoreContent),
                 const SizedBox(height: 10.0),
                 textMessageBold(
