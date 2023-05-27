@@ -89,6 +89,7 @@ class _UserProfileState extends State<UserProfile> {
     );
     LoadingScreen.instance().hide();
     showSnak(message: "Backup saved successfully!");
+    setState(() {});
     return true;
   }
 
