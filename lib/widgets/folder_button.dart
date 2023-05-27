@@ -25,9 +25,9 @@ class FolderButton extends StatelessWidget {
             ),
           ),
           backgroundColor: folderName == activeFolder
-              ? MaterialStateColor.resolveWith((states) => Colors.blue)
+              ? MaterialStateColor.resolveWith((states) => Colors.grey.shade900)
               : MaterialStateColor.resolveWith(
-                  (states) => Colors.black.withAlpha(100),
+                  (states) => Colors.grey.shade800,
                 ),
         ),
         onLongPress: deleteFolder,

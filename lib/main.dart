@@ -31,10 +31,10 @@ ThemeData myTheme() {
   return ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
-    primaryColor: Colors.lightBlue,
+    primaryColor: Colors.grey,
     colorScheme: const ColorScheme.dark(
-      primary: Colors.lightBlue,
-      secondary: Colors.lightBlue,
+      primary: Colors.white,
+      secondary: Colors.grey,
     ),
   );
 }

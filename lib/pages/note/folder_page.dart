@@ -118,8 +118,8 @@ class _FolderPageState extends State<FolderPage> {
           ),
           onTap: () => updateCategory(folders[index].name),
           tileColor: _note?.category == folders[index].name
-              ? Colors.lightBlue.withAlpha(180)
-              : Colors.lightBlue.withAlpha(80),
+              ? Colors.grey[900]
+              : Colors.grey[800],
           title: Text(
             folders[index].name,
             style: const TextStyle(

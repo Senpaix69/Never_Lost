@@ -160,9 +160,7 @@ class _TodoListState extends State<TodoList>
               duration: const Duration(milliseconds: 500),
               margin: const EdgeInsets.symmetric(vertical: 5.0),
               decoration: BoxDecoration(
-                color: isChecked
-                    ? Colors.black.withAlpha(100)
-                    : Colors.black.withAlpha(180),
+                color: isChecked ? Colors.grey[900] : Colors.grey[800],
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: todoTile(todo, isChecked, timeSchedule),
@@ -188,9 +186,9 @@ class _TodoListState extends State<TodoList>
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(7.0),
               shape: BoxShape.rectangle,
-              color: isChecked ? Colors.lightBlue : Colors.transparent,
+              color: isChecked ? Colors.grey[600] : Colors.transparent,
               border: Border.all(
-                color: isChecked ? Colors.lightBlue : Colors.white,
+                color: isChecked ? Colors.grey.shade600 : Colors.white,
               ),
             ),
             child: isChecked
@@ -221,14 +219,13 @@ class _TodoListState extends State<TodoList>
         '${todo.reminder == 1 ? "Passed: " : "Reminder: "}${timeSchedule ?? "Not Set"}',
         style: TextStyle(
           fontSize: 12.0,
-          color:
-              todo.reminder == 1 && !isChecked ? Colors.redAccent : Colors.grey,
+          color: todo.reminder == 1 && !isChecked ? Colors.red : Colors.grey,
         ),
       ),
       trailing: (todo.date != null && !isChecked && todo.reminder != 1)
-          ? const Icon(
+          ? Icon(
               Icons.alarm_on_sharp,
-              color: Colors.lightBlue,
+              color: Colors.grey[400],
             )
           : null,
     );

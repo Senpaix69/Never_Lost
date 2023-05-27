@@ -87,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: Colors.transparent,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 30),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 63),
           child: Form(
             autovalidateMode: AutovalidateMode.onUserInteraction,
             key: _formKey,
@@ -99,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Center(
                     child: CircleAvatar(
                       backgroundImage: const AssetImage("assets/prof.png"),
-                      backgroundColor: Colors.lightBlue.withAlpha(120),
+                      backgroundColor: Colors.grey[900],
                       radius: 70.0,
                     ),
                   ),
@@ -143,7 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           backgroundColor: MaterialStateColor.resolveWith(
-                            (states) => Colors.lightBlue,
+                            (states) => Colors.grey.shade700,
                           ),
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(

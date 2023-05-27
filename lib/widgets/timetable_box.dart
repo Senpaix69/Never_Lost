@@ -159,9 +159,16 @@ class _TimeTableBoxState extends State<TimeTableBox>
           margin: const EdgeInsets.symmetric(vertical: 10.0),
           padding: const EdgeInsets.only(bottom: 6.0),
           decoration: BoxDecoration(
-            color: Colors.black.withAlpha(180),
-            borderRadius: BorderRadius.circular(10.0),
-          ),
+              color: Colors.grey[900],
+              borderRadius: BorderRadius.circular(10.0),
+              border: Border.all(color: Colors.black),
+              boxShadow: [
+                BoxShadow(
+                  spreadRadius: 1.0,
+                  blurRadius: 8.0,
+                  color: Colors.grey.shade900,
+                ),
+              ]),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[

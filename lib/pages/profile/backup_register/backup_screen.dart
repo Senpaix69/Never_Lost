@@ -58,7 +58,7 @@ class _BackupScreenState extends State<BackupScreen> {
                 ListTile(
                   contentPadding: const EdgeInsets.symmetric(vertical: 0),
                   leading: Checkbox(
-                      checkColor: Colors.white,
+                      checkColor: Colors.black,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(3),
                       ),
@@ -78,7 +78,7 @@ class _BackupScreenState extends State<BackupScreen> {
                         onPressed: () => Navigator.of(context).pop(false),
                         style: ButtonStyle(
                             backgroundColor: MaterialStateColor.resolveWith(
-                          (states) => Colors.lightBlue,
+                          (states) => Colors.grey.shade800,
                         )),
                         child: textMessageBold(
                           message: "Cancel",

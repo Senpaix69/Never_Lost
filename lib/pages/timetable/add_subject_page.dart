@@ -355,7 +355,7 @@ class _AddSubjectState extends State<AddSubject> {
                       Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: Colors.blue,
+                          color: Colors.grey[700],
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         child: TextButton.icon(
@@ -381,7 +381,7 @@ class _AddSubjectState extends State<AddSubject> {
                 Container(
                   margin: const EdgeInsets.only(top: 20.0),
                   decoration: BoxDecoration(
-                    color: Colors.lightBlue.withAlpha(100),
+                    color: Colors.grey[900],
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   child: Column(
@@ -496,7 +496,7 @@ class _AddSubjectState extends State<AddSubject> {
           child: DropdownButtonFormField<String>(
             value: day.text,
             onChanged: (value) => day.text = value!,
-            dropdownColor: Colors.black,
+            dropdownColor: Colors.grey[800],
             style: const TextStyle(color: Colors.white),
             decoration: decorationFormField(Icons.weekend, "Select Day"),
             items: weekdays.map<DropdownMenuItem<String>>((weekday) {

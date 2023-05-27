@@ -58,54 +58,46 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("assets/bg4.jpg"),
-          fit: BoxFit.fill,
-        ),
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: PageView(
+        physics: const NeverScrollableScrollPhysics(),
+        controller: _pageController,
+        onPageChanged: _onPageChanged,
+        children: _pages,
       ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: PageView(
-          physics: const NeverScrollableScrollPhysics(),
-          controller: _pageController,
-          onPageChanged: _onPageChanged,
-          children: _pages,
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[800],
+          borderRadius: BorderRadius.circular(30.0),
         ),
-        bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(30.0),
-          ),
-          margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: GNav(
-            selectedIndex: _currentPageIndex,
-            haptic: true,
-            gap: 8,
-            color: Colors.white,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            activeColor: Colors.white,
-            iconSize: 25,
-            tabBackgroundColor: Colors.lightBlue.shade800,
-            padding: const EdgeInsets.all(10),
-            tabs: const <GButton>[
-              GButton(
-                icon: Icons.notes,
-                text: "Notes",
-              ),
-              GButton(
-                icon: Icons.calendar_today,
-                text: "TimeTables",
-              ),
-              GButton(
-                icon: Icons.person,
-                text: "Profile",
-              ),
-            ],
-            onTabChange: _navigateToPage,
-          ),
+        margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: GNav(
+          selectedIndex: _currentPageIndex,
+          haptic: true,
+          gap: 8,
+          color: Colors.white,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          activeColor: Colors.white,
+          iconSize: 25,
+          tabBackgroundColor: Colors.grey.shade900,
+          padding: const EdgeInsets.all(10),
+          tabs: const <GButton>[
+            GButton(
+              icon: Icons.notes,
+              text: "Notes",
+            ),
+            GButton(
+              icon: Icons.calendar_today,
+              text: "TimeTables",
+            ),
+            GButton(
+              icon: Icons.person,
+              text: "Profile",
+            ),
+          ],
+          onTabChange: _navigateToPage,
         ),
       ),
     );

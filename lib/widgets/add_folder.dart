@@ -74,7 +74,7 @@ class _AddFolderDialogState extends State<AddFolderDialog> {
             }
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue[700],
+            backgroundColor: Colors.grey[800],
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),

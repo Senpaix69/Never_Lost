@@ -57,10 +57,10 @@ class _DayTimeListState extends State<DayTimeList> {
                 isReminder ? Icons.access_time_filled_sharp : Icons.access_time,
                 size: 35.0,
                 color: day.currentSlot
-                    ? Colors.yellow
+                    ? Colors.lightBlue
                     : day.nextSlot
                         ? Colors.red
-                        : Colors.lightBlue,
+                        : Colors.grey[600],
               ),
       ),
       title: Text(
@@ -91,14 +91,14 @@ class _DayTimeListState extends State<DayTimeList> {
                   label: Text(
                     day.currentSlot ? "Now" : "Next",
                     style: TextStyle(
-                      color: day.currentSlot ? Colors.yellow : Colors.red,
+                      color: day.currentSlot ? Colors.lightBlue : Colors.red,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   onPressed: () {},
                   icon: Icon(
-                    Icons.scatter_plot,
-                    color: day.currentSlot ? Colors.yellow : Colors.red,
+                    Icons.label_important_sharp,
+                    color: day.currentSlot ? Colors.lightBlue : Colors.red,
                   ),
                 )
               : null,

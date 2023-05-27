@@ -134,7 +134,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: Stack(
                       children: <Widget>[
                         CircleAvatar(
-                          backgroundColor: Colors.lightBlue.withAlpha(100),
+                          backgroundColor: Colors.grey[900],
                           radius: 70,
                           child: _imageFile != null
                               ? ClipOval(
@@ -157,9 +157,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           child: Center(
                             child: IconButton(
                               onPressed: () => _pickImage(),
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.camera_alt,
-                                color: Colors.white,
+                                color: Colors.grey[400],
                               ),
                               iconSize: 40.0,
                             ),
@@ -263,7 +263,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           ),
                           backgroundColor: MaterialStateColor.resolveWith(
-                            (states) => Colors.lightBlue,
+                            (states) => Colors.grey.shade700,
                           ),
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(

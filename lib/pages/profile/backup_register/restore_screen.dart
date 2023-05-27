@@ -41,7 +41,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
                 ListTile(
                   contentPadding: const EdgeInsets.symmetric(vertical: 0),
                   leading: Checkbox(
-                      checkColor: Colors.white,
+                      checkColor: Colors.black,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(3),
                       ),
@@ -61,7 +61,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
                         onPressed: () => Navigator.of(context).pop(false),
                         style: ButtonStyle(
                             backgroundColor: MaterialStateColor.resolveWith(
-                          (states) => Colors.lightBlue,
+                          (states) => Colors.grey.shade800,
                         )),
                         child: textMessageBold(
                           message: "Cancel",

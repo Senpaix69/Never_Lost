@@ -78,7 +78,7 @@ class _SecondHomePageState extends State<SecondHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: selected ? _addNotePage : _showAddTodoBottomSheet,
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.grey[800],
         child: const Icon(
           Icons.add,
           size: 30.0,
@@ -102,9 +102,10 @@ class _SecondHomePageState extends State<SecondHomePage> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(7.0),
             shape: BoxShape.rectangle,
-            color: !selected ? Colors.lightBlue : Colors.transparent,
+            color: !selected ? Colors.grey[800] : Colors.transparent,
             border: Border.all(
-              color: !selected ? Colors.lightBlue : Colors.white,
+              width: 2.0,
+              color: !selected ? Colors.grey.shade800 : Colors.grey,
             ),
           ),
           child: Center(

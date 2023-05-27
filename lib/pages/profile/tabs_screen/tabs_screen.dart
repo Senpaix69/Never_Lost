@@ -31,22 +31,12 @@ class TabsScreenState extends State<TabsScreen>
             currentFocus.unfocus();
           }
         },
-        child: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/profBg.jpg"),
-              fit: BoxFit.fitWidth,
-            ),
-          ),
-          height: double.infinity,
-          width: double.infinity,
-          child: TabBarView(
-            controller: _controller,
-            children: const <Widget>[
-              LoginScreen(),
-              RegisterScreen(),
-            ],
-          ),
+        child: TabBarView(
+          controller: _controller,
+          children: const <Widget>[
+            LoginScreen(),
+            RegisterScreen(),
+          ],
         ),
       ),
     );
@@ -59,16 +49,17 @@ class TabsScreenState extends State<TabsScreen>
       backgroundColor: Colors.transparent,
       leading: actions(context),
       bottom: TabBar(
-        indicatorWeight: 3.0,
+        indicatorWeight: 2.0,
         labelPadding: const EdgeInsets.all(10.0),
         labelStyle: const TextStyle(
           fontSize: 16.0,
           fontWeight: FontWeight.bold,
           letterSpacing: 0.5,
         ),
-        indicatorColor: Colors.lightBlue,
+        indicatorColor: Colors.grey,
         controller: _controller,
-        labelColor: Colors.white,
+        unselectedLabelColor: Colors.grey[400],
+        labelColor: Colors.grey[200],
         tabs: tabs,
       ),
     );
@@ -77,9 +68,9 @@ class TabsScreenState extends State<TabsScreen>
   Container actions(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(8.0),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.lightBlue,
+        color: Colors.grey[800],
       ),
       child: IconButton(
         onPressed: () => Navigator.of(context).pop(),

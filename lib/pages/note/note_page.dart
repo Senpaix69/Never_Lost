@@ -167,7 +167,7 @@ class _NoteListState extends State<NoteList>
                       ),
                     ),
                     backgroundColor: MaterialStateColor.resolveWith(
-                      (states) => Colors.black.withAlpha(100),
+                      (states) => Colors.grey.shade800,
                     ),
                   ),
                   icon: Icon(
@@ -205,7 +205,7 @@ class _NoteListState extends State<NoteList>
                 horizontal: 10.0,
               ),
               decoration: BoxDecoration(
-                color: Colors.black.withAlpha(180),
+                color: Colors.grey[800],
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: GestureDetector(
@@ -264,18 +264,18 @@ class _NoteListState extends State<NoteList>
                 children: <Widget>[
                   if (removeEmptyFilesAndImages(note.files).isNotEmpty ||
                       removeEmptyFilesAndImages(note.images).isNotEmpty)
-                    const Icon(
+                    Icon(
                       Icons.attachment_outlined,
-                      color: Colors.lightBlue,
+                      color: Colors.grey[300],
                       size: 20.0,
                     ),
                   const SizedBox(
                     width: 6.0,
                   ),
                   if (note.imp != 0)
-                    const Icon(
+                    Icon(
                       Icons.star,
-                      color: Colors.lightBlue,
+                      color: Colors.grey[400],
                       size: 20.0,
                     ),
                 ],
@@ -329,7 +329,7 @@ class _NoteListState extends State<NoteList>
     final RenderObject? overlay =
         Overlay.of(context).context.findRenderObject();
     final result = await showMenu(
-      color: Colors.black,
+      color: Colors.grey[900],
       context: context,
       position: RelativeRect.fromRect(
         Rect.fromLTWH(

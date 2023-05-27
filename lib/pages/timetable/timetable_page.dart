@@ -98,13 +98,21 @@ class _TimeTablePageState extends State<TimeTablePage> {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         elevation: 0.0,
-        backgroundColor: Colors.transparent,
-        title: const Text(
+        backgroundColor: Colors.grey[800],
+        title: Text(
           "Time Table",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            color: Colors.grey[400],
+            fontWeight: FontWeight.bold,
+          ),
         ),
         actions: <Widget>[actions(context)],
         bottom: navigatorDays(),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(30.0),
+          ),
+        ),
       ),
       body: Column(
         children: <Widget>[
@@ -168,9 +176,9 @@ class _TimeTablePageState extends State<TimeTablePage> {
   Container actions(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(8.0),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.blue,
+        color: Colors.grey[900],
       ),
       child: IconButton(
         onPressed: () {
@@ -190,9 +198,9 @@ class _TimeTablePageState extends State<TimeTablePage> {
 
   PreferredSize navigatorDays() {
     return PreferredSize(
-      preferredSize: const Size.fromHeight(50),
+      preferredSize: const Size.fromHeight(60),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 10.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -206,13 +214,24 @@ class _TimeTablePageState extends State<TimeTablePage> {
                 color: Colors.white,
               ),
             ),
-            Text(
-              weekdays[_currentPage],
-              style: TextStyle(
-                letterSpacing: 1.0,
-                color: _today == _currentPage ? Colors.blue[100] : Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
+            Text.rich(
+              TextSpan(
+                text: weekdays[_currentPage],
+                style: TextStyle(
+                  letterSpacing: 1.0,
+                  color: Colors.grey[400],
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+                children: <InlineSpan>[
+                  if (_today == _currentPage)
+                    TextSpan(
+                        text: " (Today)",
+                        style: TextStyle(
+                          color: Colors.grey[200],
+                          fontSize: 10,
+                        )),
+                ],
               ),
             ),
             IconButton(

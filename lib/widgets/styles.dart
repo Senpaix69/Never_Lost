@@ -9,7 +9,7 @@ InputDecoration decorationFormField(prefixIcon, hintText) {
       color: Colors.grey[200],
     ),
     filled: true,
-    fillColor: Colors.lightBlue.withAlpha(100),
+    fillColor: Colors.grey[900],
     border: const OutlineInputBorder(
       borderRadius: BorderRadius.all(
         Radius.circular(8.0),
@@ -102,7 +102,7 @@ Container headerContainer({
                 padding: const EdgeInsets.only(right: 10.0),
                 child: Icon(
                   Icons.calendar_today,
-                  color: Colors.blue[300],
+                  color: Colors.grey[600],
                 ),
               ),
       ],
