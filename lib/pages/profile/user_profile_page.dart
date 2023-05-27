@@ -1,8 +1,8 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:neverlost/pages/profile/backup_screen.dart';
-import 'package:neverlost/pages/profile/restore_screen.dart';
-import 'package:neverlost/pages/profile/tabs_screen.dart';
+import 'package:neverlost/pages/profile/backup_register/backup_screen.dart';
+import 'package:neverlost/pages/profile/backup_register/restore_screen.dart';
+import 'package:neverlost/pages/profile/tabs_screen/tabs_screen.dart';
 import 'package:neverlost/services/database.dart';
 import 'package:neverlost/services/firebase_auth_services/firebase_service.dart';
 import 'package:neverlost/services/timetable_services/timetable.dart';

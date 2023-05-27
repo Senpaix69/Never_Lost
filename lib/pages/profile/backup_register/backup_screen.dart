@@ -18,14 +18,16 @@ class _BackupScreenState extends State<BackupScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 15),
+            padding: const EdgeInsets.fromLTRB(15, 50, 15, 40),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 textMessageBold(
                   message: "Backup Confirmation",
                   size: 24,
+                  align: true,
                 ),
+                const SizedBox(height: 10.0),
                 const Text(backupText),
                 const SizedBox(height: 10.0),
                 textMessageBold(
@@ -41,13 +43,13 @@ class _BackupScreenState extends State<BackupScreen> {
                 const Text(previousBackupRemoval),
                 const SizedBox(height: 10.0),
                 textMessageBold(
-                  message: "2. Backup File Security:",
+                  message: "3. Backup File Security:",
                   size: 14.0,
                 ),
                 const Text(backupFileSecurity),
                 const SizedBox(height: 10.0),
                 textMessageBold(
-                  message: "2. Backup Restoration:",
+                  message: "4. Backup Restoration:",
                   size: 14.0,
                 ),
                 const Text(backupRestoration),
@@ -126,6 +128,7 @@ class _BackupScreenState extends State<BackupScreen> {
     required String message,
     required double size,
     Color? color,
+    bool align = false,
   }) {
     return Text(
       message,
@@ -134,6 +137,7 @@ class _BackupScreenState extends State<BackupScreen> {
         fontWeight: FontWeight.bold,
         color: color,
       ),
+      textAlign: align ? TextAlign.center : null,
     );
   }
 }

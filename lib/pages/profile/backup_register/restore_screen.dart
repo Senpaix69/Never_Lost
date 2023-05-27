@@ -18,20 +18,23 @@ class _RestoreScreenState extends State<RestoreScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 15),
+            padding: const EdgeInsets.fromLTRB(15, 50, 15, 40),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 textMessageBold(
                   message: "Restore Confirmation",
                   size: 24,
+                  align: true,
                 ),
+                const SizedBox(height: 20.0),
                 const Text(restoreContent),
                 const SizedBox(height: 10.0),
                 textMessageBold(
                   message: "Please note the following:",
-                  size: 14.0,
+                  size: 16.0,
                 ),
+                const SizedBox(height: 10.0),
                 const Text(noteRestore),
                 const SizedBox(height: 10.0),
                 const Text(confirmRestore),
@@ -108,6 +111,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
     required String message,
     required double size,
     Color? color,
+    bool align = false,
   }) {
     return Text(
       message,
@@ -116,6 +120,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
         fontWeight: FontWeight.bold,
         color: color,
       ),
+      textAlign: align ? TextAlign.center : null,
     );
   }
 }
