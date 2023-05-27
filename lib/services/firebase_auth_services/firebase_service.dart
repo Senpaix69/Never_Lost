@@ -105,6 +105,12 @@ class FirebaseService {
       'users/${_user!.uid}/backupSize',
     );
 
+    await backUpSizeCollection.get().then((snapshot) {
+      for (final doc in snapshot.docs) {
+        doc.reference.delete();
+      }
+    });
+
     await backUpSizeCollection.add({
       'size': size,
     });
