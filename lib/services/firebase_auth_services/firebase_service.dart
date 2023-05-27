@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart'
     show consolidateHttpClientResponseBytes;
 import 'package:neverlost/contants/firebase_contants/firebase_contants.dart';
 import 'package:neverlost/services/firebase_auth_services/fb_user.dart';
+import 'package:neverlost/services/note_services/todo.dart';
 import 'package:neverlost/services/timetable_services/timetable.dart';
 import 'package:path/path.dart' show basename;
 import 'package:firebase_storage/firebase_storage.dart';
@@ -99,13 +100,39 @@ class FirebaseService {
     }
   }
 
+  Future<void> uploadTodos({required List<Todo> todos}) async {
+    final collection = _firestore.collection(
+      'users/${_user!.uid}/todos',
+    );
+    await deleteBackUp(collectionTable: "todos");
+    for (final todo in todos) {
+      await collection.add(todo.toMap());
+    }
+  }
+
+  Future<List<Todo>> getAllTodos() async {
+    try {
+      final querySnapshot = await _firestore
+          .collection("users")
+          .doc(_user!.uid)
+          .collection("todos")
+          .get();
+
+      final allTodos =
+          querySnapshot.docs.map((doc) => Todo.fromMap(doc.data())).toList();
+      return allTodos;
+    } catch (e) {
+      return [];
+    }
+  }
+
   Future<void> uploadTimetables({
     required List<TimeTable> timetables,
   }) async {
     final collection = _firestore.collection(
       'users/${_user!.uid}/timetables',
     );
-    await deleteBackUp();
+    await deleteBackUp(collectionTable: "timetables");
 
     for (final timetable in timetables) {
       final sub = timetable.subject.copyWith(sched: 0);
@@ -130,9 +157,9 @@ class FirebaseService {
     });
   }
 
-  Future<void> deleteBackUp() async {
+  Future<void> deleteBackUp({required String collectionTable}) async {
     final collection = _firestore.collection(
-      'users/${_user!.uid}/timetables',
+      'users/${_user!.uid}/$collectionTable',
     );
     await collection.get().then((snapshot) {
       for (final doc in snapshot.docs) {

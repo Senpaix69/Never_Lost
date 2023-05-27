@@ -102,4 +102,7 @@ class NotificationService {
 
   static Future cancelScheduleNotification({required int id}) async =>
       await _notification.cancel(id);
+
+  static Future cancelALLScheduleNotification() async =>
+      await _notification.cancelAll();
 }

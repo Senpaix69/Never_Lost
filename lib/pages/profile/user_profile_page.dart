@@ -7,6 +7,8 @@ import 'package:neverlost/pages/profile/backup_register/restore_screen.dart';
 import 'package:neverlost/pages/profile/tabs_screen/tabs_screen.dart';
 import 'package:neverlost/services/database.dart';
 import 'package:neverlost/services/firebase_auth_services/firebase_service.dart';
+import 'package:neverlost/services/note_services/todo.dart';
+import 'package:neverlost/services/notification_service.dart';
 import 'package:neverlost/services/timetable_services/timetable.dart';
 import 'package:neverlost/utils.dart';
 import 'package:neverlost/widgets/animate_route.dart' show FadeRoute;
@@ -29,6 +31,7 @@ class _UserProfileState extends State<UserProfile> {
   final DatabaseService _db = DatabaseService();
   final FirebaseService _firebase = FirebaseService.instance();
   late final List<TimeTable> _timetables;
+  late final List<Todo> _todos;
   String? _backUpSize;
 
   @override
@@ -37,6 +40,7 @@ class _UserProfileState extends State<UserProfile> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _firebase.userStr();
       _timetables = _db.cachedTimeTables;
+      _todos = _db.cachedTodos;
     });
   }
 
@@ -87,6 +91,7 @@ class _UserProfileState extends State<UserProfile> {
     await _firebase.uploadTimetables(
       timetables: _timetables,
     );
+    await _firebase.uploadTodos(todos: _todos);
     LoadingScreen.instance().hide();
     showSnak(message: "Backup saved successfully!");
     setState(() {});
@@ -107,7 +112,10 @@ class _UserProfileState extends State<UserProfile> {
     }
     showLoading(message: "Restoring data...");
     final List<TimeTable> allTimeTables = await _firebase.getAllTimeTables();
+    final List<Todo> allTodos = await _firebase.getAllTodos();
     await _db.cleanTimeTable();
+    await _db.cleanTotoTable();
+    await NotificationService.cancelALLScheduleNotification();
     for (int i = 0; i < allTimeTables.length; i++) {
       final timetable = allTimeTables[i];
       await _db.insertTimeTable(
@@ -115,6 +123,10 @@ class _UserProfileState extends State<UserProfile> {
         professor: timetable.professor,
         daytimes: timetable.dayTime,
       );
+    }
+    for (int i = 0; i < allTodos.length; i++) {
+      final todo = allTodos[i];
+      await _db.insertTodo(todo: todo);
     }
     LoadingScreen.instance().hide();
     showSnak(message: "Restoration completed!");
@@ -159,7 +171,7 @@ class _UserProfileState extends State<UserProfile> {
         body: Container(
           height: double.infinity,
           width: double.infinity,
-          padding: const EdgeInsets.fromLTRB(26, 90, 26, 20),
+          padding: const EdgeInsets.fromLTRB(26, 60, 26, 20),
           child: StreamBuilder(
             stream: _firebase.userStream,
             builder: (context, snapshot) {
@@ -169,7 +181,7 @@ class _UserProfileState extends State<UserProfile> {
                 case ConnectionState.done:
                   return const Center(
                     child: CircularProgressIndicator(
-                      color: Colors.black,
+                      color: Colors.grey,
                     ),
                   );
                 case ConnectionState.active:
@@ -218,7 +230,7 @@ class _UserProfileState extends State<UserProfile> {
                                   ),
                                   backgroundColor:
                                       MaterialStateColor.resolveWith(
-                                    (states) => Colors.black.withAlpha(60),
+                                    (states) => Colors.grey.shade800,
                                   ),
                                   shape: MaterialStateProperty.all<
                                       RoundedRectangleBorder>(
@@ -318,6 +330,9 @@ class _UserProfileState extends State<UserProfile> {
   Column backUpAndRestore() {
     final shape = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10),
+      side: BorderSide(
+        color: Colors.grey.shade800,
+      ),
     );
     return Column(
       children: <Widget>[
