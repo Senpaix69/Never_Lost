@@ -1,5 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:neverlost/pages/profile/backup_screen.dart';
+import 'package:neverlost/pages/profile/restore_screen.dart';
 import 'package:neverlost/pages/profile/tabs_screen.dart';
 import 'package:neverlost/services/database.dart';
 import 'package:neverlost/services/firebase_auth_services/firebase_service.dart';
@@ -50,9 +52,7 @@ class _UserProfileState extends State<UserProfile> {
       message: "Do you really want to logout?",
       title: "Logout",
     )) {
-      final connectivityResult = await (Connectivity().checkConnectivity());
-      if (connectivityResult == ConnectivityResult.none) {
-        notConnectedToInternet();
+      if (!await checkConnection()) {
         return;
       }
       final success = await FirebaseService.instance().logOut();
@@ -78,6 +78,9 @@ class _UserProfileState extends State<UserProfile> {
       );
       return false;
     }
+    if (!await checkConnection()) {
+      return false;
+    }
     setState(() => _backUpLoading = true);
     await _firebase.uploadTimetables(
       timetables: _timetables,
@@ -95,6 +98,9 @@ class _UserProfileState extends State<UserProfile> {
       );
       return false;
     }
+    if (!await checkConnection()) {
+      return false;
+    }
     setState(() => _restoreLoading = true);
     final List<TimeTable> allTimeTables = await _firebase.getAllTimeTables();
     await _db.cleanTimeTable();
@@ -110,18 +116,32 @@ class _UserProfileState extends State<UserProfile> {
     return true;
   }
 
-  void performProfileActions(ProfileActions action) async {
+  Future<bool> checkConnection() async {
     final connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
       notConnectedToInternet();
-      return;
+      return false;
     }
+    return true;
+  }
+
+  void performProfileActions(ProfileActions action) async {
     switch (action) {
       case ProfileActions.backup:
-        await makeBackUp();
+        if (await Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => const BackupScreen(),
+            )) ??
+            false) {
+          await makeBackUp();
+        }
         break;
       case ProfileActions.restore:
-        await restoreBackup();
+        if (await Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => const RestoreScreen(),
+            )) ??
+            false) {
+          await restoreBackup();
+        }
         break;
     }
   }
@@ -252,9 +272,11 @@ class _UserProfileState extends State<UserProfile> {
           tileColor: Colors.black.withAlpha(90),
           title: const Text("Backup"),
           subtitle: Text(_firebase.calculateSize(_timetables)),
-          onTap: () => performProfileActions(
-            ProfileActions.backup,
-          ),
+          onTap: _backUpLoading || _restoreLoading
+              ? null
+              : () => performProfileActions(
+                    ProfileActions.backup,
+                  ),
           trailing: _backUpLoading
               ? const CircularProgressIndicator()
               : const Icon(
@@ -284,9 +306,11 @@ class _UserProfileState extends State<UserProfile> {
               }
             },
           ),
-          onTap: () => performProfileActions(
-            ProfileActions.restore,
-          ),
+          onTap: _backUpLoading || _restoreLoading
+              ? null
+              : () => performProfileActions(
+                    ProfileActions.restore,
+                  ),
           trailing: _restoreLoading
               ? const CircularProgressIndicator()
               : const Icon(Icons.chevron_right_rounded),

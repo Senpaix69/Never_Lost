@@ -2,6 +2,7 @@ import 'dart:async' show StreamController;
 import 'dart:convert' show jsonDecode, jsonEncode, utf8;
 import 'dart:io' show File;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:neverlost/contants/firebase_contants/firebase_contants.dart';
 import 'package:neverlost/services/firebase_auth_services/fb_user.dart';
 import 'package:neverlost/services/timetable_services/timetable.dart';
 import 'package:path/path.dart' show basename;
@@ -10,6 +11,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:neverlost/services/firebase_auth_services/auth_errors.dart';
 import 'package:uuid/uuid.dart';
+
+enum SPActions {
+  set,
+  get,
+  delete,
+}
 
 class FirebaseService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -100,7 +107,7 @@ class FirebaseService {
       );
     }
     String size = calculateSize(timetables);
-    await setSizeToSharePref(size: size);
+    await spRestoreSize(action: SPActions.set, size: size);
     final backUpSizeCollection = _firestore.collection(
       'users/${_user!.uid}/backupSize',
     );
@@ -114,11 +121,6 @@ class FirebaseService {
     await backUpSizeCollection.add({
       'size': size,
     });
-  }
-
-  Future<void> setSizeToSharePref({required String size}) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(restoreSize, size);
   }
 
   Future<void> deleteBackUp() async {
@@ -177,18 +179,17 @@ class FirebaseService {
       final jsonString = jsonEncode(timetable);
       int bytes = utf8.encode(jsonString).length;
       size += bytes;
-
-      if (size >= 1024 && unitIndex < units.length - 1) {
-        size /= 1024;
-        unitIndex++;
-      }
     }
-    return '${size.roundToDouble().toStringAsFixed(0)} ${units[unitIndex]}';
+    double convertedSize = size.toDouble();
+    while (convertedSize >= 1024 && unitIndex < units.length - 1) {
+      convertedSize /= 1024;
+      unitIndex++;
+    }
+    return '${convertedSize.toStringAsFixed(1)} ${units[unitIndex]}';
   }
 
   Future<String?> restoreDataSize() async {
-    final prefs = await SharedPreferences.getInstance();
-    String? size = prefs.getString(restoreSize);
+    String? size = await spRestoreSize(action: SPActions.get);
     if (size == null) {
       final backUpSize = await _firestore
           .collection(
@@ -197,7 +198,7 @@ class FirebaseService {
           .get()
           .then((snap) => snap.docs.first);
       if (backUpSize.exists) {
-        await setSizeToSharePref(size: backUpSize['size']);
+        await spRestoreSize(action: SPActions.set, size: backUpSize['size']);
         return backUpSize['size'];
       }
       return null;
@@ -210,8 +211,8 @@ class FirebaseService {
     try {
       await _auth.signOut();
       _user = null;
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove(loggedUser);
+      await spUserActions(action: SPActions.delete);
+      await spRestoreSize(action: SPActions.delete);
       _userController.add(_user);
       return null;
     } on FirebaseAuthException catch (e) {
@@ -228,8 +229,7 @@ class FirebaseService {
       verified: user.emailVerified,
     );
     final userJson = jsonEncode(_user!.toMap());
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(loggedUser, userJson);
+    await spUserActions(action: SPActions.set, userJson: userJson);
     _userController.add(_user);
   }
 
@@ -238,8 +238,7 @@ class FirebaseService {
       _userController.add(_user);
       return;
     }
-    final prefs = await SharedPreferences.getInstance();
-    final userJson = prefs.getString(loggedUser);
+    final userJson = await spUserActions(action: SPActions.get);
     if (userJson == null) {
       _userController.add(null);
       return;
@@ -247,5 +246,39 @@ class FirebaseService {
     final userMapData = jsonDecode(userJson);
     _user = FBUser.fromMap(userMapData);
     _userController.add(_user);
+  }
+
+  Future<String?> spUserActions({
+    required SPActions action,
+    String? userJson,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    switch (action) {
+      case SPActions.set:
+        await prefs.setString(loggedUser, userJson!);
+        return null;
+      case SPActions.get:
+        return prefs.getString(loggedUser);
+      case SPActions.delete:
+        await prefs.remove(loggedUser);
+        return null;
+    }
+  }
+
+  Future<String?> spRestoreSize({
+    required SPActions action,
+    String? size,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    switch (action) {
+      case SPActions.set:
+        await prefs.setString(restoreSize, size!);
+        return null;
+      case SPActions.get:
+        return prefs.getString(restoreSize);
+      case SPActions.delete:
+        await prefs.remove(restoreSize);
+        return null;
+    }
   }
 }

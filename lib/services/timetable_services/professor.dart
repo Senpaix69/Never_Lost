@@ -1,4 +1,4 @@
-import 'package:neverlost/services/constants.dart';
+import 'package:neverlost/contants/database_contants.dart/database_constants.dart';
 import 'package:flutter/material.dart' show immutable;
 
 @immutable

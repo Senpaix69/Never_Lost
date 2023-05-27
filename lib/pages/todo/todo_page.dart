@@ -147,9 +147,6 @@ class _TodoListState extends State<TodoList>
   ListView myListBuilder(List<Todo> todos) {
     return ListView.builder(
       shrinkWrap: true,
-      physics: const AlwaysScrollableScrollPhysics(
-        parent: BouncingScrollPhysics(),
-      ),
       itemCount: todos.length,
       itemBuilder: (context, index) {
         final todo = todos[index];

@@ -1,13 +1,5 @@
 import 'package:flutter/material.dart' show immutable;
-
-const loggedUser = 'loggedInUser';
-const restoreSize = 'restoreSize';
-const userId = 'uid';
-const userEmail = 'email';
-const userUsername = 'username';
-const userFullname = 'fullname';
-const userVerified = 'verified';
-const userProfilePic = 'profilePic';
+import 'package:neverlost/contants/firebase_contants/firebase_contants.dart';
 
 @immutable
 class FBUser {
