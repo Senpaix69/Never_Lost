@@ -1,12 +1,15 @@
 import 'dart:async' show StreamController;
 import 'dart:convert' show jsonDecode, jsonEncode, utf8;
-import 'dart:io' show File;
+import 'dart:io' show File, HttpClient, HttpStatus;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart'
+    show consolidateHttpClientResponseBytes;
 import 'package:neverlost/contants/firebase_contants/firebase_contants.dart';
 import 'package:neverlost/services/firebase_auth_services/fb_user.dart';
 import 'package:neverlost/services/timetable_services/timetable.dart';
 import 'package:path/path.dart' show basename;
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:neverlost/services/firebase_auth_services/auth_errors.dart';
@@ -41,6 +44,7 @@ class FirebaseService {
   Future<AuthError?> loginWithEmailPassword({
     required String email,
     required String password,
+    String? profilePicPath,
   }) async {
     await logOut();
 
@@ -51,7 +55,7 @@ class FirebaseService {
       );
 
       final fbuser = userCredential.user;
-      setUser(fbuser!, null);
+      setUser(fbuser!, profilePicPath);
       return null;
     } on FirebaseAuthException catch (e) {
       return AuthError.from(e);
@@ -72,20 +76,23 @@ class FirebaseService {
       );
 
       final userId = userCredential.user!.uid;
-
+      String? profilePic;
       // Upload profile picture to Firebase Storage
       if (profilePicPath != null) {
-        final profilePicUrl = await _uploadProfilePicture(
+        final profilePicData = await _uploadProfilePicture(
           userId: userId,
           profilePicPath: profilePicPath,
         );
-        await userCredential.user!.updatePhotoURL(profilePicUrl);
+        await userCredential.user!
+            .updatePhotoURL(profilePicData[userProfilePicURL]);
+        profilePic = profilePicData[userProfilePic];
       }
       await userCredential.user!.updateDisplayName(fullName);
       await FirebaseAuth.instance.signOut();
       return loginWithEmailPassword(
         email: email,
         password: password,
+        profilePicPath: profilePic,
       );
     } on FirebaseAuthException catch (e) {
       return AuthError.from(e);
@@ -151,23 +158,52 @@ class FirebaseService {
     }
   }
 
-  Future<String> _uploadProfilePicture({
+  Future<String> copyFile({required String filepath}) async {
+    // copy the image
+    final file = File(filepath);
+    final appDir = await getApplicationDocumentsDirectory();
+    final copyPath = '${appDir.path}/${basename(file.path)}';
+    await File(filepath).copy(copyPath);
+    return copyPath;
+  }
+
+  Future<void> updateProfilePic({required String profilePicPath}) async {
+    final profileData = await _uploadProfilePicture(
+      userId: _user!.uid,
+      profilePicPath: profilePicPath,
+    );
+    _user = _user!.copyWith(
+      profilePic: profileData[userProfilePic],
+      profilePicURL: profileData[userProfilePicURL],
+    );
+    _userController.add(_user);
+    await spUserActions(
+      action: SPActions.set,
+      userJson: jsonEncode(_user!.toMap()),
+    );
+  }
+
+  Future<Map<String, String>> _uploadProfilePicture({
     required String userId,
     required String profilePicPath,
   }) async {
     final file = File(profilePicPath);
     final fileName = '${const Uuid().v4()}_${basename(file.path)}';
 
+    final copyPath = await copyFile(filepath: profilePicPath);
+
     final storageRef = FirebaseStorage.instance
         .ref()
-        .child('profile_pictures')
+        .child('$userId/profile_pictures')
         .child(fileName);
     final uploadTask = storageRef.putFile(file);
-
     await uploadTask.whenComplete(() => null);
 
     final profilePicUrl = await storageRef.getDownloadURL();
-    return profilePicUrl;
+    return {
+      userProfilePicURL: profilePicUrl,
+      userProfilePic: copyPath,
+    };
   }
 
   String calculateSize(List<TimeTable> list) {
@@ -227,6 +263,8 @@ class FirebaseService {
       username: user.displayName!.toLowerCase().split(' ').join(),
       email: user.email!,
       verified: user.emailVerified,
+      profilePic: profilePath,
+      profilePicURL: user.photoURL,
     );
     final userJson = jsonEncode(_user!.toMap());
     await spUserActions(action: SPActions.set, userJson: userJson);
@@ -279,6 +317,28 @@ class FirebaseService {
       case SPActions.delete:
         await prefs.remove(restoreSize);
         return null;
+    }
+  }
+
+  Future<void> downloadProfileImage() async {
+    try {
+      final httpClient = HttpClient();
+      final request = await httpClient.getUrl(
+        Uri.parse(_user!.profilePicURL!),
+      );
+      final response = await request.close();
+      if (response.statusCode == HttpStatus.ok) {
+        final appDir = await getApplicationDocumentsDirectory();
+        final bytes = await consolidateHttpClientResponseBytes(response);
+        final file = File('${appDir.path}/profile_image.jpg');
+        await file.writeAsBytes(bytes);
+        _user = _user!.copyWith(profilePic: file.path);
+        _userController.add(_user);
+        await spUserActions(
+            action: SPActions.set, userJson: jsonEncode(_user!.toMap()));
+      }
+    } catch (e) {
+      //todo
     }
   }
 }

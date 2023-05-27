@@ -1,4 +1,6 @@
+import 'dart:io' show File;
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:neverlost/pages/profile/backup_register/backup_screen.dart';
 import 'package:neverlost/pages/profile/backup_register/restore_screen.dart';
@@ -8,6 +10,7 @@ import 'package:neverlost/services/firebase_auth_services/firebase_service.dart'
 import 'package:neverlost/services/timetable_services/timetable.dart';
 import 'package:neverlost/widgets/animate_route.dart' show FadeRoute;
 import 'package:neverlost/widgets/dialog_boxs.dart';
+import 'package:neverlost/widgets/loading/loading_screen.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -25,8 +28,6 @@ class _UserProfileState extends State<UserProfile> {
   final DatabaseService _db = DatabaseService();
   final FirebaseService _firebase = FirebaseService.instance();
   late final List<TimeTable> _timetables;
-  bool _backUpLoading = false;
-  bool _restoreLoading = false;
   String? _backUpSize;
 
   @override
@@ -81,11 +82,11 @@ class _UserProfileState extends State<UserProfile> {
     if (!await checkConnection()) {
       return false;
     }
-    setState(() => _backUpLoading = true);
+    showLoading(message: "Backup is in progress..");
     await _firebase.uploadTimetables(
       timetables: _timetables,
     );
-    setState(() => _backUpLoading = false);
+    LoadingScreen.instance().hide();
     return true;
   }
 
@@ -101,7 +102,7 @@ class _UserProfileState extends State<UserProfile> {
     if (!await checkConnection()) {
       return false;
     }
-    setState(() => _restoreLoading = true);
+    showLoading(message: "Restoring data...");
     final List<TimeTable> allTimeTables = await _firebase.getAllTimeTables();
     await _db.cleanTimeTable();
     for (int i = 0; i < allTimeTables.length; i++) {
@@ -112,7 +113,7 @@ class _UserProfileState extends State<UserProfile> {
         daytimes: timetable.dayTime,
       );
     }
-    setState(() => _restoreLoading = false);
+    LoadingScreen.instance().hide();
     return true;
   }
 
@@ -169,20 +170,16 @@ class _UserProfileState extends State<UserProfile> {
                   );
                 case ConnectionState.active:
                   dynamic userData = snapshot.data;
+                  bool profilePic = userData?.profilePic != null;
+                  if (!profilePic) {
+                    _firebase.downloadProfileImage();
+                  }
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Column(
                         children: <Widget>[
-                          CircleAvatar(
-                            backgroundColor: Colors.black.withAlpha(120),
-                            radius: 80.0,
-                            child: const Icon(
-                              Icons.person,
-                              color: Colors.white,
-                              size: 100.0,
-                            ),
-                          ),
+                          profileImage(profilePic, userData),
                           const SizedBox(
                             height: 16.0,
                           ),
@@ -257,6 +254,60 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
+  Stack profileImage(bool profilePic, userData) {
+    return Stack(
+      children: <Widget>[
+        CircleAvatar(
+          backgroundColor: Colors.black.withAlpha(120),
+          radius: 70.0,
+          backgroundImage:
+              profilePic ? FileImage(File(userData.profilePic)) : null,
+          child: !profilePic
+              ? const Icon(
+                  Icons.person,
+                  color: Colors.white,
+                  size: 100.0,
+                )
+              : null,
+        ),
+        Positioned(
+          bottom: -6,
+          right: -4,
+          child: Center(
+            child: IconButton(
+              onPressed: () => _pickImage(),
+              icon: const Icon(
+                Icons.camera,
+                color: Colors.white,
+              ),
+              iconSize: 40.0,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void showLoading({required String message}) => LoadingScreen.instance().show(
+        context: context,
+        text: message,
+      );
+
+  void _pickImage() async {
+    final pickedFile = await FilePicker.platform.pickFiles(
+      allowMultiple: false,
+      type: FileType.image,
+    );
+
+    if (pickedFile != null) {
+      showLoading(message: "Saving....");
+      await _firebase.updateProfilePic(
+        profilePicPath: pickedFile.files.first.path!,
+      );
+      LoadingScreen.instance().hide();
+    }
+  }
+
   Column backUpAndRestore() {
     final shape = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10),
@@ -272,16 +323,12 @@ class _UserProfileState extends State<UserProfile> {
           tileColor: Colors.black.withAlpha(90),
           title: const Text("Backup"),
           subtitle: Text(_firebase.calculateSize(_timetables)),
-          onTap: _backUpLoading || _restoreLoading
-              ? null
-              : () => performProfileActions(
-                    ProfileActions.backup,
-                  ),
-          trailing: _backUpLoading
-              ? const CircularProgressIndicator()
-              : const Icon(
-                  Icons.chevron_right_rounded,
-                ),
+          onTap: () => performProfileActions(
+            ProfileActions.backup,
+          ),
+          trailing: const Icon(
+            Icons.chevron_right_rounded,
+          ),
         ),
         const SizedBox(
           height: 10.0,
@@ -306,14 +353,10 @@ class _UserProfileState extends State<UserProfile> {
               }
             },
           ),
-          onTap: _backUpLoading || _restoreLoading
-              ? null
-              : () => performProfileActions(
-                    ProfileActions.restore,
-                  ),
-          trailing: _restoreLoading
-              ? const CircularProgressIndicator()
-              : const Icon(Icons.chevron_right_rounded),
+          onTap: () => performProfileActions(
+            ProfileActions.restore,
+          ),
+          trailing: const Icon(Icons.chevron_right_rounded),
         ),
       ],
     );

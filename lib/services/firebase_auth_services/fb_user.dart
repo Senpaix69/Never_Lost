@@ -9,6 +9,7 @@ class FBUser {
   final String email;
   final bool verified;
   final String? profilePic;
+  final String? profilePicURL;
 
   const FBUser({
     required this.uid,
@@ -17,6 +18,7 @@ class FBUser {
     required this.username,
     required this.email,
     this.profilePic,
+    this.profilePicURL,
   });
 
   factory FBUser.fromMap(Map<String, Object?> map) {
@@ -26,6 +28,28 @@ class FBUser {
       fullname: map[userFullname] as String,
       username: map[userUsername] as String,
       email: map[userEmail] as String,
+      profilePic: map[userProfilePic] as String?,
+      profilePicURL: map[userProfilePicURL] as String?,
+    );
+  }
+
+  FBUser copyWith({
+    String? uid,
+    String? fullname,
+    String? username,
+    String? email,
+    bool? verified,
+    String? profilePic,
+    String? profilePicURL,
+  }) {
+    return FBUser(
+      uid: uid ?? this.uid,
+      verified: verified ?? this.verified,
+      fullname: fullname ?? this.fullname,
+      username: username ?? this.username,
+      email: email ?? this.email,
+      profilePic: profilePic ?? this.profilePic,
+      profilePicURL: profilePicURL ?? this.profilePicURL,
     );
   }
 
@@ -37,6 +61,12 @@ class FBUser {
       userUsername: username,
       userVerified: verified,
       userProfilePic: profilePic,
+      userProfilePicURL: profilePicURL,
     };
+  }
+
+  @override
+  String toString() {
+    return "SPUser { userID: $uid, fullname: $fullname, email: $email, username: $username, verified: $verified, profilePic: $profilePic, profilePicUrl: $profilePicURL }";
   }
 }

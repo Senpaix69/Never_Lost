@@ -6,3 +6,4 @@ const userUsername = 'username';
 const userFullname = 'fullname';
 const userVerified = 'verified';
 const userProfilePic = 'profilePic';
+const userProfilePicURL = 'profilePicURL';
