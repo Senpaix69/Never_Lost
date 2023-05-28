@@ -71,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
           color: Colors.grey[800],
           borderRadius: BorderRadius.circular(30.0),
         ),
-        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: GNav(
           selectedIndex: _currentPageIndex,

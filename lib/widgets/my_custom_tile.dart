@@ -7,11 +7,13 @@ class MyCustomTile extends StatelessWidget {
     required this.icon,
     required this.onClick,
     required this.title,
+    this.subTitle,
   });
   final Color iconBackGroundColor;
   final IconData icon;
   final VoidCallback onClick;
   final String title;
+  final String? subTitle;
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -34,6 +36,7 @@ class MyCustomTile extends StatelessWidget {
       onTap: onClick,
       tileColor: Colors.black.withAlpha(90),
       title: Text(title),
+      subtitle: subTitle != null ? Text(subTitle!) : null,
       trailing: Icon(
         Icons.chevron_right_rounded,
         color: Colors.grey[700],

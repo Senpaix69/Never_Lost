@@ -28,7 +28,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   final FirebaseService _firebase = FirebaseService.instance();
   late final List<TimeTable> _timetables;
   late final List<Todo> _todos;
-  String? _backUpSize;
+  String? _restoreSize;
 
   @override
   void initState() {
@@ -36,7 +36,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _timetables = _db.cachedTimeTables;
       _todos = _db.cachedTodos;
-      _backUpSize = await _firebase.restoreDataSize();
+      _restoreSize = await _firebase.restoreDataSize();
     });
   }
 
@@ -80,7 +80,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   void showSnak({required String message}) => showSnackBar(context, message);
 
   Future<bool> restoreBackup() async {
-    if (_backUpSize == null) {
+    if (_restoreSize == null) {
       errorDialogue(
         context: context,
         title: "No Backup Found",

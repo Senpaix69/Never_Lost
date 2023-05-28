@@ -203,6 +203,9 @@ class FirebaseService {
       profilePic: profileData[userProfilePic],
       profilePicURL: profileData[userProfilePicURL],
     );
+    await FirebaseAuth.instance.currentUser!.updatePhotoURL(
+      profileData[userProfilePicURL],
+    );
     _userController.add(_user);
     await spUserActions(
       action: SPActions.set,
@@ -233,13 +236,13 @@ class FirebaseService {
     };
   }
 
-  String calculateSize(List<TimeTable> list) {
+  String calculateSize(List<dynamic> list) {
     const List<String> units = ['bytes', 'KB', 'MB', 'GB', 'TB'];
     double size = 0;
     int unitIndex = 0;
     for (int i = 0; i < list.length; i++) {
-      final timetable = list[i].toMap();
-      final jsonString = jsonEncode(timetable);
+      final item = list[i].toMap();
+      final jsonString = jsonEncode(item);
       int bytes = utf8.encode(jsonString).length;
       size += bytes;
     }
