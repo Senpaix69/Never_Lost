@@ -18,7 +18,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
-            padding: const EdgeInsets.fromLTRB(15, 60, 15, 40),
+            padding: const EdgeInsets.fromLTRB(20, 60, 20, 40),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
@@ -64,6 +64,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
                           (states) => Colors.grey.shade800,
                         )),
                         child: textMessageBold(
+                          padding: 3.0,
                           message: "Cancel",
                           size: 16,
                           color: Colors.white,
@@ -91,6 +92,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
                           (states) => Colors.red,
                         )),
                         child: textMessageBold(
+                          padding: 3.0,
                           message: "Restore Now",
                           size: 16,
                           color: Colors.white,
@@ -112,10 +114,12 @@ class _RestoreScreenState extends State<RestoreScreen> {
     required double size,
     Color? color,
     bool align = false,
+    double? padding,
   }) {
     return Text(
       message,
       style: TextStyle(
+        height: padding,
         fontSize: size,
         fontWeight: FontWeight.bold,
         color: color,

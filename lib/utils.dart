@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:neverlost/widgets/dialog_boxs.dart' show confirmDialogue;
@@ -216,4 +217,12 @@ void sortDayTimes(dynamic list) {
       }
     }
   }
+}
+
+Future<bool> checkConnection() async {
+  final connectivityResult = await (Connectivity().checkConnectivity());
+  if (connectivityResult == ConnectivityResult.none) {
+    return false;
+  }
+  return true;
 }

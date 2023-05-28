@@ -1,19 +1,14 @@
 import 'dart:io' show File;
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:neverlost/pages/profile/backup_register/backup_screen.dart';
-import 'package:neverlost/pages/profile/backup_register/restore_screen.dart';
+import 'package:neverlost/pages/profile/profile_screens/settings_screen.dart';
 import 'package:neverlost/pages/profile/tabs_screen/tabs_screen.dart';
-import 'package:neverlost/services/database.dart';
 import 'package:neverlost/services/firebase_auth_services/firebase_service.dart';
-import 'package:neverlost/services/note_services/todo.dart';
-import 'package:neverlost/services/notification_service.dart';
-import 'package:neverlost/services/timetable_services/timetable.dart';
-import 'package:neverlost/utils.dart';
+import 'package:neverlost/utils.dart' show checkConnection;
 import 'package:neverlost/widgets/animate_route.dart' show FadeRoute;
 import 'package:neverlost/widgets/dialog_boxs.dart';
 import 'package:neverlost/widgets/loading/loading_screen.dart';
+import 'package:neverlost/widgets/my_custom_tile.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -22,25 +17,14 @@ class UserProfile extends StatefulWidget {
   State<UserProfile> createState() => _UserProfileState();
 }
 
-enum ProfileActions {
-  backup,
-  restore,
-}
-
 class _UserProfileState extends State<UserProfile> {
-  final DatabaseService _db = DatabaseService();
   final FirebaseService _firebase = FirebaseService.instance();
-  late final List<TimeTable> _timetables;
-  late final List<Todo> _todos;
-  String? _backUpSize;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _firebase.userStr();
-      _timetables = _db.cachedTimeTables;
-      _todos = _db.cachedTodos;
     });
   }
 
@@ -59,6 +43,7 @@ class _UserProfileState extends State<UserProfile> {
       title: "Logout",
     )) {
       if (!await checkConnection()) {
+        notConnectedToInternet();
         return;
       }
       final success = await FirebaseService.instance().logOut();
@@ -72,94 +57,6 @@ class _UserProfileState extends State<UserProfile> {
           ),
         );
       }
-    }
-  }
-
-  Future<bool> makeBackUp() async {
-    if (_timetables.isEmpty) {
-      errorDialogue(
-        context: context,
-        title: "No TimeTable Found",
-        message: "There is no timetable found to be saved in backup",
-      );
-      return false;
-    }
-    if (!await checkConnection()) {
-      return false;
-    }
-    showLoading(message: "Backup is in progress..");
-    await _firebase.uploadTimetables(
-      timetables: _timetables,
-    );
-    await _firebase.uploadTodos(todos: _todos);
-    LoadingScreen.instance().hide();
-    showSnak(message: "Backup saved successfully!");
-    setState(() {});
-    return true;
-  }
-
-  Future<bool> restoreBackup() async {
-    if (_backUpSize == null) {
-      errorDialogue(
-        context: context,
-        title: "No Backup Found",
-        message: "Ensure that you have made a backup, click on backup!",
-      );
-      return false;
-    }
-    if (!await checkConnection()) {
-      return false;
-    }
-    showLoading(message: "Restoring data...");
-    final List<TimeTable> allTimeTables = await _firebase.getAllTimeTables();
-    final List<Todo> allTodos = await _firebase.getAllTodos();
-    await _db.cleanTimeTable();
-    await _db.cleanTotoTable();
-    await NotificationService.cancelALLScheduleNotification();
-    for (int i = 0; i < allTimeTables.length; i++) {
-      final timetable = allTimeTables[i];
-      await _db.insertTimeTable(
-        subject: timetable.subject,
-        professor: timetable.professor,
-        daytimes: timetable.dayTime,
-      );
-    }
-    for (int i = 0; i < allTodos.length; i++) {
-      final todo = allTodos[i];
-      await _db.insertTodo(todo: todo);
-    }
-    LoadingScreen.instance().hide();
-    showSnak(message: "Restoration completed!");
-    return true;
-  }
-
-  Future<bool> checkConnection() async {
-    final connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.none) {
-      notConnectedToInternet();
-      return false;
-    }
-    return true;
-  }
-
-  void performProfileActions(ProfileActions action) async {
-    switch (action) {
-      case ProfileActions.backup:
-        if (await Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const BackupScreen(),
-            )) ??
-            false) {
-          await makeBackUp();
-        }
-        break;
-      case ProfileActions.restore:
-        if (await Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const RestoreScreen(),
-            )) ??
-            false) {
-          await restoreBackup();
-        }
-        break;
     }
   }
 
@@ -275,13 +172,7 @@ class _UserProfileState extends State<UserProfile> {
                           ],
                         ),
                       ),
-                      if (userData != null) backUpAndRestore(),
-                      Text(
-                        "Version 2.3.16",
-                        style: TextStyle(
-                          color: Colors.grey[800],
-                        ),
-                      ),
+                      if (userData != null) profileOptions(),
                     ],
                   );
               }
@@ -332,8 +223,6 @@ class _UserProfileState extends State<UserProfile> {
         text: message,
       );
 
-  void showSnak({required String message}) => showSnackBar(context, message);
-
   void _pickImage() async {
     final pickedFile = await FilePicker.platform.pickFiles(
       allowMultiple: false,
@@ -349,58 +238,19 @@ class _UserProfileState extends State<UserProfile> {
     }
   }
 
-  Column backUpAndRestore() {
-    final shape = RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10),
-      side: BorderSide(
-        color: Colors.grey.shade800,
-      ),
-    );
+  Column profileOptions() {
     return Column(
       children: <Widget>[
-        ListTile(
-          shape: shape,
-          leading: const Icon(
-            Icons.backup,
+        MyCustomTile(
+          iconBackGroundColor: Colors.grey.shade600,
+          icon: Icons.settings,
+          onClick: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const ProfileSettings()),
           ),
-          key: const ValueKey(0),
-          tileColor: Colors.black.withAlpha(90),
-          title: const Text("Backup"),
-          subtitle: Text(_firebase.calculateSize(_timetables)),
-          onTap: () => performProfileActions(
-            ProfileActions.backup,
-          ),
-          trailing: const Icon(
-            Icons.chevron_right_rounded,
-          ),
+          title: "Settings",
         ),
         const SizedBox(
           height: 10.0,
-        ),
-        ListTile(
-          shape: shape,
-          leading: const Icon(
-            Icons.restore,
-          ),
-          key: const ValueKey(1),
-          tileColor: Colors.black.withAlpha(90),
-          title: const Text("Restore"),
-          subtitle: FutureBuilder(
-            future: _firebase.restoreDataSize(),
-            builder: (context, snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.done:
-                  _backUpSize = snapshot.data;
-                  return Text(_backUpSize ?? "0 bytes");
-                default:
-                  return const Text("Loading...");
-              }
-            },
-          ),
-          onTap: () => performProfileActions(
-            ProfileActions.restore,
-          ),
-          trailing: const Icon(Icons.chevron_right_rounded),
         ),
       ],
     );

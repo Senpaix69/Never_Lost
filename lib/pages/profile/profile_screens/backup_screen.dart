@@ -18,7 +18,7 @@ class _BackupScreenState extends State<BackupScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
-            padding: const EdgeInsets.fromLTRB(15, 60, 15, 40),
+            padding: const EdgeInsets.fromLTRB(20, 60, 20, 40),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
@@ -81,6 +81,7 @@ class _BackupScreenState extends State<BackupScreen> {
                           (states) => Colors.grey.shade800,
                         )),
                         child: textMessageBold(
+                          padding: 3.0,
                           message: "Cancel",
                           size: 16,
                           color: Colors.white,
@@ -108,6 +109,7 @@ class _BackupScreenState extends State<BackupScreen> {
                           (states) => Colors.red,
                         )),
                         child: textMessageBold(
+                          padding: 3.0,
                           message: "Backup Now",
                           size: 16,
                           color: Colors.white,
@@ -129,10 +131,12 @@ class _BackupScreenState extends State<BackupScreen> {
     required double size,
     Color? color,
     bool align = false,
+    double? padding,
   }) {
     return Text(
       message,
       style: TextStyle(
+        height: padding,
         fontSize: size,
         fontWeight: FontWeight.bold,
         color: color,
