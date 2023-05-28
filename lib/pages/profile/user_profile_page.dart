@@ -193,73 +193,95 @@ class _UserProfileState extends State<UserProfile> {
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Column(
-                        children: <Widget>[
-                          profileImage(profilePic, userData),
-                          const SizedBox(
-                            height: 16.0,
-                          ),
-                          Text(
-                            userData != null ? userData.fullname : "Fullname",
-                            style: const TextStyle(
-                              fontSize: 26.0,
-                              fontWeight: FontWeight.bold,
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[900],
+                          boxShadow: <BoxShadow>[
+                            BoxShadow(
+                              color: Colors.grey.shade800.withOpacity(.3),
+                              spreadRadius: 6,
+                              blurRadius: 20.0,
+                              offset: const Offset(0, 10),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 6.0,
-                          ),
-                          Text(
-                            "@${userData != null ? userData.username : 'username'}",
-                            style: const TextStyle(fontSize: 16.0),
-                          ),
-                          const SizedBox(
-                            height: 16.0,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              ElevatedButton(
-                                style: ButtonStyle(
-                                  padding: MaterialStateProperty.all<
-                                      EdgeInsetsGeometry>(
-                                    const EdgeInsets.symmetric(
-                                      vertical: 12.0,
-                                      horizontal: 24.0,
-                                    ),
-                                  ),
-                                  backgroundColor:
-                                      MaterialStateColor.resolveWith(
-                                    (states) => Colors.grey.shade800,
-                                  ),
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16.0),
-                                    ),
-                                  ),
-                                ),
-                                onPressed: userData == null
-                                    ? () => Navigator.of(context).push(
-                                          FadeRoute(
-                                            page: const TabsScreen(),
-                                          ),
-                                        )
-                                    : () async => logOutUser(),
-                                child: Text(
-                                  userData != null ? "Logout" : "Login",
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                          ],
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        child: Column(
+                          children: <Widget>[
+                            profileImage(profilePic, userData),
+                            const SizedBox(
+                              height: 16.0,
+                            ),
+                            Text(
+                              userData != null ? userData.fullname : "Fullname",
+                              style: const TextStyle(
+                                fontSize: 26.0,
+                                fontWeight: FontWeight.bold,
                               ),
-                            ],
-                          ),
-                        ],
+                            ),
+                            const SizedBox(
+                              height: 6.0,
+                            ),
+                            Text(
+                              "@${userData != null ? userData.username : 'username'}",
+                              style: const TextStyle(fontSize: 16.0),
+                            ),
+                            const SizedBox(
+                              height: 16.0,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: <Widget>[
+                                ElevatedButton(
+                                  style: ButtonStyle(
+                                    padding: MaterialStateProperty.all<
+                                        EdgeInsetsGeometry>(
+                                      const EdgeInsets.symmetric(
+                                        vertical: 12.0,
+                                        horizontal: 24.0,
+                                      ),
+                                    ),
+                                    backgroundColor:
+                                        MaterialStateColor.resolveWith(
+                                      (states) => Colors.grey.shade800,
+                                    ),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(16.0),
+                                      ),
+                                    ),
+                                  ),
+                                  onPressed: userData == null
+                                      ? () => Navigator.of(context).push(
+                                            FadeRoute(
+                                              page: const TabsScreen(),
+                                            ),
+                                          )
+                                      : () async => logOutUser(),
+                                  child: Text(
+                                    userData != null ? "Logout" : "Login",
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                      if (userData != null) backUpAndRestore()
+                      if (userData != null) backUpAndRestore(),
+                      Text(
+                        "Version 2.3.16",
+                        style: TextStyle(
+                          color: Colors.grey[800],
+                        ),
+                      ),
                     ],
                   );
               }

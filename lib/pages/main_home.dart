@@ -71,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
           color: Colors.grey[800],
           borderRadius: BorderRadius.circular(30.0),
         ),
-        margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: GNav(
           selectedIndex: _currentPageIndex,
@@ -80,9 +80,10 @@ class _MyHomePageState extends State<MyHomePage> {
           color: Colors.white,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           activeColor: Colors.white,
+          tabBorderRadius: 22.0,
           iconSize: 25,
           tabBackgroundColor: Colors.grey.shade900,
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(14),
           tabs: const <GButton>[
             GButton(
               icon: Icons.notes,
