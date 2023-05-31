@@ -65,6 +65,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     await _firebase.uploadTimetables(
       timetables: _timetables,
     );
+    showLoading(message: "Backup: Processing Data...");
     await _firebase.uploadTodos(todos: _todos);
     LoadingScreen.instance().hide();
     showSnak(message: "Backup saved successfully!");
