@@ -6,6 +6,7 @@ import 'package:neverlost/utils.dart'
 import 'package:neverlost/widgets/animate_route.dart' show SlideRightRoute;
 import 'package:neverlost/widgets/dialog_boxs.dart' show confirmDialogue;
 import 'package:neverlost/widgets/timetable_box.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class TimeTablePage extends StatefulWidget {
   const TimeTablePage({super.key});
@@ -69,12 +70,32 @@ class _TimeTablePageState extends State<TimeTablePage> {
     }
   }
 
+  Future<bool> showConfirmDialog() async => await confirmDialogue(
+        context: context,
+        message:
+            "You will not be able to get reminders notifications, do you want to enable notifications?",
+        title: "Notifcations",
+      );
+
+  Future<void> requestPermission() async {
+    final status = await Permission.notification.request();
+    if (status.isDenied || status.isPermanentlyDenied || status.isRestricted) {
+      if (await showConfirmDialog()) {
+        await Permission.notification.request();
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: DateTime.now().weekday - 1);
     _database = DatabaseService();
     _database.open();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await requestPermission();
+    });
   }
 
   @override

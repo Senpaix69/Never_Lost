@@ -217,6 +217,9 @@ class _NoteListState extends State<NoteList>
                   _showContextMenu(context, note);
                 },
                 child: ListTile(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
                   key: ValueKey(note.id!),
                   minVerticalPadding: 15,
                   onTap: () => Navigator.push(

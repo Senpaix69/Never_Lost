@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-InputDecoration decorationFormField(prefixIcon, hintText) {
+InputDecoration decorationFormField(IconData prefixIcon, String hintText) {
   return InputDecoration(
     contentPadding: const EdgeInsets.all(15.0),
     prefixIcon: Icon(prefixIcon, color: Colors.grey[200]),
@@ -15,6 +15,37 @@ InputDecoration decorationFormField(prefixIcon, hintText) {
         Radius.circular(8.0),
       ),
       borderSide: BorderSide.none,
+    ),
+  );
+}
+
+InputDecoration decorationPasswordFormField(
+  IconData prefixIcon,
+  String hintText,
+  bool action,
+  VoidCallback callback,
+) {
+  return InputDecoration(
+    contentPadding: const EdgeInsets.all(15.0),
+    prefixIcon: Icon(prefixIcon, color: Colors.grey[200]),
+    hintText: hintText,
+    hintStyle: TextStyle(
+      color: Colors.grey[200],
+    ),
+    filled: true,
+    fillColor: Colors.grey[900],
+    border: const OutlineInputBorder(
+      borderRadius: BorderRadius.all(
+        Radius.circular(8.0),
+      ),
+      borderSide: BorderSide.none,
+    ),
+    suffixIcon: IconButton(
+      onPressed: callback,
+      icon: Icon(
+        action ? Icons.visibility_off_rounded : Icons.visibility,
+        color: Colors.grey[400],
+      ),
     ),
   );
 }
@@ -118,6 +149,7 @@ Container textFormField({
   required IconData icon,
   bool enable = true,
   bool obsecure = false,
+  VoidCallback? callback,
 }) {
   return Container(
     decoration: BoxDecoration(
@@ -132,7 +164,9 @@ Container textFormField({
       enableSuggestions: false,
       autocorrect: false,
       style: const TextStyle(color: Colors.white),
-      decoration: decorationFormField(icon, hint),
+      decoration: callback != null
+          ? decorationPasswordFormField(icon, hint, obsecure, callback)
+          : decorationFormField(icon, hint),
       validator: validator,
     ),
   );

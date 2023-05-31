@@ -18,6 +18,14 @@ class _LoginScreenState extends State<LoginScreen> {
   late final TextEditingController _password;
   final _formKey = GlobalKey<FormState>();
 
+  bool _hidePass = true;
+
+  void toggleHidePassword() {
+    setState(() {
+      _hidePass = !_hidePass;
+    });
+  }
+
   @override
   void initState() {
     _email = TextEditingController();
@@ -94,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   Center(
                     child: CircleAvatar(
@@ -121,59 +129,111 @@ class _LoginScreenState extends State<LoginScreen> {
                     icon: Icons.password,
                     controller: _password,
                     validator: textValidate,
-                    obsecure: true,
+                    obsecure: _hidePass,
                     hint: "Enter password",
+                    callback: toggleHidePassword,
                   ),
-                  const SizedBox(
-                    height: 5.0,
-                  ),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      ElevatedButton(
-                        style: ButtonStyle(
-                          padding:
-                              MaterialStateProperty.all<EdgeInsetsGeometry>(
-                            const EdgeInsets.symmetric(
-                              vertical: 12.0,
-                              horizontal: 24.0,
-                            ),
-                          ),
-                          backgroundColor: MaterialStateColor.resolveWith(
-                            (states) => Colors.grey.shade700,
-                          ),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16.0),
-                            ),
-                          ),
-                        ),
-                        onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
-                            await _loginUser();
-                          }
-                        },
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () {},
                         child: const Text(
-                          "Login",
+                          "Forgot password?",
                           style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18.0,
+                            color: Colors.blue,
+                            fontSize: 13.0,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
                     ],
                   ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                        const EdgeInsets.symmetric(
+                          vertical: 12.0,
+                          horizontal: 24.0,
+                        ),
+                      ),
+                      backgroundColor: MaterialStateColor.resolveWith(
+                        (states) => Colors.grey.shade700,
+                      ),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                      ),
+                    ),
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        await _loginUser();
+                      }
+                    },
+                    child: textWidget(
+                      mess: "Login",
+                      bold: true,
+                      size: 18.0,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  textWidget(
+                    mess: "OR",
+                    center: true,
+                    size: 18.0,
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  GestureDetector(
+                    onTap: () {},
+                    child: Column(
+                      children: <Widget>[
+                        Image.asset(
+                          "assets/google.png",
+                          height: 40,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        textWidget(
+                          mess: "SignIn with Google",
+                          size: 18,
+                          bold: true,
+                        ),
+                      ],
+                    ),
+                  )
                 ],
               ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Text textWidget({
+    required String mess,
+    required double size,
+    Color? color,
+    bool? bold,
+    bool? center,
+  }) {
+    return Text(
+      mess,
+      style: TextStyle(
+        color: color ?? Colors.white,
+        fontSize: size,
+        fontWeight: bold != null && bold ? FontWeight.bold : FontWeight.normal,
+      ),
+      textAlign: center != null ? TextAlign.center : null,
     );
   }
 }

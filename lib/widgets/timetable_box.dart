@@ -56,7 +56,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
   }
 
   void _toggleHeight() {
-    setState(() => _height = _height == 0 ? 120 : 0);
+    setState(() => _height = _height == 0 ? 140 : 0);
   }
 
   void editTimeTable() {
@@ -222,7 +222,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
                         physics: const NeverScrollableScrollPhysics(),
                         child: Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.all(15.0),
+                          padding: const EdgeInsets.all(20.0),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(6.0),
                             color: Colors.white.withAlpha(30),

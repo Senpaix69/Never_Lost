@@ -24,6 +24,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
   late final TextEditingController _lname;
   late String? _imageFile;
 
+  bool _hidePass = true;
+  bool _hideRePass = true;
+
+  void toggleHidePassword({bool rePassword = false}) {
+    setState(() {
+      if (rePassword) {
+        _hideRePass = !_hideRePass;
+      } else {
+        _hidePass = !_hidePass;
+      }
+    });
+  }
+
   final _formKey = GlobalKey<FormState>();
 
   void _pickImage() async {
@@ -230,8 +243,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     icon: Icons.password,
                     controller: _password,
                     hint: "Enter password",
-                    obsecure: true,
+                    obsecure: _hideRePass,
                     validator: passwordValidate,
+                    callback: () => toggleHidePassword(rePassword: true),
                   ),
                   const SizedBox(
                     height: 10.0,
@@ -239,13 +253,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   textFormField(
                     key: 4,
                     icon: Icons.password,
-                    obsecure: true,
+                    obsecure: _hidePass,
                     hint: "Enter password again",
                     controller: _repassword,
                     validator: (value) => rePasswordValidate(
                       value,
                       _password.text.trim(),
                     ),
+                    callback: toggleHidePassword,
                   ),
                   const SizedBox(
                     height: 10.0,

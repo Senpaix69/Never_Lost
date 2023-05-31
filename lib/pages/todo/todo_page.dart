@@ -175,6 +175,9 @@ class _TodoListState extends State<TodoList>
     return ListTile(
       key: ValueKey(todo.id!),
       onLongPress: () async => await deleteTodo(todo.id!),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
       onTap: () => _showAddTodoBottomSheet(todo),
       leading: Container(
         margin: const EdgeInsets.all(8.0),
