@@ -3,6 +3,7 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:neverlost/contants/option_keys.dart';
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -53,10 +54,10 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDO2HphSuW9fJ2zQL2lU_7DZ0NwfhfLd9w',
-    appId: '1:3943605112:android:ab5181a2bdb2c722f1de8d',
-    messagingSenderId: '3943605112',
-    projectId: 'neverlost-by-senpai',
-    storageBucket: 'neverlost-by-senpai.appspot.com',
+    apiKey: firebaseApiKey,
+    appId: firebaseAppID,
+    messagingSenderId: firebaseMessangerID,
+    projectId: firebaseProjectID,
+    storageBucket: firebaseBucketID,
   );
 }
