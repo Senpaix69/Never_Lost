@@ -46,6 +46,7 @@ class _UserProfileState extends State<UserProfile> {
         notConnectedToInternet();
         return;
       }
+
       final success = await FirebaseService.instance().logOut();
       if (success != null) {
         Future.delayed(

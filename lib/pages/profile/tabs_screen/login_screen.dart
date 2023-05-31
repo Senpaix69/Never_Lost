@@ -17,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   late final TextEditingController _email;
   late final TextEditingController _password;
   final _formKey = GlobalKey<FormState>();
+  final FirebaseService _firebase = FirebaseService.instance();
 
   bool _hidePass = true;
 
@@ -59,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final email = _email.text.trim();
     final password = _password.text.trim();
     try {
-      final success = await FirebaseService.instance().loginWithEmailPassword(
+      final success = await _firebase.loginWithEmailPassword(
         email: email,
         password: password,
       );
@@ -88,6 +89,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void showSnack({required String message}) => showSnackBar(context, message);
+
+  Future<void> signInWithGoogle() async {
+    await _firebase.signInWithGoogle();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -191,16 +196,20 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(
                     height: 40,
                   ),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Column(
+                  ListTile(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    tileColor: Colors.white.withAlpha(80),
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Image.asset(
                           "assets/google.png",
-                          height: 40,
+                          height: 30,
                         ),
                         const SizedBox(
-                          height: 20,
+                          width: 10,
                         ),
                         textWidget(
                           mess: "SignIn with Google",
@@ -209,7 +218,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ],
                     ),
-                  )
+                    onTap: () async => await signInWithGoogle(),
+                  ),
                 ],
               ),
             ),

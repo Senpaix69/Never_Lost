@@ -2,11 +2,13 @@ import 'dart:async' show StreamController;
 import 'dart:convert' show jsonDecode, jsonEncode, utf8;
 import 'dart:io' show File, HttpClient, HttpStatus;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart'
     show consolidateHttpClientResponseBytes;
 import 'package:neverlost/contants/firebase_contants/firebase_contants.dart';
 import 'package:neverlost/services/firebase_auth_services/fb_user.dart';
 import 'package:neverlost/services/note_services/todo.dart';
+import 'package:neverlost/services/notification_service.dart';
 import 'package:neverlost/services/timetable_services/timetable.dart';
 import 'package:path/path.dart' show basename;
 import 'package:firebase_storage/firebase_storage.dart';
@@ -61,6 +63,25 @@ class FirebaseService {
     } on FirebaseAuthException catch (e) {
       return AuthError.from(e);
     }
+  }
+
+  Future<AuthError?> signInWithGoogle() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    final userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+
+    final fbuser = userCredential.user!;
+    setUser(fbuser, null);
+    return null;
   }
 
   // Create user
@@ -272,10 +293,11 @@ class FirebaseService {
     return size;
   }
 
-  // Logout
   Future<AuthError?> logOut() async {
     try {
+      await GoogleSignIn().signOut();
       await _auth.signOut();
+      await NotificationService.cancelALLScheduleNotification();
       _user = null;
       await spUserActions(action: SPActions.delete);
       await spRestoreSize(action: SPActions.delete);
