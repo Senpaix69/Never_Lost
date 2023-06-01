@@ -37,7 +37,7 @@ class _AddFolderDialogState extends State<AddFolderDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Colors.black,
+      backgroundColor: Theme.of(context).canvasColor,
       contentPadding: const EdgeInsets.symmetric(
         horizontal: 20,
         vertical: 20.0,
@@ -62,9 +62,11 @@ class _AddFolderDialogState extends State<AddFolderDialog> {
           onPressed: () {
             Navigator.of(context).pop(null);
           },
-          child: const Text(
+          child: Text(
             'Cancel',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
+            ),
           ),
         ),
         ElevatedButton(
@@ -75,7 +77,7 @@ class _AddFolderDialogState extends State<AddFolderDialog> {
             }
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.grey[800],
+            backgroundColor: Theme.of(context).primaryColorDark,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),

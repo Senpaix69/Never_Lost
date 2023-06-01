@@ -122,7 +122,12 @@ class _NoteListState extends State<NoteList>
         backgroundColor: Colors.transparent,
         flexibleSpace: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 10.0),
+          padding: const EdgeInsets.only(
+            left: 8.0,
+            right: 8.0,
+            bottom: 4.0,
+            top: 4.0,
+          ),
           child: Row(
             children: <Widget>[
               FolderButton(
@@ -169,14 +174,15 @@ class _NoteListState extends State<NoteList>
                       (states) => Theme.of(context).cardColor,
                     ),
                   ),
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.create_new_folder_sharp,
-                    color: Colors.grey[300],
+                    color: Colors.white,
                   ),
-                  label: Text(
+                  label: const Text(
                     "Add Folder",
                     style: TextStyle(
-                      color: Colors.grey[200],
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
@@ -336,7 +342,7 @@ class _NoteListState extends State<NoteList>
     final RenderObject? overlay =
         Overlay.of(context).context.findRenderObject();
     final result = await showMenu(
-      color: Colors.grey[900],
+      color: Theme.of(context).primaryColorDark,
       context: context,
       position: RelativeRect.fromRect(
         Rect.fromLTWH(
@@ -356,18 +362,14 @@ class _NoteListState extends State<NoteList>
           value: "folders",
           child: Text(
             "Move To",
-            style: TextStyle(
-              color: Colors.grey[300],
-            ),
+            style: TextStyle(color: Theme.of(context).canvasColor),
           ),
         ),
         PopupMenuItem(
           value: "important",
           child: Text(
             note.imp == 0 ? "Important" : "Not Important",
-            style: TextStyle(
-              color: Colors.grey[300],
-            ),
+            style: TextStyle(color: Theme.of(context).canvasColor),
           ),
         ),
       ],
