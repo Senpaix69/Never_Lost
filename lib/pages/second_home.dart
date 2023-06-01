@@ -102,12 +102,12 @@ class _SecondHomePageState extends State<SecondHomePage> {
             shape: BoxShape.rectangle,
             color: !selected
                 ? Theme.of(context).primaryColor
-                : Theme.of(context).focusColor,
+                : Theme.of(context).cardColor,
             border: Border.all(
               width: 2.0,
               color: !selected
                   ? Theme.of(context).primaryColor
-                  : Theme.of(context).focusColor,
+                  : Theme.of(context).cardColor,
             ),
           ),
           child: Center(

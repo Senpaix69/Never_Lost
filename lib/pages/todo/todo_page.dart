@@ -160,8 +160,8 @@ class _TodoListState extends State<TodoList>
               margin: const EdgeInsets.symmetric(vertical: 5.0),
               decoration: BoxDecoration(
                 color: isChecked
-                    ? Theme.of(context).focusColor
-                    : Theme.of(context).primaryColor,
+                    ? Theme.of(context).primaryColorLight
+                    : Theme.of(context).cardColor.withAlpha(180),
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: todoTile(
@@ -194,10 +194,13 @@ class _TodoListState extends State<TodoList>
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(7.0),
               shape: BoxShape.rectangle,
-              color:
-                  isChecked ? Theme.of(context).focusColor : Colors.transparent,
+              color: isChecked
+                  ? Theme.of(context).primaryColorDark
+                  : Colors.transparent,
               border: Border.all(
-                color: isChecked ? Theme.of(context).focusColor : Colors.white,
+                color: isChecked
+                    ? Theme.of(context).primaryColorDark
+                    : Colors.white,
               ),
             ),
             child: isChecked
@@ -217,11 +220,11 @@ class _TodoListState extends State<TodoList>
         softWrap: true,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(
-          color:
-              isChecked ? Theme.of(context).colorScheme.inversePrimary : null,
+          color: isChecked ? Theme.of(context).primaryColor : null,
           fontSize: 16.0,
           fontWeight: FontWeight.bold,
           decorationThickness: 2.0,
+          decorationColor: Theme.of(context).primaryColorDark,
           decoration: isChecked ? TextDecoration.lineThrough : null,
         ),
       ),

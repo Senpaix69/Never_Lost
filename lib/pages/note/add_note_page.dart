@@ -411,10 +411,10 @@ class _AddNoteState extends State<AddNote> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
-      tileColor: Colors.lightBlue.withAlpha(90),
+      tileColor: Theme.of(context).primaryColorLight,
       leading: Icon(
         Icons.file_open_rounded,
-        color: Colors.grey[200],
+        color: Theme.of(context).primaryColor,
       ),
       title: Text(
         basename,
@@ -422,7 +422,10 @@ class _AddNoteState extends State<AddNote> {
         overflow: TextOverflow.ellipsis,
       ),
       trailing: IconButton(
-        icon: const Icon(Icons.delete),
+        icon: const Icon(
+          Icons.delete,
+          color: Colors.red,
+        ),
         onPressed: () async => await deleteFile(file.path, index, "file"),
       ),
     );

@@ -107,7 +107,10 @@ class _TimeTablePageState extends State<TimeTablePage> {
 
   void deleteTimeTable(int id) async {
     bool confirmDel = await confirmDialogue(
-        context: context, message: "Do you really want to delete timetable?");
+      context: context,
+      title: "Delete Timetable",
+      message: "Do you really want to delete timetable?",
+    );
     if (confirmDel) {
       await _database.deleteTimeTable(id: id);
     }
@@ -167,7 +170,7 @@ class _TimeTablePageState extends State<TimeTablePage> {
                   }
                   setNextSlot(timeTables);
                   return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 6.0),
+                    margin: const EdgeInsets.all(10.0),
                     padding: const EdgeInsets.symmetric(horizontal: 6.0),
                     decoration: null,
                     child: ListView.builder(

@@ -76,9 +76,9 @@ class _NoteListState extends State<NoteList>
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done ||
                 snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
+              return Center(
                 child: CircularProgressIndicator(
-                  color: Colors.black,
+                  color: Theme.of(context).primaryColor,
                 ),
               );
             }
@@ -166,7 +166,7 @@ class _NoteListState extends State<NoteList>
                       ),
                     ),
                     backgroundColor: MaterialStateColor.resolveWith(
-                      (states) => Theme.of(context).focusColor,
+                      (states) => Theme.of(context).cardColor,
                     ),
                   ),
                   icon: Icon(
@@ -204,9 +204,16 @@ class _NoteListState extends State<NoteList>
                 horizontal: 10.0,
               ),
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-                borderRadius: BorderRadius.circular(10.0),
-              ),
+                  color: Theme.of(context).primaryColorLight,
+                  borderRadius: BorderRadius.circular(10.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color:
+                          Theme.of(context).primaryColorLight.withOpacity(0.5),
+                      blurRadius: 10.0,
+                      offset: const Offset(0, 8),
+                    )
+                  ]),
               child: GestureDetector(
                 onTapDown: (details) {
                   _getTapPosition(details);
@@ -268,7 +275,7 @@ class _NoteListState extends State<NoteList>
                     Icon(
                       Icons.attachment_outlined,
                       size: 20.0,
-                      color: Theme.of(context).primaryColorLight,
+                      color: Theme.of(context).primaryColor,
                     ),
                   const SizedBox(
                     width: 6.0,
@@ -276,7 +283,7 @@ class _NoteListState extends State<NoteList>
                   if (note.imp != 0)
                     Icon(
                       Icons.star,
-                      color: Theme.of(context).primaryColorLight,
+                      color: Theme.of(context).primaryColor,
                       size: 20.0,
                     ),
                 ],
@@ -308,8 +315,9 @@ class _NoteListState extends State<NoteList>
         if (_folderName.isEmpty && note.category.isNotEmpty)
           Text(
             note.category,
-            style: const TextStyle(
-              fontSize: 10.0,
+            style: TextStyle(
+              fontSize: 12.0,
+              color: Theme.of(context).primaryColorDark,
               fontWeight: FontWeight.bold,
             ),
           ),

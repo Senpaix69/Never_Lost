@@ -121,7 +121,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
         bottom: MediaQuery.of(context).viewInsets.bottom + 15,
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColorDark,
+        color: Theme.of(context).canvasColor,
         borderRadius: BorderRadius.circular(20.0),
       ),
       padding: const EdgeInsets.all(10.0),
@@ -176,8 +176,8 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
                     style: TextStyle(
                       fontSize: 16.0,
                       color: emptyText
-                          ? Theme.of(context).focusColor
-                          : Theme.of(context).primaryColorLight,
+                          ? Theme.of(context).cardColor
+                          : Theme.of(context).primaryColor,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -219,8 +219,8 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
         prefixIcon: Icon(
           Icons.trip_origin_outlined,
           color: emptyText
-              ? Theme.of(context).focusColor
-              : Theme.of(context).primaryColorLight,
+              ? Theme.of(context).cardColor
+              : Theme.of(context).primaryColor,
         ),
         contentPadding: EdgeInsets.zero,
         hintText: "Add Todo",

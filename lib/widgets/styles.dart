@@ -6,14 +6,11 @@ InputDecoration decorationFormField(
     contentPadding: const EdgeInsets.all(15.0),
     prefixIcon: Icon(
       prefixIcon,
-      color: Theme.of(context).colorScheme.inversePrimary,
+      color: Theme.of(context).primaryColor,
     ),
     hintText: hintText,
-    hintStyle: TextStyle(
-      color: Colors.grey[200],
-    ),
     filled: true,
-    fillColor: Theme.of(context).focusColor,
+    fillColor: Theme.of(context).primaryColorLight,
     border: const OutlineInputBorder(
       borderRadius: BorderRadius.all(
         Radius.circular(8.0),
@@ -34,14 +31,11 @@ InputDecoration decorationPasswordFormField(
     contentPadding: const EdgeInsets.all(15.0),
     prefixIcon: Icon(
       prefixIcon,
-      color: Theme.of(context).colorScheme.inversePrimary,
+      color: Theme.of(context).primaryColor,
     ),
     hintText: hintText,
-    hintStyle: TextStyle(
-      color: Colors.grey[200],
-    ),
     filled: true,
-    fillColor: Theme.of(context).focusColor,
+    fillColor: Theme.of(context).primaryColorLight,
     border: const OutlineInputBorder(
       borderRadius: BorderRadius.all(
         Radius.circular(8.0),
@@ -52,7 +46,7 @@ InputDecoration decorationPasswordFormField(
       onPressed: callback,
       icon: Icon(
         action ? Icons.visibility_off_rounded : Icons.visibility,
-        color: Colors.grey[400],
+        color: Theme.of(context).primaryColorDark,
       ),
     ),
   );
@@ -106,7 +100,7 @@ Container headerContainer({
                   Icon(
                     reminder ? Icons.notifications_active : Icons.notifications,
                     size: 20.0,
-                    color: reminder ? Colors.lightBlue : Colors.grey[300],
+                    color: reminder ? Colors.yellow : Colors.grey[200],
                   ),
                   PopupMenuButton(
                     padding: EdgeInsets.zero,
@@ -114,31 +108,38 @@ Container headerContainer({
                     elevation: 12,
                     itemBuilder: (BuildContext context) {
                       return <PopupMenuEntry>[
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: 'edit',
                           child: Text(
                             'Edit',
+                            style:
+                                TextStyle(color: Theme.of(context).canvasColor),
                           ),
                         ),
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: 'delete',
                           child: Text(
                             'Delete',
+                            style:
+                                TextStyle(color: Theme.of(context).canvasColor),
                           ),
                         ),
                         PopupMenuItem(
                           value: reminder ? 'cancelReminder' : 'reminder',
                           child: Text(
                             reminder ? 'Cancel Reminder' : 'Set Reminder',
+                            style:
+                                TextStyle(color: Theme.of(context).canvasColor),
                           ),
                         ),
                       ];
                     },
                     onSelected: (value) => onClick(value),
-                    color: Theme.of(context).primaryColorLight,
-                    shadowColor: Theme.of(context).primaryColorDark,
-                    icon: const Icon(
+                    color: Theme.of(context).primaryColorDark,
+                    shadowColor: Theme.of(context).primaryColor,
+                    icon: Icon(
                       Icons.menu_open_rounded,
+                      color: Theme.of(context).cardColor,
                     ),
                   ),
                 ],
@@ -168,7 +169,6 @@ Container textFormField({
 }) {
   return Container(
     decoration: BoxDecoration(
-      color: Colors.black,
       borderRadius: BorderRadius.circular(10.0),
     ),
     child: TextFormField(
@@ -178,7 +178,6 @@ Container textFormField({
       obscureText: obsecure,
       enableSuggestions: false,
       autocorrect: false,
-      style: const TextStyle(color: Colors.white),
       decoration: callback != null
           ? decorationPasswordFormField(icon, hint, obsecure, context, callback)
           : decorationFormField(icon, hint, context),

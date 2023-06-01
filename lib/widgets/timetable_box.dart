@@ -159,7 +159,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
           margin: const EdgeInsets.symmetric(vertical: 10.0),
           padding: const EdgeInsets.only(bottom: 6.0),
           decoration: BoxDecoration(
-            color: Theme.of(context).primaryColorLight,
+            color: Theme.of(context).canvasColor,
             borderRadius: BorderRadius.circular(10.0),
             border: Border.all(color: Theme.of(context).primaryColor),
           ),

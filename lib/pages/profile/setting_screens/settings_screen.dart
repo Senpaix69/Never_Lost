@@ -155,10 +155,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               child: Row(
                 children: <Widget>[
                   IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back_ios_new_outlined,
-                      color: Colors.white,
-                    ),
+                    icon: const Icon(Icons.arrow_back_ios_new_outlined),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                   const SizedBox(

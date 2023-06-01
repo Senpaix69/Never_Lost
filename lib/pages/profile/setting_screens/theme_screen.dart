@@ -26,7 +26,6 @@ class ThemeScreen extends StatelessWidget {
                   IconButton(
                     icon: const Icon(
                       Icons.arrow_back_ios_new_outlined,
-                      color: Colors.white,
                     ),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
@@ -47,16 +46,14 @@ class ThemeScreen extends StatelessWidget {
             ),
             MyCustomTile(
               icon: Icons.light_mode,
-              onClick: () =>
-                  themeProvider.setTheme(theme: themeProvider.lightTheme),
+              onClick: () {},
               iconBackGroundColor: Colors.deepOrange,
               title: "Light Theme",
               trailing: false,
             ),
             MyCustomTile(
               icon: Icons.dark_mode,
-              onClick: () =>
-                  themeProvider.setTheme(theme: themeProvider.darkTheme),
+              onClick: () {},
               iconBackGroundColor: Colors.deepPurpleAccent,
               title: "Dark Theme",
               trailing: false,
@@ -81,6 +78,14 @@ class ThemeScreen extends StatelessWidget {
                   themeProvider.setTheme(theme: themeProvider.navyBlue),
               iconBackGroundColor: Colors.deepPurple,
               title: "Navy Blue",
+              trailing: false,
+            ),
+            MyCustomTile(
+              icon: Icons.format_color_fill_rounded,
+              onClick: () =>
+                  themeProvider.setTheme(theme: themeProvider.pinkAccent),
+              iconBackGroundColor: Colors.pink.shade700,
+              title: "Pink Accent",
               trailing: false,
             ),
           ],

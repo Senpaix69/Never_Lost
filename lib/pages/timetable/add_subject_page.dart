@@ -159,6 +159,7 @@ class _AddSubjectState extends State<AddSubject> {
     if (_editing) {
       bool isChanges = await confirmDialogue(
         context: context,
+        title: "Unsaved Changes",
         message: "Some changes have done do you want to save them?",
       );
       if (isChanges) {
@@ -174,6 +175,7 @@ class _AddSubjectState extends State<AddSubject> {
   Future<void> deleteTimeTable() async {
     bool isDel = await confirmDialogue(
         context: context,
+        title: "Delete Timetable",
         message: "Do you really want to delete this timetable?");
     if (isDel && _timeTable != null) {
       await _database.deleteTimeTable(id: _timeTable!.subject.id!);
@@ -316,7 +318,7 @@ class _AddSubjectState extends State<AddSubject> {
                           Positioned(
                             right: 6.0,
                             child: IconButton(
-                              color: Colors.grey[200],
+                              color: Theme.of(context).cardColor,
                               onPressed: _toggleHeight,
                               icon: Icon(
                                 _height > 0
@@ -498,7 +500,7 @@ class _AddSubjectState extends State<AddSubject> {
             value: day.text,
             hint: const Text("Select Day"),
             onChanged: (value) => day.text = value!,
-            dropdownColor: Theme.of(context).primaryColor,
+            dropdownColor: Theme.of(context).cardColor,
             decoration:
                 decorationFormField(Icons.weekend, "Select Day", context),
             items: weekdays.map<DropdownMenuItem<String>>((weekday) {
@@ -507,7 +509,6 @@ class _AddSubjectState extends State<AddSubject> {
                 value: weekday,
                 child: Text(
                   weekday,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               );
             }).toList(),

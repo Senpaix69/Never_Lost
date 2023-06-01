@@ -25,6 +25,7 @@ class _BackupScreenState extends State<BackupScreen> {
                   message: "Backup Confirmation",
                   size: 24,
                   align: true,
+                  color: Theme.of(context).primaryColor,
                 ),
                 const SizedBox(height: 30.0),
                 const Text(backupText),
@@ -57,14 +58,18 @@ class _BackupScreenState extends State<BackupScreen> {
                 ListTile(
                   contentPadding: const EdgeInsets.symmetric(vertical: 0),
                   leading: Checkbox(
-                      checkColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                      value: _isAgree,
-                      onChanged: (value) => setState(
-                            () => _isAgree = value!,
-                          )),
+                    checkColor: Theme.of(context).canvasColor,
+                    fillColor: MaterialStateColor.resolveWith(
+                      (states) => Theme.of(context).primaryColorDark,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                    value: _isAgree,
+                    onChanged: (value) => setState(
+                      () => _isAgree = value!,
+                    ),
+                  ),
                   title: const Text("I agree to all the conditions"),
                 ),
                 const SizedBox(
@@ -77,13 +82,13 @@ class _BackupScreenState extends State<BackupScreen> {
                         onPressed: () => Navigator.of(context).pop(false),
                         style: ButtonStyle(
                             backgroundColor: MaterialStateColor.resolveWith(
-                          (states) => Colors.grey.shade800,
+                          (states) => Theme.of(context).primaryColorLight,
                         )),
                         child: textMessageBold(
                           padding: 3.0,
                           message: "Cancel",
                           size: 16,
-                          color: Colors.white,
+                          color: Colors.black,
                         ),
                       ),
                     ),
@@ -105,10 +110,10 @@ class _BackupScreenState extends State<BackupScreen> {
                         },
                         style: ButtonStyle(
                             backgroundColor: MaterialStateColor.resolveWith(
-                          (states) => Colors.red,
+                          (states) => Theme.of(context).primaryColor,
                         )),
                         child: textMessageBold(
-                          padding: 3.0,
+                          padding: 3.3,
                           message: "Backup Now",
                           size: 16,
                           color: Colors.white,

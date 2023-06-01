@@ -42,7 +42,10 @@ Map<String, int> getDate(String day) {
 
 Future<bool> deleteFolder(final folder, BuildContext context) async {
   return await confirmDialogue(
-      context: context, message: "Delete ${folder.name} folder?");
+    context: context,
+    title: "Delete Folder",
+    message: "Delete ${folder.name} folder?",
+  );
 }
 
 String? textValidate(String? value) {

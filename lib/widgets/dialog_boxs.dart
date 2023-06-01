@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 Future<void> errorDialogue({
   required BuildContext context,
   required String message,
-  String? title,
+  required String title,
 }) {
   return showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
-        title: title != null ? Text(title) : null,
+        title: Text(title),
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Theme.of(context).canvasColor,
         content: Text(message),
         actions: <Widget>[
           TextButton(
@@ -37,7 +37,7 @@ Future<void> errorDialogue({
 Future<bool> confirmDialogue({
   required BuildContext context,
   required String message,
-  String? title,
+  required String title,
 }) {
   return showDialog<bool>(
       context: context,
@@ -45,23 +45,16 @@ Future<bool> confirmDialogue({
         return AlertDialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-          backgroundColor: Theme.of(context).primaryColor,
+          backgroundColor: Theme.of(context).canvasColor,
           content: Text(message),
-          title: title != null
-              ? Text(
-                  title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                  ),
-                )
-              : null,
+          title: Text(title),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text(
+              child: Text(
                 "Cancel",
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
             ),

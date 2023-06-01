@@ -9,7 +9,7 @@ class NavyBlue {
   static final ThemeData navyBlue = ThemeData(
     useMaterial3: true,
     colorScheme: _colorScheme,
-    scaffoldBackgroundColor: const Color(0xFF0C2C4B),
+    scaffoldBackgroundColor: const Color(0xFF0C454B),
     popupMenuTheme: const PopupMenuThemeData(
       color: Color(0xFF174C81),
     ),

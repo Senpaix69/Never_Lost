@@ -58,6 +58,7 @@ class TabsScreenState extends State<TabsScreen>
         controller: _controller,
         unselectedLabelColor: Colors.grey[300],
         labelColor: Colors.grey[200],
+        indicatorColor: Theme.of(context).canvasColor,
         tabs: tabs,
       ),
     );

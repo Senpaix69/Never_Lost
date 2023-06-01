@@ -29,7 +29,7 @@ class FolderButton extends StatelessWidget {
                   (states) => Theme.of(context).primaryColor,
                 )
               : MaterialStateColor.resolveWith(
-                  (states) => Theme.of(context).focusColor,
+                  (states) => Theme.of(context).cardColor,
                 ),
         ),
         onLongPress: deleteFolder,

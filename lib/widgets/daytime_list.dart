@@ -57,10 +57,10 @@ class _DayTimeListState extends State<DayTimeList> {
                 isReminder ? Icons.access_time_filled_sharp : Icons.access_time,
                 size: 35.0,
                 color: day.currentSlot
-                    ? Colors.lightBlue
+                    ? Theme.of(context).primaryColorDark
                     : day.nextSlot
                         ? Colors.red
-                        : Theme.of(context).primaryColorDark,
+                        : Theme.of(context).primaryColorLight,
               ),
       ),
       title: Text(
