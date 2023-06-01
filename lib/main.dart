@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:neverlost/firebase_options.dart';
 import 'package:neverlost/pages/main_home.dart';
 import 'package:neverlost/services/notification_service.dart';
+import 'package:neverlost/theme/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,7 +12,12 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -18,8 +25,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final themeData = themeProvider.themeData;
     return MaterialApp(
-      theme: myTheme(),
+      theme: themeData,
       debugShowCheckedModeBanner: false,
       title: "Never Lost",
       home: const MyHomePage(),

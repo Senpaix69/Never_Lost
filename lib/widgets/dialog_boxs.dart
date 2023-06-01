@@ -12,12 +12,12 @@ Future<void> errorDialogue({
         title: title != null ? Text(title) : null,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-        backgroundColor: Colors.grey[900],
+        backgroundColor: Theme.of(context).primaryColor,
         content: Text(message),
         actions: <Widget>[
           TextButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.grey[600],
+              backgroundColor: Theme.of(context).primaryColorDark,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -45,9 +45,16 @@ Future<bool> confirmDialogue({
         return AlertDialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-          backgroundColor: Colors.grey[900],
+          backgroundColor: Theme.of(context).primaryColor,
           content: Text(message),
-          title: title != null ? Text(title) : null,
+          title: title != null
+              ? Text(
+                  title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                  ),
+                )
+              : null,
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
@@ -60,7 +67,7 @@ Future<bool> confirmDialogue({
             ),
             TextButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey[600],
+                backgroundColor: Theme.of(context).primaryColorDark,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),

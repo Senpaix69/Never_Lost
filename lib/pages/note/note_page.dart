@@ -65,7 +65,6 @@ class _NoteListState extends State<NoteList>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
       appBar: folderBuilder(context),
       body: Container(
         height: double.infinity,
@@ -117,13 +116,13 @@ class _NoteListState extends State<NoteList>
 
   PreferredSize folderBuilder(BuildContext context) {
     return PreferredSize(
-      preferredSize: const Size.fromHeight(50.0),
+      preferredSize: const Size.fromHeight(60),
       child: AppBar(
         elevation: 0.0,
         backgroundColor: Colors.transparent,
         flexibleSpace: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 6.0),
+          padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 10.0),
           child: Row(
             children: <Widget>[
               FolderButton(
@@ -167,7 +166,7 @@ class _NoteListState extends State<NoteList>
                       ),
                     ),
                     backgroundColor: MaterialStateColor.resolveWith(
-                      (states) => Colors.grey.shade800,
+                      (states) => Theme.of(context).focusColor,
                     ),
                   ),
                   icon: Icon(
@@ -205,7 +204,7 @@ class _NoteListState extends State<NoteList>
                 horizontal: 10.0,
               ),
               decoration: BoxDecoration(
-                color: Colors.grey[800],
+                color: Theme.of(context).primaryColor,
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: GestureDetector(
@@ -250,7 +249,7 @@ class _NoteListState extends State<NoteList>
             note.body.toString().split("\n").join(" "),
             softWrap: true,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontSize: 14.0, color: Colors.grey[200]),
+            style: const TextStyle(fontSize: 14.0),
           ),
           const SizedBox(height: 6.0),
           Row(
@@ -258,9 +257,8 @@ class _NoteListState extends State<NoteList>
             children: <Widget>[
               Text(
                 note.date,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 10.0,
-                  color: Colors.grey[300],
                 ),
               ),
               Row(
@@ -269,8 +267,8 @@ class _NoteListState extends State<NoteList>
                       removeEmptyFilesAndImages(note.images).isNotEmpty)
                     Icon(
                       Icons.attachment_outlined,
-                      color: Colors.grey[300],
                       size: 20.0,
+                      color: Theme.of(context).primaryColorLight,
                     ),
                   const SizedBox(
                     width: 6.0,
@@ -278,7 +276,7 @@ class _NoteListState extends State<NoteList>
                   if (note.imp != 0)
                     Icon(
                       Icons.star,
-                      color: Colors.grey[400],
+                      color: Theme.of(context).primaryColorLight,
                       size: 20.0,
                     ),
                 ],
@@ -300,9 +298,8 @@ class _NoteListState extends State<NoteList>
         Expanded(
           child: Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               overflow: TextOverflow.ellipsis,
-              color: Colors.grey[300],
               fontSize: 16.0,
               fontWeight: FontWeight.bold,
             ),
@@ -311,8 +308,7 @@ class _NoteListState extends State<NoteList>
         if (_folderName.isEmpty && note.category.isNotEmpty)
           Text(
             note.category,
-            style: TextStyle(
-              color: Colors.grey[400],
+            style: const TextStyle(
               fontSize: 10.0,
               fontWeight: FontWeight.bold,
             ),

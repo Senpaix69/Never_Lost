@@ -121,7 +121,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
         bottom: MediaQuery.of(context).viewInsets.bottom + 15,
       ),
       decoration: BoxDecoration(
-        color: Colors.grey[900],
+        color: Theme.of(context).primaryColorDark,
         borderRadius: BorderRadius.circular(20.0),
       ),
       padding: const EdgeInsets.all(10.0),
@@ -141,7 +141,9 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
                 ElevatedButton.icon(
                   icon: Icon(
                     Icons.alarm,
-                    color: _date != null ? Colors.white : Colors.grey[300],
+                    color: _date != null
+                        ? Colors.white
+                        : Theme.of(context).primaryColorDark,
                   ),
                   label: Text(
                     _date == null
@@ -149,15 +151,18 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
                         : getFormattedTime(_date.toString())!,
                     style: TextStyle(
                       fontSize: 16,
-                      color: _date != null ? Colors.white : Colors.grey[300],
+                      color: _date != null
+                          ? Colors.white
+                          : Theme.of(context).primaryColorDark,
                     ),
                   ),
                   onPressed: _date == null
                       ? () async => await pickDateAndTime()
                       : () => handleReminder(),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        _date != null ? Colors.grey[600] : Colors.grey[800],
+                    backgroundColor: _date != null
+                        ? Theme.of(context).primaryColor
+                        : Theme.of(context).primaryColorLight,
                     textStyle: const TextStyle(fontSize: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(7.0),
@@ -170,7 +175,9 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
                     "Done",
                     style: TextStyle(
                       fontSize: 16.0,
-                      color: emptyText ? Colors.grey[600] : Colors.grey[300],
+                      color: emptyText
+                          ? Theme.of(context).focusColor
+                          : Theme.of(context).primaryColorLight,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -211,13 +218,12 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
       decoration: InputDecoration(
         prefixIcon: Icon(
           Icons.trip_origin_outlined,
-          color: emptyText ? Colors.grey[800] : Colors.grey[400],
+          color: emptyText
+              ? Theme.of(context).focusColor
+              : Theme.of(context).primaryColorLight,
         ),
         contentPadding: EdgeInsets.zero,
         hintText: "Add Todo",
-        hintStyle: TextStyle(
-          color: Colors.grey[600],
-        ),
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(8.0),

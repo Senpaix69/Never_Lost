@@ -46,7 +46,6 @@ class TabsScreenState extends State<TabsScreen>
     return AppBar(
       automaticallyImplyLeading: false,
       elevation: 0.0,
-      backgroundColor: Colors.transparent,
       leading: actions(context),
       bottom: TabBar(
         indicatorWeight: 2.0,
@@ -56,9 +55,8 @@ class TabsScreenState extends State<TabsScreen>
           fontWeight: FontWeight.bold,
           letterSpacing: 0.5,
         ),
-        indicatorColor: Colors.grey,
         controller: _controller,
-        unselectedLabelColor: Colors.grey[400],
+        unselectedLabelColor: Colors.grey[300],
         labelColor: Colors.grey[200],
         tabs: tabs,
       ),
@@ -70,7 +68,7 @@ class TabsScreenState extends State<TabsScreen>
       margin: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.grey[800],
+        color: Theme.of(context).focusColor,
       ),
       child: IconButton(
         onPressed: () => Navigator.of(context).pop(),

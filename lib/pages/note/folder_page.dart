@@ -56,10 +56,15 @@ class _FolderPageState extends State<FolderPage> {
   Widget build(BuildContext context) {
     bool isNote = _note != null;
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black,
         title: const Text("Folders"),
+        leading: IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+        ),
       ),
       body: Container(
         height: double.infinity,
@@ -84,7 +89,6 @@ class _FolderPageState extends State<FolderPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.lightBlue,
         onPressed: () async {
           String? name = await showDialog(
             context: context,
@@ -96,9 +100,9 @@ class _FolderPageState extends State<FolderPage> {
           );
           if (name != null) await _database.addFolder(name: name);
         },
-        child: Icon(
+        child: const Icon(
           Icons.folder,
-          color: Colors.grey[300],
+          color: Colors.white,
         ),
       ),
     );
@@ -118,12 +122,13 @@ class _FolderPageState extends State<FolderPage> {
           ),
           onTap: () => updateCategory(folders[index].name),
           tileColor: _note?.category == folders[index].name
-              ? Colors.grey[900]
-              : Colors.grey[800],
+              ? Theme.of(context).focusColor
+              : Theme.of(context).primaryColorLight,
           title: Text(
             folders[index].name,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
+              fontSize: 16.0,
             ),
           ),
           leading: isNote
@@ -143,7 +148,10 @@ class _FolderPageState extends State<FolderPage> {
                 await _database.removeFolder(id: folder.id!);
               }
             },
-            icon: const Icon(Icons.delete),
+            icon: const Icon(
+              Icons.delete,
+              color: Colors.red,
+            ),
           ),
         ),
       ),

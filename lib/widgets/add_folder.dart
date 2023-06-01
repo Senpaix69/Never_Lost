@@ -52,7 +52,8 @@ class _AddFolderDialogState extends State<AddFolderDialog> {
           autovalidateMode: AutovalidateMode.onUserInteraction,
           controller: _folderNameController,
           autofocus: true,
-          decoration: decorationFormField(Icons.folder, "Enter Folder Name"),
+          decoration:
+              decorationFormField(Icons.folder, "Enter Folder Name", context),
           validator: folderValidate,
         ),
       ),

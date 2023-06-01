@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class SlideRightRoute extends PageRouteBuilder {
+class SlideRightRoute<T> extends PageRouteBuilder<T> {
   final Widget page;
   final dynamic arguments;
 

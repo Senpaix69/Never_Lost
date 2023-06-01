@@ -119,11 +119,9 @@ class _TimeTablePageState extends State<TimeTablePage> {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         elevation: 0.0,
-        backgroundColor: Colors.grey[800],
-        title: Text(
+        title: const Text(
           "Time Table",
           style: TextStyle(
-            color: Colors.grey[400],
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -199,7 +197,7 @@ class _TimeTablePageState extends State<TimeTablePage> {
       margin: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.grey[900],
+        color: Theme.of(context).focusColor,
       ),
       child: IconButton(
         onPressed: () {
@@ -240,16 +238,15 @@ class _TimeTablePageState extends State<TimeTablePage> {
                 text: weekdays[_currentPage],
                 style: TextStyle(
                   letterSpacing: 1.0,
-                  color: Colors.grey[400],
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
+                  color: Theme.of(context).primaryColorLight,
                 ),
                 children: <InlineSpan>[
                   if (_today == _currentPage)
-                    TextSpan(
+                    const TextSpan(
                         text: " (Today)",
                         style: TextStyle(
-                          color: Colors.grey[200],
                           fontSize: 10,
                         )),
                 ],

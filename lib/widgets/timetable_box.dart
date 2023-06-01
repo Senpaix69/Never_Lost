@@ -159,24 +159,20 @@ class _TimeTableBoxState extends State<TimeTableBox>
           margin: const EdgeInsets.symmetric(vertical: 10.0),
           padding: const EdgeInsets.only(bottom: 6.0),
           decoration: BoxDecoration(
-              color: Colors.grey[900],
-              borderRadius: BorderRadius.circular(10.0),
-              border: Border.all(color: Colors.black),
-              boxShadow: [
-                BoxShadow(
-                  spreadRadius: 1.0,
-                  blurRadius: 8.0,
-                  color: Colors.grey.shade900,
-                ),
-              ]),
+            color: Theme.of(context).primaryColorLight,
+            borderRadius: BorderRadius.circular(10.0),
+            border: Border.all(color: Theme.of(context).primaryColor),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               headerContainer(
+                context: context,
                 title: subject.name,
                 icon: Icons.edit_note,
                 onClick: menuCheck,
                 reminder: widget.timeTable.subject.sched != 0,
+                color: Colors.white,
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(14.0, 14.0, 14.0, 0.0),
@@ -189,9 +185,10 @@ class _TimeTableBoxState extends State<TimeTableBox>
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         detailsProf(
-                            text: "Professor",
-                            detail: professor.name,
-                            head: true),
+                          text: "Professor",
+                          detail: professor.name,
+                          head: true,
+                        ),
                         SizedBox(
                           height: 30,
                           child: IconButton(
@@ -202,7 +199,6 @@ class _TimeTableBoxState extends State<TimeTableBox>
                               _height > 0
                                   ? Icons.arrow_drop_up
                                   : Icons.arrow_drop_down,
-                              color: Colors.white,
                               size: 25.0,
                             ),
                           ),
@@ -286,17 +282,14 @@ class _TimeTableBoxState extends State<TimeTableBox>
           text: TextSpan(
             text: "$text: ",
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 14,
               letterSpacing: 0.5,
               fontWeight: head ? FontWeight.bold : FontWeight.normal,
-              color: Colors.white,
+              color: Theme.of(context).primaryColorDark,
             ),
             children: <TextSpan>[
               TextSpan(
                 text: detail.isEmpty ? "not provided" : detail,
-                style: const TextStyle(
-                  color: Colors.white,
-                ),
               ),
             ],
           ),

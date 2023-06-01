@@ -94,7 +94,6 @@ class _TodoListState extends State<TodoList>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -160,10 +159,16 @@ class _TodoListState extends State<TodoList>
               duration: const Duration(milliseconds: 500),
               margin: const EdgeInsets.symmetric(vertical: 5.0),
               decoration: BoxDecoration(
-                color: isChecked ? Colors.grey[900] : Colors.grey[800],
+                color: isChecked
+                    ? Theme.of(context).focusColor
+                    : Theme.of(context).primaryColor,
                 borderRadius: BorderRadius.circular(10.0),
               ),
-              child: todoTile(todo, isChecked, timeSchedule),
+              child: todoTile(
+                todo,
+                isChecked,
+                timeSchedule,
+              ),
             ),
           ),
         );
@@ -189,9 +194,10 @@ class _TodoListState extends State<TodoList>
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(7.0),
               shape: BoxShape.rectangle,
-              color: isChecked ? Colors.grey[600] : Colors.transparent,
+              color:
+                  isChecked ? Theme.of(context).focusColor : Colors.transparent,
               border: Border.all(
-                color: isChecked ? Colors.grey.shade600 : Colors.white,
+                color: isChecked ? Theme.of(context).focusColor : Colors.white,
               ),
             ),
             child: isChecked
@@ -211,7 +217,8 @@ class _TodoListState extends State<TodoList>
         softWrap: true,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(
-          color: isChecked ? Colors.grey : Colors.grey[300],
+          color:
+              isChecked ? Theme.of(context).colorScheme.inversePrimary : null,
           fontSize: 16.0,
           fontWeight: FontWeight.bold,
           decorationThickness: 2.0,
@@ -222,13 +229,15 @@ class _TodoListState extends State<TodoList>
         '${todo.reminder == 1 ? "Passed: " : "Reminder: "}${timeSchedule ?? "Not Set"}',
         style: TextStyle(
           fontSize: 12.0,
-          color: todo.reminder == 1 && !isChecked ? Colors.red : Colors.grey,
+          color: todo.reminder == 1 && !isChecked
+              ? Colors.red
+              : Theme.of(context).primaryColorDark,
         ),
       ),
       trailing: (todo.date != null && !isChecked && todo.reminder != 1)
           ? Icon(
               Icons.alarm_on_sharp,
-              color: Colors.grey[400],
+              color: Theme.of(context).focusColor,
             )
           : null,
     );

@@ -253,7 +253,7 @@ class _AddSubjectState extends State<AddSubject> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: myAppBar(),
       body: Container(
         padding: const EdgeInsets.all(20.0),
@@ -316,12 +316,12 @@ class _AddSubjectState extends State<AddSubject> {
                           Positioned(
                             right: 6.0,
                             child: IconButton(
+                              color: Colors.grey[200],
                               onPressed: _toggleHeight,
                               icon: Icon(
                                 _height > 0
                                     ? Icons.swipe_up_sharp
                                     : Icons.swipe_down_sharp,
-                                color: Colors.grey[300],
                               ),
                             ),
                           ),
@@ -355,7 +355,7 @@ class _AddSubjectState extends State<AddSubject> {
                       Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: Colors.grey[700],
+                          color: Theme.of(context).primaryColorDark,
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         child: TextButton.icon(
@@ -381,7 +381,7 @@ class _AddSubjectState extends State<AddSubject> {
                 Container(
                   margin: const EdgeInsets.only(top: 20.0),
                   decoration: BoxDecoration(
-                    color: Colors.grey[900],
+                    color: Theme.of(context).primaryColorLight,
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   child: Column(
@@ -390,20 +390,21 @@ class _AddSubjectState extends State<AddSubject> {
                         title: "Timings",
                         icon: Icons.calendar_month,
                         onClick: null,
+                        context: context,
+                        color: Colors.white,
                       ),
                       Padding(
                         padding: const EdgeInsets.all(6.0),
                         child: Column(
                           children: <Widget>[
                             _days.isEmpty
-                                ? Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 25.0),
+                                ? const Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 25.0),
                                     child: Center(
                                       child: Text(
                                         "No Time Added",
                                         style: TextStyle(
-                                          color: Colors.grey[400],
                                           letterSpacing: 1.0,
                                           fontSize: 16.0,
                                           fontWeight: FontWeight.bold,
@@ -444,10 +445,9 @@ class _AddSubjectState extends State<AddSubject> {
             const SizedBox(
               height: 10.0,
             ),
-            Text(
+            const Text(
               "Optional Details",
               style: TextStyle(
-                color: Colors.grey[200],
                 fontSize: 12.0,
                 fontWeight: FontWeight.bold,
               ),
@@ -494,17 +494,20 @@ class _AddSubjectState extends State<AddSubject> {
       children: <Widget>[
         Expanded(
           child: DropdownButtonFormField<String>(
+            iconSize: 20.0,
             value: day.text,
+            hint: const Text("Select Day"),
             onChanged: (value) => day.text = value!,
-            dropdownColor: Colors.grey[800],
-            style: const TextStyle(color: Colors.white),
-            decoration: decorationFormField(Icons.weekend, "Select Day"),
+            dropdownColor: Theme.of(context).primaryColor,
+            decoration:
+                decorationFormField(Icons.weekend, "Select Day", context),
             items: weekdays.map<DropdownMenuItem<String>>((weekday) {
               return DropdownMenuItem<String>(
                 alignment: Alignment.center,
                 value: weekday,
                 child: Text(
                   weekday,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               );
             }).toList(),
@@ -580,9 +583,7 @@ class _AddSubjectState extends State<AddSubject> {
           );
         }
       },
-      cursorColor: Colors.blue[600],
-      style: const TextStyle(color: Colors.white),
-      decoration: decorationFormField(prefix, hint),
+      decoration: decorationFormField(prefix, hint, context),
       validator: validator,
     );
   }
@@ -592,10 +593,12 @@ class _AddSubjectState extends State<AddSubject> {
     return AppBar(
       automaticallyImplyLeading: false,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
+        icon: const Icon(
+          Icons.arrow_back,
+          color: Colors.white,
+        ),
         onPressed: () => backPage(),
       ),
-      backgroundColor: Colors.black,
       title: Text(isEditing ? "Edit TimeTable" : "Add Timetable"),
       actions: <Widget>[
         if (isEditing)
@@ -605,7 +608,10 @@ class _AddSubjectState extends State<AddSubject> {
               onPressed: () async {
                 await deleteTimeTable();
               },
-              icon: const Icon(Icons.delete),
+              icon: const Icon(
+                Icons.delete,
+                color: Colors.white,
+              ),
             ),
           ),
         if (_editing)
@@ -613,7 +619,10 @@ class _AddSubjectState extends State<AddSubject> {
             onPressed: () async {
               await saveTimeTable();
             },
-            icon: const Icon(Icons.check),
+            icon: const Icon(
+              Icons.check,
+              color: Colors.white,
+            ),
           ),
       ],
       elevation: 0.0,

@@ -1,7 +1,7 @@
 import 'dart:io' show File;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:neverlost/pages/profile/profile_screens/settings_screen.dart';
+import 'package:neverlost/pages/profile/setting_screens/settings_screen.dart';
 import 'package:neverlost/pages/profile/tabs_screen/tabs_screen.dart';
 import 'package:neverlost/services/firebase_auth_services/firebase_service.dart';
 import 'package:neverlost/utils.dart' show checkConnection;
@@ -65,7 +65,6 @@ class _UserProfileState extends State<UserProfile> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.transparent,
         body: Container(
           height: double.infinity,
           width: double.infinity,
@@ -94,10 +93,12 @@ class _UserProfileState extends State<UserProfile> {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: Colors.grey[900],
+                          color: Theme.of(context).primaryColor,
                           boxShadow: <BoxShadow>[
                             BoxShadow(
-                              color: Colors.grey.shade800.withOpacity(.3),
+                              color: Theme.of(context)
+                                  .primaryColorDark
+                                  .withOpacity(.3),
                               spreadRadius: 6,
                               blurRadius: 20.0,
                               offset: const Offset(0, 10),
@@ -115,6 +116,7 @@ class _UserProfileState extends State<UserProfile> {
                               userData != null ? userData.fullname : "Fullname",
                               style: const TextStyle(
                                 fontSize: 26.0,
+                                color: Colors.white,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -123,7 +125,10 @@ class _UserProfileState extends State<UserProfile> {
                             ),
                             Text(
                               "@${userData != null ? userData.username : 'username'}",
-                              style: const TextStyle(fontSize: 16.0),
+                              style: const TextStyle(
+                                fontSize: 16.0,
+                                color: Colors.white,
+                              ),
                             ),
                             const SizedBox(
                               height: 16.0,
@@ -142,7 +147,7 @@ class _UserProfileState extends State<UserProfile> {
                                     ),
                                     backgroundColor:
                                         MaterialStateColor.resolveWith(
-                                      (states) => Colors.grey.shade800,
+                                      (states) => Theme.of(context).focusColor,
                                     ),
                                     shape: MaterialStateProperty.all<
                                         RoundedRectangleBorder>(

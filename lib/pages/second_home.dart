@@ -48,15 +48,14 @@ class _SecondHomePageState extends State<SecondHomePage> {
   Widget build(BuildContext context) {
     bool selected = _selectedIndex == 0;
     return Scaffold(
-      backgroundColor: Colors.transparent,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         elevation: 0.0,
         toolbarHeight: 0,
-        backgroundColor: Colors.transparent,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(60),
           child: Padding(
-            padding: const EdgeInsets.only(bottom: 10.0),
+            padding: const EdgeInsets.only(bottom: 16.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -78,7 +77,6 @@ class _SecondHomePageState extends State<SecondHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: selected ? _addNotePage : _showAddTodoBottomSheet,
-        backgroundColor: Colors.grey[800],
         child: const Icon(
           Icons.add,
           size: 30.0,
@@ -94,24 +92,28 @@ class _SecondHomePageState extends State<SecondHomePage> {
     IconData icon = Icons.check,
   }) {
     return SizedBox(
-      width: 30.0,
-      height: 30.0,
+      width: 35.0,
+      height: 35.0,
       child: InkWell(
         onTap: () => gotoPage(page),
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(7.0),
             shape: BoxShape.rectangle,
-            color: !selected ? Colors.grey[800] : Colors.transparent,
+            color: !selected
+                ? Theme.of(context).primaryColor
+                : Theme.of(context).focusColor,
             border: Border.all(
               width: 2.0,
-              color: !selected ? Colors.grey.shade800 : Colors.grey,
+              color: !selected
+                  ? Theme.of(context).primaryColor
+                  : Theme.of(context).focusColor,
             ),
           ),
           child: Center(
             child: Icon(
               icon,
-              size: 20.0,
+              size: 25.0,
               color: Colors.white,
             ),
           ),

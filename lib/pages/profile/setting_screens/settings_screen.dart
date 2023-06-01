@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:neverlost/pages/profile/profile_screens/backup_screen.dart';
-import 'package:neverlost/pages/profile/profile_screens/restore_screen.dart';
+import 'package:neverlost/pages/profile/setting_screens/backup_screen.dart';
+import 'package:neverlost/pages/profile/setting_screens/restore_screen.dart';
+import 'package:neverlost/pages/profile/setting_screens/theme_screen.dart';
 import 'package:neverlost/services/database.dart';
 import 'package:neverlost/services/firebase_auth_services/firebase_service.dart';
 import 'package:neverlost/services/note_services/todo.dart';
 import 'package:neverlost/services/notification_service.dart';
 import 'package:neverlost/services/timetable_services/timetable.dart';
 import 'package:neverlost/utils.dart' show checkConnection, showSnackBar;
+import 'package:neverlost/widgets/animate_route.dart' show SlideRightRoute;
 import 'package:neverlost/widgets/dialog_boxs.dart' show errorDialogue;
 import 'package:neverlost/widgets/loading/loading_screen.dart';
 import 'package:neverlost/widgets/my_custom_tile.dart';
@@ -118,17 +120,17 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   void performProfileActions(ProfileActions action) async {
     switch (action) {
       case ProfileActions.backup:
-        if (await Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const BackupScreen(),
-            )) ??
+        if (await Navigator.of(context).push(
+              SlideRightRoute(page: const BackupScreen()),
+            ) ??
             false) {
           await makeBackUp();
         }
         break;
       case ProfileActions.restore:
-        if (await Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const RestoreScreen(),
-            )) ??
+        if (await Navigator.of(context).push(
+              SlideRightRoute(page: const RestoreScreen()),
+            ) ??
             false) {
           await restoreBackup();
         }
@@ -139,7 +141,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       body: Container(
         padding: const EdgeInsets.only(
           top: 50,
@@ -154,7 +155,10 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               child: Row(
                 children: <Widget>[
                   IconButton(
-                    icon: const Icon(Icons.arrow_back_ios_new_outlined),
+                    icon: const Icon(
+                      Icons.arrow_back_ios_new_outlined,
+                      color: Colors.white,
+                    ),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                   const SizedBox(
@@ -183,16 +187,17 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               iconBackGroundColor: Colors.orangeAccent,
               title: "About Developer",
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
               child: Divider(
                 height: 40,
-                color: Colors.grey[900],
               ),
             ),
             MyCustomTile(
               icon: Icons.color_lens,
-              onClick: () {},
+              onClick: () => Navigator.of(context).push(
+                SlideRightRoute(page: const ThemeScreen()),
+              ),
               iconBackGroundColor: Colors.amber,
               title: "Themes",
             ),

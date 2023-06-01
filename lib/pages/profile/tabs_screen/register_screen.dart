@@ -131,7 +131,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 30),
@@ -147,7 +146,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: Stack(
                       children: <Widget>[
                         CircleAvatar(
-                          backgroundColor: Colors.grey[900],
+                          backgroundColor: Theme.of(context).primaryColor,
                           radius: 70,
                           child: _imageFile != null
                               ? ClipOval(
@@ -172,7 +171,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               onPressed: () => _pickImage(),
                               icon: Icon(
                                 Icons.camera_alt,
-                                color: Colors.grey[400],
+                                color: Colors.grey[300],
                               ),
                               iconSize: 40.0,
                             ),
@@ -199,6 +198,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     height: 30.0,
                   ),
                   textFormField(
+                    context: context,
                     key: 0,
                     icon: Icons.email,
                     controller: _email,
@@ -214,6 +214,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     children: <Widget>[
                       Expanded(
                         child: textFormField(
+                          context: context,
                           key: 1,
                           icon: Icons.person_pin,
                           controller: _fname,
@@ -226,6 +227,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       Expanded(
                         child: textFormField(
+                          context: context,
                           key: 2,
                           icon: Icons.person_pin,
                           hint: "Last name",
@@ -239,6 +241,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     height: 10.0,
                   ),
                   textFormField(
+                    context: context,
                     key: 3,
                     icon: Icons.password,
                     controller: _password,
@@ -251,6 +254,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     height: 10.0,
                   ),
                   textFormField(
+                    context: context,
                     key: 4,
                     icon: Icons.password,
                     obsecure: _hidePass,
@@ -278,7 +282,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           ),
                           backgroundColor: MaterialStateColor.resolveWith(
-                            (states) => Colors.grey.shade700,
+                            (states) => Theme.of(context).primaryColor,
                           ),
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(

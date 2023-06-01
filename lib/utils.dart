@@ -173,9 +173,8 @@ Center emptyWidget({required IconData icon, required String message}) {
         ),
         Text(
           message,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 16.0,
-            color: Colors.grey[400],
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -190,7 +189,7 @@ void showSnackBar(BuildContext context, String message) {
       dismissDirection: DismissDirection.horizontal,
       behavior: SnackBarBehavior.floating,
       margin: const EdgeInsets.only(bottom: 20.0, left: 10.0, right: 10.0),
-      backgroundColor: Colors.grey[800],
+      backgroundColor: Theme.of(context).primaryColorDark,
       showCloseIcon: true,
       closeIconColor: Colors.white,
       content: Text(

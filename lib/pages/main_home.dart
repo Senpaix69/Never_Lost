@@ -59,7 +59,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       body: PageView(
         physics: const NeverScrollableScrollPhysics(),
         controller: _pageController,
@@ -68,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: Colors.grey[800],
+          color: Theme.of(context).primaryColor,
           borderRadius: BorderRadius.circular(30.0),
         ),
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -82,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
           activeColor: Colors.white,
           tabBorderRadius: 22.0,
           iconSize: 25,
-          tabBackgroundColor: Colors.grey.shade900,
+          tabBackgroundColor: Theme.of(context).focusColor,
           padding: const EdgeInsets.all(14),
           tabs: const <GButton>[
             GButton(

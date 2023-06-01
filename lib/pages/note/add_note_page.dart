@@ -247,7 +247,6 @@ class _AddNoteState extends State<AddNote> {
     return WillPopScope(
       onWillPop: () async => !_isEditing,
       child: Scaffold(
-        backgroundColor: Colors.black,
         appBar: myAppBar(),
         body: GestureDetector(
           onTap: () {
@@ -275,14 +274,12 @@ class _AddNoteState extends State<AddNote> {
                       enableSuggestions: false,
                       autocorrect: false,
                       maxLines: null,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: InputBorder.none,
-                        hintStyle: TextStyle(color: Colors.grey[500]),
                         hintText: 'Title',
                       ),
                       controller: _title,
-                      style: TextStyle(
-                        color: Colors.grey[300],
+                      style: const TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.bold,
                       ),
@@ -291,7 +288,6 @@ class _AddNoteState extends State<AddNote> {
                     Text(
                       _isNote != null ? _isNote!.date : _date(),
                       style: const TextStyle(
-                        color: Colors.grey,
                         fontSize: 12.0,
                         letterSpacing: 0.6,
                       ),
@@ -305,26 +301,23 @@ class _AddNoteState extends State<AddNote> {
                       enableSuggestions: false,
                       autocorrect: false,
                       maxLines: null,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: InputBorder.none,
-                        hintStyle: TextStyle(color: Colors.grey[500]),
                         hintText: 'write note here...',
                       ),
                       controller: _body,
                       validator: textValidate,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 15.0,
                         letterSpacing: 0.3,
-                        color: Colors.grey[300],
                       ),
                     ),
                     const SizedBox(
                       height: 20.0,
                     ),
                     imageBuilder(),
-                    Divider(
+                    const Divider(
                       height: 20,
-                      color: Colors.grey[900],
                     ),
                     filesBuilder(),
                   ],
@@ -439,10 +432,12 @@ class _AddNoteState extends State<AddNote> {
     return AppBar(
       automaticallyImplyLeading: false,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
+        icon: const Icon(
+          Icons.arrow_back,
+          color: Colors.white,
+        ),
         onPressed: () => backPage(),
       ),
-      backgroundColor: Colors.transparent,
       title: Text(
         _isNote != null
             ? _isEditing
@@ -454,19 +449,20 @@ class _AddNoteState extends State<AddNote> {
       actions: <Widget>[
         IconButton(
           onPressed: () => addFile(),
-          icon: const Icon(Icons.attachment),
+          icon: const Icon(
+            Icons.attachment,
+            color: Colors.white,
+          ),
         ),
         if (_isNote != null)
           IconButton(
             onPressed: () => deleteNote(),
-            icon: const Icon(
-              Icons.delete,
-            ),
+            icon: const Icon(Icons.delete, color: Colors.white),
           ),
         if (_isEditing)
           IconButton(
             onPressed: () => saveNote(),
-            icon: const Icon(Icons.check),
+            icon: const Icon(Icons.check, color: Colors.white),
           ),
         if (!_isEditing)
           const SizedBox(

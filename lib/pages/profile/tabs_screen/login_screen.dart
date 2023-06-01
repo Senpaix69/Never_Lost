@@ -97,7 +97,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 63),
@@ -112,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Center(
                     child: CircleAvatar(
                       backgroundImage: const AssetImage("assets/prof.png"),
-                      backgroundColor: Colors.grey[900],
+                      backgroundColor: Theme.of(context).primaryColorDark,
                       radius: 70.0,
                     ),
                   ),
@@ -125,6 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: _email,
                     validator: textValidate,
                     hint: "Enter email",
+                    context: context,
                   ),
                   const SizedBox(
                     height: 10.0,
@@ -137,6 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     obsecure: _hidePass,
                     hint: "Enter password",
                     callback: toggleHidePassword,
+                    context: context,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -166,7 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       backgroundColor: MaterialStateColor.resolveWith(
-                        (states) => Colors.grey.shade700,
+                        (states) => Theme.of(context).primaryColorDark,
                       ),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
@@ -196,29 +197,42 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(
                     height: 40,
                   ),
-                  ListTile(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                        const EdgeInsets.symmetric(
+                          vertical: 12.0,
+                          horizontal: 24.0,
+                        ),
+                      ),
+                      backgroundColor: MaterialStateColor.resolveWith(
+                        (states) => Theme.of(context).canvasColor,
+                      ),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                      ),
                     ),
-                    tileColor: Colors.white.withAlpha(80),
-                    title: Row(
+                    onPressed: () async => await signInWithGoogle(),
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Image.asset(
                           "assets/google.png",
-                          height: 30,
+                          height: 25,
                         ),
                         const SizedBox(
                           width: 10,
                         ),
                         textWidget(
+                          color: Theme.of(context).primaryColor,
                           mess: "SignIn with Google",
                           size: 18,
                           bold: true,
                         ),
                       ],
                     ),
-                    onTap: () async => await signInWithGoogle(),
                   ),
                 ],
               ),

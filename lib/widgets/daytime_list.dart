@@ -49,7 +49,7 @@ class _DayTimeListState extends State<DayTimeList> {
             ? Text(
                 day.roomNo,
                 style: TextStyle(
-                  color: Colors.grey[200],
+                  color: Theme.of(context).shadowColor,
                   fontWeight: FontWeight.bold,
                 ),
               )
@@ -60,20 +60,20 @@ class _DayTimeListState extends State<DayTimeList> {
                     ? Colors.lightBlue
                     : day.nextSlot
                         ? Colors.red
-                        : Colors.grey[600],
+                        : Theme.of(context).primaryColorDark,
               ),
       ),
       title: Text(
         isAdding ? day.day : day.roomNo,
         style: TextStyle(
-          color: Colors.grey[200],
+          color: Theme.of(context).shadowColor,
           fontWeight: FontWeight.bold,
         ),
       ),
       subtitle: Text(
         '${day.startTime} - ${day.endTime}',
         style: TextStyle(
-          color: Colors.grey[200],
+          color: Theme.of(context).shadowColor,
         ),
       ),
       trailing: widget.callBack != null

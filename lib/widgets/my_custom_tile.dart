@@ -8,12 +8,16 @@ class MyCustomTile extends StatelessWidget {
     required this.onClick,
     required this.title,
     this.subTitle,
+    this.trailing = true,
+    this.iconColor = Colors.white,
   });
   final Color iconBackGroundColor;
   final IconData icon;
   final VoidCallback onClick;
   final String title;
   final String? subTitle;
+  final bool trailing;
+  final Color iconColor;
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -31,17 +35,19 @@ class MyCustomTile extends StatelessWidget {
         child: Icon(
           icon,
           size: 30,
+          color: iconColor,
         ),
       ),
       onTap: onClick,
-      tileColor: Colors.black.withAlpha(90),
       title: Text(title),
       subtitle: subTitle != null ? Text(subTitle!) : null,
-      trailing: Icon(
-        Icons.chevron_right_rounded,
-        color: Colors.grey[700],
-        size: 30,
-      ),
+      trailing: trailing
+          ? const Icon(
+              Icons.chevron_right_rounded,
+              color: Colors.grey,
+              size: 30,
+            )
+          : null,
     );
   }
 }

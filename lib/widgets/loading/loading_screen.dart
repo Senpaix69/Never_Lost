@@ -51,7 +51,7 @@ class LoadingScreen {
               ),
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: Colors.grey[800],
+                color: Theme.of(context).primaryColorDark,
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: SingleChildScrollView(

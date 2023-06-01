@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 
-InputDecoration decorationFormField(IconData prefixIcon, String hintText) {
+InputDecoration decorationFormField(
+    IconData prefixIcon, String hintText, BuildContext context) {
   return InputDecoration(
     contentPadding: const EdgeInsets.all(15.0),
-    prefixIcon: Icon(prefixIcon, color: Colors.grey[200]),
+    prefixIcon: Icon(
+      prefixIcon,
+      color: Theme.of(context).colorScheme.inversePrimary,
+    ),
     hintText: hintText,
     hintStyle: TextStyle(
       color: Colors.grey[200],
     ),
     filled: true,
-    fillColor: Colors.grey[900],
+    fillColor: Theme.of(context).focusColor,
     border: const OutlineInputBorder(
       borderRadius: BorderRadius.all(
         Radius.circular(8.0),
@@ -23,17 +27,21 @@ InputDecoration decorationPasswordFormField(
   IconData prefixIcon,
   String hintText,
   bool action,
+  BuildContext context,
   VoidCallback callback,
 ) {
   return InputDecoration(
     contentPadding: const EdgeInsets.all(15.0),
-    prefixIcon: Icon(prefixIcon, color: Colors.grey[200]),
+    prefixIcon: Icon(
+      prefixIcon,
+      color: Theme.of(context).colorScheme.inversePrimary,
+    ),
     hintText: hintText,
     hintStyle: TextStyle(
       color: Colors.grey[200],
     ),
     filled: true,
-    fillColor: Colors.grey[900],
+    fillColor: Theme.of(context).focusColor,
     border: const OutlineInputBorder(
       borderRadius: BorderRadius.all(
         Radius.circular(8.0),
@@ -58,8 +66,8 @@ Text myText({
   return Text(
     text,
     style: TextStyle(
-      color: color ?? Colors.grey[300],
       fontSize: size,
+      color: color,
       fontWeight: FontWeight.bold,
       letterSpacing: 1.0,
     ),
@@ -70,16 +78,18 @@ typedef CallbackAction<T> = void Function(T);
 Container headerContainer({
   required String title,
   required IconData icon,
+  required BuildContext context,
   bool reminder = false,
+  Color? color,
   required CallbackAction<String>? onClick,
 }) {
   return Container(
     padding: const EdgeInsets.symmetric(vertical: 8.0),
     width: double.infinity,
     height: 45,
-    decoration: const BoxDecoration(
-      color: Colors.black,
-      borderRadius: BorderRadius.only(
+    decoration: BoxDecoration(
+      color: Theme.of(context).primaryColor,
+      borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
     ),
     child: Row(
@@ -88,7 +98,7 @@ Container headerContainer({
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.only(left: 10.0),
-          child: myText(text: title),
+          child: myText(text: title, color: color),
         ),
         onClick != null
             ? Row(
@@ -106,25 +116,29 @@ Container headerContainer({
                       return <PopupMenuEntry>[
                         const PopupMenuItem(
                           value: 'edit',
-                          child: Text('Edit'),
+                          child: Text(
+                            'Edit',
+                          ),
                         ),
                         const PopupMenuItem(
                           value: 'delete',
-                          child: Text('Delete'),
+                          child: Text(
+                            'Delete',
+                          ),
                         ),
                         PopupMenuItem(
                           value: reminder ? 'cancelReminder' : 'reminder',
                           child: Text(
-                              reminder ? 'Cancel Reminder' : 'Set Reminder'),
+                            reminder ? 'Cancel Reminder' : 'Set Reminder',
+                          ),
                         ),
                       ];
                     },
                     onSelected: (value) => onClick(value),
-                    color: Colors.black,
-                    shadowColor: Colors.black,
-                    icon: Icon(
+                    color: Theme.of(context).primaryColorLight,
+                    shadowColor: Theme.of(context).primaryColorDark,
+                    icon: const Icon(
                       Icons.menu_open_rounded,
-                      color: Colors.grey[200],
                     ),
                   ),
                 ],
@@ -133,7 +147,7 @@ Container headerContainer({
                 padding: const EdgeInsets.only(right: 10.0),
                 child: Icon(
                   Icons.calendar_today,
-                  color: Colors.grey[600],
+                  color: Colors.grey[200],
                 ),
               ),
       ],
@@ -142,6 +156,7 @@ Container headerContainer({
 }
 
 Container textFormField({
+  required BuildContext context,
   required TextEditingController controller,
   required int key,
   required String? Function(String?)? validator,
@@ -165,8 +180,8 @@ Container textFormField({
       autocorrect: false,
       style: const TextStyle(color: Colors.white),
       decoration: callback != null
-          ? decorationPasswordFormField(icon, hint, obsecure, callback)
-          : decorationFormField(icon, hint),
+          ? decorationPasswordFormField(icon, hint, obsecure, context, callback)
+          : decorationFormField(icon, hint, context),
       validator: validator,
     ),
   );
