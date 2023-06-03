@@ -190,9 +190,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 40,
                   ),
                   textWidget(
-                    mess: "OR",
+                    mess: "< - - OR - - >",
                     center: true,
                     size: 18.0,
+                    color: Theme.of(context).shadowColor,
                   ),
                   const SizedBox(
                     height: 40,
