@@ -1,5 +1,5 @@
 const appName = "Never Lost";
-const version = "2.3.16";
+const version = "2.4.11";
 
 const aboutApp = ''' 
 Never Lost is a comprehensive mobile app designed to empower users with effective organization and time management. 

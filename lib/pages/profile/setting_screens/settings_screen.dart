@@ -232,7 +232,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
             ),
             const Spacer(),
             Text(
-              "Version 2.3.16",
+              "Version 2.4.11",
               style: TextStyle(
                 color: Colors.grey[800],
               ),
