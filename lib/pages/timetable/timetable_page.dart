@@ -1,6 +1,8 @@
+import 'dart:io' show File;
 import 'package:flutter/material.dart';
 import 'package:neverlost/pages/timetable/add_subject_page.dart';
 import 'package:neverlost/services/database.dart';
+import 'package:neverlost/services/firebase_auth_services/firebase_service.dart';
 import 'package:neverlost/utils.dart'
     show isCurrentSlot, isNextSlot, sortTimeTables, weekdays, emptyWidget;
 import 'package:neverlost/widgets/animate_route.dart' show SlideRightRoute;
@@ -16,6 +18,7 @@ class TimeTablePage extends StatefulWidget {
 
 class _TimeTablePageState extends State<TimeTablePage> {
   late final DatabaseService _database;
+  final FirebaseService _firebase = FirebaseService.instance();
   late final PageController _pageController;
   final int _today = DateTime.now().weekday - 1;
   int _currentPage = DateTime.now().weekday - 1;
@@ -118,9 +121,35 @@ class _TimeTablePageState extends State<TimeTablePage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isProfilePic = _firebase.user!.profilePic != null;
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: _firebase.user == null
+              ? CircleAvatar(
+                  backgroundColor: Theme.of(context).focusColor,
+                  child: const Icon(
+                    Icons.person_2,
+                  ),
+                )
+              : CircleAvatar(
+                  backgroundColor: Theme.of(context).focusColor,
+                  backgroundImage: isProfilePic
+                      ? FileImage(
+                          File(
+                            _firebase.user!.profilePic!,
+                          ),
+                        )
+                      : null,
+                  child: !isProfilePic
+                      ? const Icon(
+                          Icons.person_2,
+                        )
+                      : null,
+                ),
+        ),
         elevation: 0.0,
         title: const Text(
           "Time Table",
