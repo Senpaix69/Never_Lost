@@ -31,11 +31,11 @@ InputDecoration decorationPasswordFormField(
     contentPadding: const EdgeInsets.all(15.0),
     prefixIcon: Icon(
       prefixIcon,
-      color: Theme.of(context).primaryColor,
+      color: Theme.of(context).shadowColor,
     ),
     hintText: hintText,
     filled: true,
-    fillColor: Theme.of(context).primaryColorLight,
+    fillColor: Theme.of(context).cardColor,
     border: const OutlineInputBorder(
       borderRadius: BorderRadius.all(
         Radius.circular(8.0),
