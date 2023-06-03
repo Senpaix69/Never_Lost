@@ -210,16 +210,9 @@ class _NoteListState extends State<NoteList>
                 horizontal: 10.0,
               ),
               decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  borderRadius: BorderRadius.circular(10.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color:
-                          Theme.of(context).primaryColorLight.withOpacity(0.5),
-                      blurRadius: 10.0,
-                      offset: const Offset(0, 8),
-                    )
-                  ]),
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
               child: GestureDetector(
                 onTapDown: (details) {
                   _getTapPosition(details);

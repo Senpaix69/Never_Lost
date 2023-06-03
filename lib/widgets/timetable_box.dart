@@ -161,14 +161,9 @@ class _TimeTableBoxState extends State<TimeTableBox>
           decoration: BoxDecoration(
             color: Theme.of(context).canvasColor,
             borderRadius: BorderRadius.circular(10.0),
-            boxShadow: [
-              BoxShadow(
-                color: Theme.of(context).primaryColorLight.withAlpha(100),
-                spreadRadius: 6,
-                blurRadius: 10.0,
-                offset: const Offset(0, 2),
-              ),
-            ],
+            border: Border.all(
+              color: Theme.of(context).primaryColorDark,
+            ),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
