@@ -54,7 +54,7 @@ Future<bool> confirmDialogue({
               child: Text(
                 "Cancel",
                 style: TextStyle(
-                  color: Theme.of(context).primaryColor,
+                  color: Theme.of(context).shadowColor,
                 ),
               ),
             ),

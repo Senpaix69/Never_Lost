@@ -161,7 +161,14 @@ class _TimeTableBoxState extends State<TimeTableBox>
           decoration: BoxDecoration(
             color: Theme.of(context).canvasColor,
             borderRadius: BorderRadius.circular(10.0),
-            border: Border.all(color: Theme.of(context).primaryColor),
+            boxShadow: [
+              BoxShadow(
+                color: Theme.of(context).primaryColorLight.withAlpha(100),
+                spreadRadius: 6,
+                blurRadius: 10.0,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -200,6 +207,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
                                   ? Icons.arrow_drop_up
                                   : Icons.arrow_drop_down,
                               size: 25.0,
+                              color: Theme.of(context).indicatorColor,
                             ),
                           ),
                         )
@@ -285,7 +293,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
               fontSize: 14,
               letterSpacing: 0.5,
               fontWeight: head ? FontWeight.bold : FontWeight.normal,
-              color: Theme.of(context).primaryColorDark,
+              color: Theme.of(context).indicatorColor,
             ),
             children: <TextSpan>[
               TextSpan(

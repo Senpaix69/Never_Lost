@@ -112,24 +112,27 @@ Container headerContainer({
                           value: 'edit',
                           child: Text(
                             'Edit',
-                            style:
-                                TextStyle(color: Theme.of(context).canvasColor),
+                            style: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor,
+                            ),
                           ),
                         ),
                         PopupMenuItem(
                           value: 'delete',
                           child: Text(
                             'Delete',
-                            style:
-                                TextStyle(color: Theme.of(context).canvasColor),
+                            style: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor,
+                            ),
                           ),
                         ),
                         PopupMenuItem(
                           value: reminder ? 'cancelReminder' : 'reminder',
                           child: Text(
                             reminder ? 'Cancel Reminder' : 'Set Reminder',
-                            style:
-                                TextStyle(color: Theme.of(context).canvasColor),
+                            style: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor,
+                            ),
                           ),
                         ),
                       ];
@@ -139,7 +142,7 @@ Container headerContainer({
                     shadowColor: Theme.of(context).primaryColor,
                     icon: Icon(
                       Icons.menu_open_rounded,
-                      color: Theme.of(context).cardColor,
+                      color: Theme.of(context).primaryColorLight,
                     ),
                   ),
                 ],

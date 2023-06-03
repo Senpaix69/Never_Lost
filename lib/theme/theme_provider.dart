@@ -8,12 +8,12 @@ class ThemeProvider extends ChangeNotifier {
   ThemeData? _themeData;
 
   ThemeProvider() {
-    _themeData = PinkAccent.lightTheme;
+    _themeData = NavyBlue.lightTheme;
   }
 
   ThemeData get themeData => _themeData!;
   ThemeData get pinkAccent => PinkAccent.lightTheme;
-  ThemeData get navyBlue => NavyBlue.navyBlue;
+  ThemeData get navyBlue => NavyBlue.lightTheme;
 
   void toggleTheme() {
     _themeData = _themeData!.brightness == Brightness.light

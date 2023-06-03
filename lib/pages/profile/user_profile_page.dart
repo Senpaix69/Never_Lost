@@ -178,7 +178,7 @@ class _UserProfileState extends State<UserProfile> {
                           ],
                         ),
                       ),
-                      if (userData != null) profileOptions(),
+                      profileOptions(),
                     ],
                   );
               }

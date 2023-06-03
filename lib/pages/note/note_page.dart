@@ -210,7 +210,7 @@ class _NoteListState extends State<NoteList>
                 horizontal: 10.0,
               ),
               decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColorLight,
+                  color: Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(10.0),
                   boxShadow: [
                     BoxShadow(
@@ -281,7 +281,7 @@ class _NoteListState extends State<NoteList>
                     Icon(
                       Icons.attachment_outlined,
                       size: 20.0,
-                      color: Theme.of(context).primaryColor,
+                      color: Theme.of(context).indicatorColor,
                     ),
                   const SizedBox(
                     width: 6.0,
@@ -289,7 +289,7 @@ class _NoteListState extends State<NoteList>
                   if (note.imp != 0)
                     Icon(
                       Icons.star,
-                      color: Theme.of(context).primaryColor,
+                      color: Theme.of(context).indicatorColor,
                       size: 20.0,
                     ),
                 ],
@@ -323,7 +323,7 @@ class _NoteListState extends State<NoteList>
             note.category,
             style: TextStyle(
               fontSize: 12.0,
-              color: Theme.of(context).primaryColorDark,
+              color: Theme.of(context).indicatorColor,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -362,14 +362,14 @@ class _NoteListState extends State<NoteList>
           value: "folders",
           child: Text(
             "Move To",
-            style: TextStyle(color: Theme.of(context).canvasColor),
+            style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
           ),
         ),
         PopupMenuItem(
           value: "important",
           child: Text(
             note.imp == 0 ? "Important" : "Not Important",
-            style: TextStyle(color: Theme.of(context).canvasColor),
+            style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
           ),
         ),
       ],

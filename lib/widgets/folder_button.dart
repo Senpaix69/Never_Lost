@@ -37,7 +37,7 @@ class FolderButton extends StatelessWidget {
         child: Text(
           folderName.isEmpty ? 'All' : folderName,
           style: TextStyle(
-            color: Theme.of(context).canvasColor,
+            color: Theme.of(context).secondaryHeaderColor,
             fontWeight: folderName == activeFolder
                 ? FontWeight.bold
                 : FontWeight.normal,

@@ -14,7 +14,9 @@ class PinkAccent {
         fontSize: 20,
       ),
     ),
-    cardColor: const Color(0xFFE8ACD3),
+    cardColor: const Color(0xFFFDD7F0),
+    indicatorColor: const Color(0xFFE578C3),
+    secondaryHeaderColor: Colors.white,
     buttonTheme: ButtonThemeData(
       colorScheme: ColorScheme.fromSwatch(
         accentColor: const Color(0xFFA1347E),

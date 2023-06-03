@@ -133,7 +133,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 30),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 63),
           child: Form(
             autovalidateMode: AutovalidateMode.onUserInteraction,
             key: _formKey,
@@ -178,20 +178,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ),
                       ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20.0,
-                  ),
-                  const Center(
-                    child: Text(
-                      "Profile Pic",
-                      style: TextStyle(
-                        fontSize: 15.0,
-                        letterSpacing: 0.6,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
                     ),
                   ),
                   const SizedBox(

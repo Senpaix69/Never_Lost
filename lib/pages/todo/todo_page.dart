@@ -234,13 +234,13 @@ class _TodoListState extends State<TodoList>
           fontSize: 12.0,
           color: todo.reminder == 1 && !isChecked
               ? Colors.red
-              : Theme.of(context).primaryColorDark,
+              : Theme.of(context).indicatorColor,
         ),
       ),
       trailing: (todo.date != null && !isChecked && todo.reminder != 1)
           ? Icon(
               Icons.alarm_on_sharp,
-              color: Theme.of(context).focusColor,
+              color: Theme.of(context).indicatorColor,
             )
           : null,
     );

@@ -121,7 +121,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
         bottom: MediaQuery.of(context).viewInsets.bottom + 15,
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).canvasColor,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20.0),
       ),
       padding: const EdgeInsets.all(10.0),
@@ -143,7 +143,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
                     Icons.alarm,
                     color: _date != null
                         ? Colors.white
-                        : Theme.of(context).primaryColorDark,
+                        : Theme.of(context).indicatorColor,
                   ),
                   label: Text(
                     _date == null
@@ -153,7 +153,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
                       fontSize: 16,
                       color: _date != null
                           ? Colors.white
-                          : Theme.of(context).primaryColorDark,
+                          : Theme.of(context).indicatorColor,
                     ),
                   ),
                   onPressed: _date == null
@@ -161,8 +161,8 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
                       : () => handleReminder(),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _date != null
-                        ? Theme.of(context).primaryColor
-                        : Theme.of(context).primaryColorLight,
+                        ? Theme.of(context).primaryColorDark
+                        : Theme.of(context).primaryColor,
                     textStyle: const TextStyle(fontSize: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(7.0),
@@ -176,8 +176,8 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
                     style: TextStyle(
                       fontSize: 16.0,
                       color: emptyText
-                          ? Theme.of(context).cardColor
-                          : Theme.of(context).primaryColor,
+                          ? Theme.of(context).primaryColor
+                          : Theme.of(context).indicatorColor,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -219,8 +219,8 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
         prefixIcon: Icon(
           Icons.trip_origin_outlined,
           color: emptyText
-              ? Theme.of(context).cardColor
-              : Theme.of(context).primaryColor,
+              ? Theme.of(context).primaryColor
+              : Theme.of(context).indicatorColor,
         ),
         contentPadding: EdgeInsets.zero,
         hintText: "Add Todo",
