@@ -29,6 +29,8 @@ class FirebaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   FBUser? _user;
 
+  FBUser? get user => _user;
+
   // Stream controller for user data
   final StreamController<Object?> _userController =
       StreamController<Object?>.broadcast();

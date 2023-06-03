@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neverlost/pages/profile/setting_screens/about_screen.dart';
 import 'package:neverlost/pages/profile/setting_screens/backup_screen.dart';
 import 'package:neverlost/pages/profile/setting_screens/restore_screen.dart';
 import 'package:neverlost/pages/profile/setting_screens/theme_screen.dart';
@@ -38,7 +39,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _timetables = _db.cachedTimeTables;
       _todos = _db.cachedTodos;
-      _restoreSize = await _firebase.restoreDataSize();
+      if (_firebase.user != null) {
+        _restoreSize = await _firebase.restoreDataSize();
+      }
     });
   }
 
@@ -118,6 +121,14 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   }
 
   void performProfileActions(ProfileActions action) async {
+    if (_firebase.user == null) {
+      errorDialogue(
+        context: context,
+        message: "You need to login first to perform this action!",
+        title: "No User Found",
+      );
+      return;
+    }
     switch (action) {
       case ProfileActions.backup:
         if (await Navigator.of(context).push(
@@ -174,7 +185,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
             ),
             MyCustomTile(
               icon: Icons.app_shortcut_rounded,
-              onClick: () {},
+              onClick: () => Navigator.of(context).push(
+                SlideRightRoute(page: const AboutScreen()),
+              ),
               iconBackGroundColor: Colors.lightBlue,
               title: "About App",
             ),

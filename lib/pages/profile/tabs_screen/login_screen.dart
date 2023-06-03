@@ -91,7 +91,12 @@ class _LoginScreenState extends State<LoginScreen> {
   void showSnack({required String message}) => showSnackBar(context, message);
 
   Future<void> signInWithGoogle() async {
-    await _firebase.signInWithGoogle();
+    if (await _firebase.signInWithGoogle() == null) {
+      Future.delayed(
+        const Duration(milliseconds: 100),
+        () => Navigator.of(context).pop(),
+      );
+    }
   }
 
   @override

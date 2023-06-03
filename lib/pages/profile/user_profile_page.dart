@@ -124,7 +124,7 @@ class _UserProfileState extends State<UserProfile> {
                               height: 6.0,
                             ),
                             Text(
-                              "@${userData != null ? userData.username : 'username'}",
+                              "${userData != null ? userData.email : 'abc@gmail.com'}",
                               style: const TextStyle(
                                 fontSize: 16.0,
                                 color: Colors.white,
