@@ -35,15 +35,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-ThemeData myTheme() {
-  return ThemeData(
-    useMaterial3: true,
-    brightness: Brightness.dark,
-    primaryColor: Colors.grey,
-    colorScheme: const ColorScheme.dark(
-      primary: Colors.white,
-      secondary: Colors.grey,
-    ),
-  );
-}

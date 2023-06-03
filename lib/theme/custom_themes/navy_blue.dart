@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
+const navyBlueLight = "NavyBlue_Light";
+const navyBlueDark = "NavyBlue_Dark";
+
 @immutable
 class NavyBlue {
+  static const primaryColor = Color(0xFF124B52);
   static final ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
@@ -35,6 +39,11 @@ class NavyBlue {
       focusColor: Color(0xFF146C76),
       hoverColor: Color(0xFF146C76),
       foregroundColor: Color(0xFF146C76),
+    ),
+    timePickerTheme: const TimePickerThemeData(
+      backgroundColor: Color(0xFF124B52),
+      dialBackgroundColor: Color(0xFF0C454B),
+      dialHandColor: Color(0xFF90EDF7),
     ),
   );
 }

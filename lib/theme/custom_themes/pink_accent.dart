@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+const pinkAccentLight = "PinkAccent_Light";
+const pinkAccentDark = "PinkAccent_Dark";
+
 class PinkAccent {
   static final ThemeData lightTheme = ThemeData(
     useMaterial3: true,
