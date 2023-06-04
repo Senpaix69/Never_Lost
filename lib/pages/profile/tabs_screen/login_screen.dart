@@ -93,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> signInWithGoogle() async {
     if (await _firebase.signInWithGoogle() == null) {
       Future.delayed(
-        const Duration(milliseconds: 100),
+        const Duration(milliseconds: 10),
         () => Navigator.of(context).pop(),
       );
     }

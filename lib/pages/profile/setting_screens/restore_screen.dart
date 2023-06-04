@@ -41,7 +41,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
                 ListTile(
                   contentPadding: const EdgeInsets.symmetric(vertical: 0),
                   leading: Checkbox(
-                    checkColor: Theme.of(context).canvasColor,
+                    checkColor: Theme.of(context).secondaryHeaderColor,
                     fillColor: MaterialStateColor.resolveWith(
                       (states) => Theme.of(context).primaryColorDark,
                     ),

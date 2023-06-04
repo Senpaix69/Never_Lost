@@ -28,7 +28,6 @@ class FirebaseService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   FBUser? _user;
-
   FBUser? get user => _user;
 
   // Stream controller for user data
@@ -300,9 +299,9 @@ class FirebaseService {
       await GoogleSignIn().signOut();
       await _auth.signOut();
       await NotificationService.cancelALLScheduleNotification();
-      _user = null;
       await spUserActions(action: SPActions.delete);
       await spRestoreSize(action: SPActions.delete);
+      _user = null;
       _userController.add(_user);
       return null;
     } on FirebaseAuthException catch (e) {

@@ -131,7 +131,7 @@ class _FolderPageState extends State<FolderPage> {
               fontSize: 16.0,
               color: _note?.category == folders[index].name
                   ? Theme.of(context).primaryColorLight
-                  : Theme.of(context).primaryColorDark,
+                  : Theme.of(context).shadowColor,
             ),
           ),
           leading: isNote

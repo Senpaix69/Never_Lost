@@ -2,11 +2,13 @@ import 'dart:io' show File;
 import 'package:flutter/material.dart';
 import 'package:neverlost/pages/timetable/add_subject_page.dart';
 import 'package:neverlost/services/database.dart';
+import 'package:neverlost/services/firebase_auth_services/fb_user.dart';
 import 'package:neverlost/services/firebase_auth_services/firebase_service.dart';
 import 'package:neverlost/utils.dart'
     show isCurrentSlot, isNextSlot, sortTimeTables, weekdays, emptyWidget;
 import 'package:neverlost/widgets/animate_route.dart' show SlideRightRoute;
-import 'package:neverlost/widgets/dialog_boxs.dart' show confirmDialogue;
+import 'package:neverlost/widgets/dialog_boxs.dart'
+    show confirmDialogue, errorDialogue;
 import 'package:neverlost/widgets/timetable_box.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -73,19 +75,17 @@ class _TimeTablePageState extends State<TimeTablePage> {
     }
   }
 
-  Future<bool> showConfirmDialog() async => await confirmDialogue(
+  void showNotificationDialog() async => await errorDialogue(
         context: context,
         message:
-            "You will not be able to get reminders notifications, do you want to enable notifications?",
+            "If you want to get Reminders Notifications, go to app settings and turn the notifications on!",
         title: "Notifcations",
       );
 
   Future<void> requestPermission() async {
     final status = await Permission.notification.request();
     if (status.isDenied || status.isPermanentlyDenied || status.isRestricted) {
-      if (await showConfirmDialog()) {
-        await Permission.notification.request();
-      }
+      showNotificationDialog();
     }
   }
 
@@ -97,6 +97,7 @@ class _TimeTablePageState extends State<TimeTablePage> {
     _database.open();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _firebase.userStr();
       await requestPermission();
     });
   }
@@ -121,34 +122,43 @@ class _TimeTablePageState extends State<TimeTablePage> {
 
   @override
   Widget build(BuildContext context) {
-    bool isProfilePic = _firebase.user!.profilePic != null;
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: _firebase.user == null
-              ? CircleAvatar(
-                  backgroundColor: Theme.of(context).focusColor,
-                  child: const Icon(
-                    Icons.person_2,
-                  ),
-                )
-              : CircleAvatar(
-                  backgroundColor: Theme.of(context).focusColor,
-                  backgroundImage: isProfilePic
-                      ? FileImage(
-                          File(
-                            _firebase.user!.profilePic!,
-                          ),
-                        )
-                      : null,
-                  child: !isProfilePic
-                      ? const Icon(
-                          Icons.person_2,
-                        )
-                      : null,
-                ),
+          child: StreamBuilder(
+            stream: _firebase.userStream,
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                case ConnectionState.waiting:
+                case ConnectionState.done:
+                  return defaultUser(context);
+                case ConnectionState.active:
+                  final user = snapshot.data as FBUser?;
+                  if (user == null) {
+                    return defaultUser(context);
+                  }
+                  bool isProfile = user.profilePic != null;
+                  return CircleAvatar(
+                    backgroundColor: Theme.of(context).focusColor,
+                    backgroundImage: isProfile
+                        ? FileImage(
+                            File(
+                              user.profilePic!,
+                            ),
+                          )
+                        : null,
+                    child: isProfile
+                        ? const Icon(
+                            Icons.person_2,
+                          )
+                        : null,
+                  );
+              }
+            },
+          ),
         ),
         elevation: 0.0,
         title: const Text(
@@ -220,6 +230,16 @@ class _TimeTablePageState extends State<TimeTablePage> {
             },
           )),
         ],
+      ),
+    );
+  }
+
+  CircleAvatar defaultUser(BuildContext context) {
+    return CircleAvatar(
+      backgroundColor: Theme.of(context).focusColor,
+      child: Icon(
+        Icons.person_2,
+        color: Theme.of(context).secondaryHeaderColor,
       ),
     );
   }

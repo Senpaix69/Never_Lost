@@ -58,7 +58,7 @@ class _BackupScreenState extends State<BackupScreen> {
                 ListTile(
                   contentPadding: const EdgeInsets.symmetric(vertical: 0),
                   leading: Checkbox(
-                    checkColor: Theme.of(context).canvasColor,
+                    checkColor: Theme.of(context).secondaryHeaderColor,
                     fillColor: MaterialStateColor.resolveWith(
                       (states) => Theme.of(context).primaryColorDark,
                     ),
