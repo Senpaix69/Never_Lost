@@ -3,8 +3,6 @@ import 'package:neverlost/services/database.dart';
 import 'package:neverlost/services/note_services/todo.dart';
 import 'package:neverlost/services/notification_service.dart';
 import 'package:neverlost/utils.dart' show emptyWidget, getFormattedTime;
-import 'package:neverlost/widgets/animate_route.dart'
-    show SlideFromBottomTransition;
 import 'package:neverlost/widgets/bottom_sheet.dart';
 import 'package:neverlost/widgets/dialog_boxs.dart' show confirmDialogue;
 
@@ -18,7 +16,6 @@ class _TodoListState extends State<TodoList>
     with SingleTickerProviderStateMixin {
   late final DatabaseService _database;
   late AnimationController _animationController;
-  late Animation<double> _animation;
 
   @override
   void initState() {
@@ -27,11 +24,6 @@ class _TodoListState extends State<TodoList>
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 600),
-    );
-    _animation = CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOut,
-      reverseCurve: Curves.easeIn,
     );
     _animationController.forward();
   }
@@ -122,7 +114,7 @@ class _TodoListState extends State<TodoList>
               );
             }
             sortTodosAsComplete(todos);
-            return myListBuilder(todos);
+            return myGridBuilder(todos);
           },
         ),
       ),
@@ -143,106 +135,105 @@ class _TodoListState extends State<TodoList>
     );
   }
 
-  ListView myListBuilder(List<Todo> todos) {
-    return ListView.builder(
+  GridView myGridBuilder(List<Todo> todos) {
+    return GridView.builder(
       shrinkWrap: true,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 8.0,
+        crossAxisSpacing: 8.0,
+      ),
       itemCount: todos.length,
       itemBuilder: (context, index) {
         final todo = todos[index];
         final timeSchedule = getFormattedTime(todo.date);
         bool isChecked = todo.complete != 0;
-        return FadeTransition(
-          opacity: _animation,
-          child: SlideFromBottomTransition(
-            animation: _animation,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 500),
-              margin: const EdgeInsets.symmetric(vertical: 5.0),
-              decoration: BoxDecoration(
-                color: isChecked
-                    ? Theme.of(context).primaryColorLight
-                    : Theme.of(context).cardColor.withAlpha(180),
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: todoTile(
-                todo,
-                isChecked,
-                timeSchedule,
-              ),
-            ),
-          ),
-        );
+        return todoContainer(todo, isChecked, timeSchedule);
       },
     );
   }
 
-  ListTile todoTile(Todo todo, bool isChecked, String? timeSchedule) {
-    return ListTile(
-      key: ValueKey(todo.id!),
-      onLongPress: () async => await deleteTodo(todo.id!),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
+  Widget todoContainer(Todo todo, bool isChecked, String? timeSchedule) {
+    return GestureDetector(
       onTap: () => _showAddTodoBottomSheet(todo),
-      leading: Container(
-        margin: const EdgeInsets.all(8.0),
-        width: 24.0,
-        height: 24.0,
-        child: InkWell(
-          onTap: () => handleCheckBox(todo),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(7.0),
-              shape: BoxShape.rectangle,
-              color: isChecked
-                  ? Theme.of(context).primaryColorDark
-                  : Colors.transparent,
-              border: Border.all(
-                color: isChecked
-                    ? Theme.of(context).primaryColorDark
-                    : Colors.white,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 500),
+        padding: const EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          color: isChecked
+              ? Theme.of(context).primaryColorLight
+              : Theme.of(context).cardColor.withAlpha(180),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(
+              todo.text,
+              softWrap: true,
+              maxLines: 5,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: isChecked ? Theme.of(context).primaryColor : null,
+                fontSize: 14.0,
+                fontWeight: FontWeight.bold,
+                decorationThickness: 2.0,
+                decorationColor: Theme.of(context).primaryColorDark,
+                decoration: isChecked ? TextDecoration.lineThrough : null,
               ),
             ),
-            child: isChecked
-                ? const Center(
-                    child: Icon(
-                      Icons.check,
-                      size: 16.0,
-                      color: Colors.white,
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: Container(
+                margin: const EdgeInsets.all(8.0),
+                width: 22.0,
+                height: 22.0,
+                child: InkWell(
+                  onTap: () => handleCheckBox(todo),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(7.0),
+                      shape: BoxShape.rectangle,
+                      color: isChecked
+                          ? Theme.of(context).primaryColorDark
+                          : Colors.transparent,
+                      border: Border.all(
+                        color: isChecked
+                            ? Theme.of(context).primaryColorDark
+                            : Colors.white,
+                      ),
                     ),
-                  )
-                : null,
-          ),
+                    child: isChecked
+                        ? const Center(
+                            child: Icon(
+                              Icons.check,
+                              size: 16.0,
+                              color: Colors.white,
+                            ),
+                          )
+                        : null,
+                  ),
+                ),
+              ),
+              title: Text(
+                timeSchedule ?? "Sched Not Set",
+                style: TextStyle(
+                  fontSize: 12.0,
+                  color: todo.reminder == 1 && !isChecked
+                      ? Colors.red
+                      : Theme.of(context).indicatorColor,
+                ),
+              ),
+              trailing: (todo.date != null && !isChecked && todo.reminder != 1)
+                  ? Icon(
+                      Icons.alarm_on_sharp,
+                      color: Theme.of(context).indicatorColor,
+                    )
+                  : null,
+            ),
+          ],
         ),
       ),
-      title: Text(
-        todo.text,
-        softWrap: true,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          color: isChecked ? Theme.of(context).primaryColor : null,
-          fontSize: 16.0,
-          fontWeight: FontWeight.bold,
-          decorationThickness: 2.0,
-          decorationColor: Theme.of(context).primaryColorDark,
-          decoration: isChecked ? TextDecoration.lineThrough : null,
-        ),
-      ),
-      subtitle: Text(
-        '${todo.reminder == 1 ? "Passed: " : "Reminder: "}${timeSchedule ?? "Not Set"}',
-        style: TextStyle(
-          fontSize: 12.0,
-          color: todo.reminder == 1 && !isChecked
-              ? Colors.red
-              : Theme.of(context).indicatorColor,
-        ),
-      ),
-      trailing: (todo.date != null && !isChecked && todo.reminder != 1)
-          ? Icon(
-              Icons.alarm_on_sharp,
-              color: Theme.of(context).indicatorColor,
-            )
-          : null,
     );
   }
 

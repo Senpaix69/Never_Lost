@@ -318,7 +318,7 @@ class _AddSubjectState extends State<AddSubject> {
                           Positioned(
                             right: 6.0,
                             child: IconButton(
-                              color: Theme.of(context).cardColor,
+                              color: Theme.of(context).shadowColor,
                               onPressed: _toggleHeight,
                               icon: Icon(
                                 _height > 0

@@ -150,7 +150,7 @@ class _TimeTablePageState extends State<TimeTablePage> {
                             ),
                           )
                         : null,
-                    child: isProfile
+                    child: !isProfile
                         ? const Icon(
                             Icons.person_2,
                           )
