@@ -292,7 +292,7 @@ class _TimeTablePageState extends State<TimeTablePage> {
                   letterSpacing: 1.0,
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
-                  color: Theme.of(context).primaryColorLight,
+                  color: Theme.of(context).indicatorColor,
                 ),
                 children: <InlineSpan>[
                   if (_today == _currentPage)

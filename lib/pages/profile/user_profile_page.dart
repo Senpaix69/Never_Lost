@@ -97,11 +97,12 @@ class _UserProfileState extends State<UserProfile> {
                           boxShadow: <BoxShadow>[
                             BoxShadow(
                               color: Theme.of(context)
-                                  .primaryColorDark
+                                  .primaryColorLight
                                   .withOpacity(.3),
-                              spreadRadius: 6,
-                              blurRadius: 20.0,
-                              offset: const Offset(0, 10),
+                              spreadRadius: 2,
+                              blurRadius: 10.0,
+                              offset: const Offset(0, 3),
+                              blurStyle: BlurStyle.outer,
                             ),
                           ],
                           borderRadius: BorderRadius.circular(20.0),
@@ -147,7 +148,7 @@ class _UserProfileState extends State<UserProfile> {
                                     ),
                                     backgroundColor:
                                         MaterialStateColor.resolveWith(
-                                      (states) => Theme.of(context).focusColor,
+                                      (states) => Theme.of(context).cardColor,
                                     ),
                                     shape: MaterialStateProperty.all<
                                         RoundedRectangleBorder>(

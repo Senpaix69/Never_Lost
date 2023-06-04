@@ -142,7 +142,7 @@ Container headerContainer({
                     shadowColor: Theme.of(context).primaryColor,
                     icon: Icon(
                       Icons.menu_open_rounded,
-                      color: Theme.of(context).primaryColorLight,
+                      color: Theme.of(context).indicatorColor,
                     ),
                   ),
                 ],

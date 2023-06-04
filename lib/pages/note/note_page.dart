@@ -210,7 +210,7 @@ class _NoteListState extends State<NoteList>
                 horizontal: 10.0,
               ),
               decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
+                color: Theme.of(context).cardColor.withAlpha(120),
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: GestureDetector(

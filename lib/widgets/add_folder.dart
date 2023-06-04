@@ -37,7 +37,7 @@ class _AddFolderDialogState extends State<AddFolderDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Theme.of(context).canvasColor,
+      backgroundColor: Theme.of(context).primaryColorDark,
       contentPadding: const EdgeInsets.symmetric(
         horizontal: 20,
         vertical: 20.0,
@@ -65,7 +65,7 @@ class _AddFolderDialogState extends State<AddFolderDialog> {
           child: Text(
             'Cancel',
             style: TextStyle(
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).secondaryHeaderColor,
             ),
           ),
         ),

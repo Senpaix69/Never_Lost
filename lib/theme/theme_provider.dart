@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:neverlost/theme/custom_themes/navy_blue.dart';
-import 'package:neverlost/theme/custom_themes/pink_accent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 ColorScheme lightColorScheme = ColorScheme.fromSeed(seedColor: Colors.blue);
@@ -15,7 +14,6 @@ class ThemeProvider extends ChangeNotifier {
   }
 
   ThemeData get themeData => _themeData!;
-  ThemeData get pinkAccent => PinkAccent.lightTheme;
   ThemeData get navyBlue => NavyBlue.lightTheme;
 
   void setTheme({required ThemeData theme}) async {
@@ -31,9 +29,6 @@ class ThemeProvider extends ChangeNotifier {
     if (savedTheme == navyBlueLight) {
       _themeData = NavyBlue.lightTheme;
     }
-    if (savedTheme == pinkAccentLight) {
-      _themeData = PinkAccent.lightTheme;
-    }
 
     notifyListeners();
   }
@@ -44,18 +39,13 @@ class ThemeProvider extends ChangeNotifier {
       await prefs.setString(themePreferenceKey, navyBlueLight);
       return;
     }
-    if (_themeData == PinkAccent.lightTheme) {
-      await prefs.setString(themePreferenceKey, pinkAccentLight);
-    }
   }
 
   void getThemeFromSharedPref({String? theme}) {
     if (theme == navyBlueLight) {
       _themeData = NavyBlue.lightTheme;
     }
-    if (theme == pinkAccentLight) {
-      _themeData = PinkAccent.lightTheme;
-    }
+
     notifyListeners();
   }
 }

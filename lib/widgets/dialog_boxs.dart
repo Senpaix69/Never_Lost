@@ -12,7 +12,7 @@ Future<void> errorDialogue({
         title: Text(title),
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-        backgroundColor: Theme.of(context).canvasColor,
+        backgroundColor: Theme.of(context).primaryColorDark,
         content: Text(message),
         actions: <Widget>[
           TextButton(
@@ -45,7 +45,7 @@ Future<bool> confirmDialogue({
         return AlertDialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-          backgroundColor: Theme.of(context).canvasColor,
+          backgroundColor: Theme.of(context).primaryColor,
           content: Text(message),
           title: Text(title),
           actions: <Widget>[

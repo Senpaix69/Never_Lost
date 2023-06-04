@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:neverlost/services/database.dart';
 import 'package:neverlost/services/note_services/todo.dart';
 import 'package:neverlost/services/notification_service.dart';
@@ -256,64 +257,59 @@ class _TodoListState extends State<TodoList>
   Widget todoContainer(Todo todo, bool isChecked, String? timeSchedule) {
     return GestureDetector(
       onTap: () => _showAddTodoBottomSheet(todo),
-      onLongPress: () => deleteTodo(todo.id!),
+      onLongPress: () {
+        HapticFeedback.vibrate();
+        deleteTodo(todo.id!);
+      },
       child: Container(
-        padding: const EdgeInsets.all(10.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
-          color: isChecked
-              ? Theme.of(context).primaryColorLight
-              : Theme.of(context).cardColor.withAlpha(180),
+          color: Theme.of(context).cardColor.withAlpha(120),
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text(
-              todo.text,
-              softWrap: true,
-              maxLines: 5,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: isChecked ? Theme.of(context).primaryColor : null,
-                fontSize: 14.0,
-                fontWeight: FontWeight.bold,
-                decorationThickness: 2.0,
-                decorationColor: Theme.of(context).primaryColorDark,
-                decoration: isChecked ? TextDecoration.lineThrough : null,
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text(
+                todo.text,
+                softWrap: true,
+                maxLines: 5,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             ListTile(
-              contentPadding: EdgeInsets.zero,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              onTap: () => handleCheckBox(todo),
               leading: Container(
-                margin: const EdgeInsets.all(8.0),
                 width: 22.0,
                 height: 22.0,
-                child: InkWell(
-                  onTap: () => handleCheckBox(todo),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(7.0),
-                      shape: BoxShape.rectangle,
-                      color: isChecked
-                          ? Theme.of(context).primaryColorDark
-                          : Colors.transparent,
-                      border: Border.all(
-                        color: isChecked
-                            ? Theme.of(context).primaryColorDark
-                            : Colors.white,
-                      ),
-                    ),
-                    child: isChecked
-                        ? const Center(
-                            child: Icon(
-                              Icons.check,
-                              size: 16.0,
-                              color: Colors.white,
-                            ),
-                          )
-                        : null,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4.0),
+                  color: isChecked
+                      ? Theme.of(context).indicatorColor
+                      : Colors.transparent,
+                  border: Border.all(
+                    color: Theme.of(context).indicatorColor,
                   ),
                 ),
+                child: isChecked
+                    ? Center(
+                        child: Icon(
+                          Icons.check,
+                          size: 16.0,
+                          color: Theme.of(context).primaryColorDark,
+                        ),
+                      )
+                    : null,
               ),
               title: Text(
                 timeSchedule ?? "Sched Not Set",
@@ -321,7 +317,7 @@ class _TodoListState extends State<TodoList>
                   fontSize: 12.0,
                   color: todo.reminder == 1 && !isChecked
                       ? Colors.red
-                      : Theme.of(context).indicatorColor,
+                      : Theme.of(context).shadowColor,
                 ),
               ),
               trailing: (todo.date != null && !isChecked && todo.reminder != 1)

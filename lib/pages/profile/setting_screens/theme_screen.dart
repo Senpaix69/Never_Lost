@@ -80,14 +80,6 @@ class ThemeScreen extends StatelessWidget {
               title: "Navy Blue",
               trailing: false,
             ),
-            MyCustomTile(
-              icon: Icons.format_color_fill_rounded,
-              onClick: () =>
-                  themeProvider.setTheme(theme: themeProvider.pinkAccent),
-              iconBackGroundColor: Colors.pink.shade700,
-              title: "Pink Accent",
-              trailing: false,
-            ),
           ],
         ),
       ),

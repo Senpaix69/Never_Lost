@@ -122,16 +122,14 @@ class _FolderPageState extends State<FolderPage> {
           ),
           onTap: () => updateCategory(folders[index].name),
           tileColor: _note?.category == folders[index].name
-              ? Theme.of(context).primaryColorDark
-              : Theme.of(context).primaryColorLight,
+              ? Theme.of(context).primaryColorLight
+              : Theme.of(context).primaryColorDark,
           title: Text(
             folders[index].name,
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16.0,
-              color: _note?.category == folders[index].name
-                  ? Theme.of(context).primaryColorLight
-                  : Theme.of(context).shadowColor,
+              color: Theme.of(context).secondaryHeaderColor,
             ),
           ),
           leading: isNote
@@ -153,7 +151,6 @@ class _FolderPageState extends State<FolderPage> {
             },
             icon: const Icon(
               Icons.delete,
-              color: Colors.red,
             ),
           ),
         ),

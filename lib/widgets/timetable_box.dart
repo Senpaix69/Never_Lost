@@ -56,7 +56,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
   }
 
   void _toggleHeight() {
-    setState(() => _height = _height == 0 ? 140 : 0);
+    setState(() => _height = _height == 0 ? 150 : 0);
   }
 
   void editTimeTable() {
@@ -159,7 +159,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
           margin: const EdgeInsets.symmetric(vertical: 10.0),
           padding: const EdgeInsets.only(bottom: 6.0),
           decoration: BoxDecoration(
-            color: Theme.of(context).canvasColor,
+            color: Theme.of(context).primaryColorDark,
             borderRadius: BorderRadius.circular(10.0),
             border: Border.all(
               color: Theme.of(context).primaryColorDark,
@@ -223,8 +223,8 @@ class _TimeTableBoxState extends State<TimeTableBox>
                           width: double.infinity,
                           padding: const EdgeInsets.all(20.0),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(6.0),
-                            color: Colors.white.withAlpha(30),
+                            borderRadius: BorderRadius.circular(20.0),
+                            color: Colors.white.withAlpha(10),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -282,6 +282,9 @@ class _TimeTableBoxState extends State<TimeTableBox>
     return Column(
       children: <Widget>[
         RichText(
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          softWrap: true,
           text: TextSpan(
             text: "$text: ",
             style: TextStyle(
