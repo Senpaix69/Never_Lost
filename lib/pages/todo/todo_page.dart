@@ -93,7 +93,6 @@ class _TodoListState extends State<TodoList>
     _progress = progress;
 
     if (_needToRefresh || _prevLen != _todos.length) {
-      print("object");
       _prevLen = _todos.length;
       _needToRefresh = false;
       await Future.delayed(const Duration(milliseconds: 100), () {
