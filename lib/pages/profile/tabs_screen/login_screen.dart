@@ -17,7 +17,9 @@ class _LoginScreenState extends State<LoginScreen> {
   late final TextEditingController _email;
   late final TextEditingController _password;
   final _formKey = GlobalKey<FormState>();
+  final _formKey1 = GlobalKey<FormState>();
   final FirebaseService _firebase = FirebaseService.instance();
+  final LoadingScreen _loading = LoadingScreen.instance();
 
   bool _hidePass = true;
 
@@ -47,11 +49,11 @@ class _LoginScreenState extends State<LoginScreen> {
       title: "No Internet Connection",
       message: "You are not connected to internet",
     );
-    LoadingScreen.instance().hide();
+    _loading.hide();
   }
 
   Future<void> _loginUser() async {
-    LoadingScreen.instance().show(context: context, text: "Login in...");
+    _loading.show(context: context, text: "Login in...");
     final connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
       notConnectedToInternet();
@@ -65,17 +67,10 @@ class _LoginScreenState extends State<LoginScreen> {
         password: password,
       );
       if (success != null) {
-        LoadingScreen.instance().hide();
-        Future.delayed(
-          const Duration(milliseconds: 100),
-          () => errorDialogue(
-            context: context,
-            message: success.dialogText,
-            title: success.dialogTitle,
-          ),
-        );
+        _loading.hide();
+        showDialogue(title: success.dialogTitle, text: success.dialogText);
       } else {
-        LoadingScreen.instance().hide();
+        _loading.hide();
         showSnack(message: "Logged_In successfully!");
         Future.delayed(
           const Duration(milliseconds: 100),
@@ -83,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     } catch (e) {
-      LoadingScreen.instance().hide();
+      _loading.hide();
       showSnack(message: "Error occurred during saving SPUser");
     }
   }
@@ -97,6 +92,106 @@ class _LoginScreenState extends State<LoginScreen> {
         () => Navigator.of(context).pop(),
       );
     }
+  }
+
+  void showDialogue({required String title, required String text}) =>
+      errorDialogue(
+        context: context,
+        message: text,
+        title: title,
+      );
+
+  Future<void> resetPassword() async {
+    _loading.show(context: context, text: "Please wait...");
+    final success = await _firebase.resetPassword(email: _email.text.trim());
+    if (success == null) {
+      _loading.hide();
+      showDialogue(
+        text: "You will be receiving reset password email soon",
+        title: "Reset Password Email Sent",
+      );
+      _loading.hide();
+      return;
+    }
+    _loading.hide();
+    showDialogue(text: success.dialogText, title: success.dialogTitle);
+  }
+
+  Future<void> forgotPassword() async {
+    showModalBottomSheet(
+      showDragHandle: true,
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      context: context,
+      builder: (context) {
+        return Form(
+          key: _formKey1,
+          child: Container(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 40.0),
+            child: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  textWidget(
+                    mess: "Reset Your Password",
+                    bold: true,
+                    size: 18.0,
+                    color: Theme.of(context).shadowColor,
+                  ),
+                  const Text(
+                    "You will recieve an email to reset the password on the provided email please make sure that you are entering the correct email",
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  textFormField(
+                    context: context,
+                    controller: _email,
+                    key: 12,
+                    validator: textValidate,
+                    hint: "Enter your email",
+                    icon: Icons.email,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                        const EdgeInsets.symmetric(
+                          vertical: 12.0,
+                          horizontal: 24.0,
+                        ),
+                      ),
+                      backgroundColor: MaterialStateColor.resolveWith(
+                        (states) => Theme.of(context).primaryColorDark,
+                      ),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                      ),
+                    ),
+                    onPressed: () async {
+                      if (_formKey1.currentState!.validate()) {
+                        await resetPassword();
+                      }
+                    },
+                    child: textWidget(
+                      mess: "Send Email",
+                      bold: true,
+                      size: 18.0,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -148,7 +243,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       TextButton(
-                        onPressed: () {},
+                        onPressed: forgotPassword,
                         child: Text(
                           "Forgot password?",
                           style: TextStyle(
@@ -232,7 +327,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: 10,
                         ),
                         textWidget(
-                          color: Theme.of(context).primaryColor,
+                          color: Theme.of(context).shadowColor,
                           mess: "SignIn with Google",
                           size: 18,
                           bold: true,

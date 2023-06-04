@@ -66,6 +66,15 @@ class FirebaseService {
     }
   }
 
+  Future<AuthError?> resetPassword({required String email}) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      return null;
+    } on FirebaseAuthException catch (e) {
+      return AuthError.from(e);
+    }
+  }
+
   Future<AuthError?> signInWithGoogle() async {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
