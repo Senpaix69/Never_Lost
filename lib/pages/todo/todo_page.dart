@@ -18,6 +18,7 @@ class _TodoListState extends State<TodoList>
   late final DatabaseService _database;
   late final TabController _controller;
   List<Todo> _todos = [];
+  int _prevLen = 0;
   double _progress = 0.0;
   bool _needToRefresh = true;
 
@@ -91,11 +92,13 @@ class _TodoListState extends State<TodoList>
     final progress = completedTodos.length / todos.length;
     _progress = progress;
 
-    if (_needToRefresh) {
+    if (_needToRefresh || _prevLen != _todos.length) {
+      print("object");
+      _prevLen = _todos.length;
+      _needToRefresh = false;
       await Future.delayed(const Duration(milliseconds: 100), () {
         setState(() {});
       });
-      _needToRefresh = false;
     }
   }
 
