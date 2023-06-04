@@ -234,7 +234,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
             Text(
               "Version 2.4.11",
               style: TextStyle(
-                color: Colors.grey[800],
+                color: Theme.of(context).primaryColor,
               ),
               textAlign: TextAlign.center,
             ),
