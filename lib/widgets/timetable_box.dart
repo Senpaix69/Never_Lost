@@ -215,7 +215,7 @@ class _TimeTableBoxState extends State<TimeTableBox>
                     ),
                     AnimatedContainer(
                       height: _height,
-                      duration: const Duration(milliseconds: 700),
+                      duration: const Duration(milliseconds: 500),
                       curve: Curves.ease,
                       child: SingleChildScrollView(
                         physics: const NeverScrollableScrollPhysics(),
