@@ -28,14 +28,12 @@ class _SecondHomePageState extends State<SecondHomePage> {
   }
 
   void gotoPage(int index) {
-    setState(() {
-      _selectedIndex = index;
-      _pageController.animateToPage(
-        index,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    });
+    _selectedIndex = index;
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
   }
 
   @override
@@ -75,13 +73,32 @@ class _SecondHomePageState extends State<SecondHomePage> {
         onPageChanged: _onPageChanged,
         children: _pages,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: selected ? _addNotePage : _showAddTodoBottomSheet,
-        child: const Icon(
-          Icons.add,
-          size: 30.0,
-          color: Colors.white,
-        ),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
+          FloatingActionButton(
+            onPressed: selected ? _addNotePage : _showAddTodoBottomSheet,
+            child: const Icon(
+              Icons.add,
+              size: 30.0,
+              color: Colors.white,
+            ),
+          ),
+          if (_selectedIndex == 1)
+            const SizedBox(
+              height: 10,
+            ),
+          if (_selectedIndex == 1)
+            FloatingActionButton(
+              onPressed: () => gotoPage(0),
+              child: const Icon(
+                Icons.keyboard_backspace_sharp,
+                size: 28.0,
+                color: Colors.white,
+              ),
+            ),
+        ],
       ),
     );
   }

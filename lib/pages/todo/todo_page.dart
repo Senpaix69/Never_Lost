@@ -15,23 +15,19 @@ class TodoList extends StatefulWidget {
 class _TodoListState extends State<TodoList>
     with SingleTickerProviderStateMixin {
   late final DatabaseService _database;
-  late AnimationController _animationController;
+  late final TabController _controller;
+  List<Todo> _todos = [];
+  double _progress = 0.0;
+  bool _needToRefresh = true;
 
   @override
   void initState() {
     super.initState();
     _database = DatabaseService();
-    _animationController = AnimationController(
+    _controller = TabController(
+      length: 2,
       vsync: this,
-      duration: const Duration(milliseconds: 600),
     );
-    _animationController.forward();
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
   }
 
   Future<bool> deleteTodo(int id) async {
@@ -49,6 +45,7 @@ class _TodoListState extends State<TodoList>
   }
 
   Future<void> handleCheckBox(Todo todo) async {
+    if (!_needToRefresh) _needToRefresh = true;
     if (todo.complete == 0) {
       await NotificationService.cancelScheduleNotification(id: todo.id!);
     } else if (todo.date != null) {
@@ -77,15 +74,34 @@ class _TodoListState extends State<TodoList>
     );
   }
 
-  void sortTodosAsComplete(List<Todo> todos) {
-    todos.sort(
-      ((a, b) => a.complete.compareTo(b.complete)),
-    );
+  List<Todo> filteredTodosAsComplete({
+    required List<Todo> todos,
+    int complete = 0,
+  }) {
+    return todos.where((todo) => todo.complete == complete).toList();
+  }
+
+  Future<void> setProgress({required List<Todo> todos}) async {
+    if (todos.isEmpty) {
+      _progress = 1.0;
+      return;
+    }
+    final completedTodos = todos.where((todo) => todo.complete == 1);
+    final progress = completedTodos.length / todos.length;
+    _progress = progress;
+
+    if (_needToRefresh) {
+      await Future.delayed(const Duration(milliseconds: 100), () {
+        setState(() {});
+      });
+      _needToRefresh = false;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: myAppBar(context),
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -107,15 +123,93 @@ class _TodoListState extends State<TodoList>
               );
             }
             final todos = snapshot.data!;
+            _todos = todos;
+            setProgress(todos: todos);
             if (todos.isEmpty) {
               return emptyWidget(
                 icon: Icons.checklist_outlined,
                 message: "Empty Todos",
               );
             }
-            sortTodosAsComplete(todos);
-            return myGridBuilder(todos);
+            return TabBarView(
+              controller: _controller,
+              children: <Widget>[
+                myGridBuilder(filteredTodosAsComplete(todos: todos)),
+                myGridBuilder(
+                  filteredTodosAsComplete(todos: todos, complete: 1),
+                ),
+              ],
+            );
           },
+        ),
+      ),
+    );
+  }
+
+  AppBar myAppBar(BuildContext context) {
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      automaticallyImplyLeading: false,
+      elevation: 0.0,
+      toolbarHeight: 0.0,
+      bottom: PreferredSize(
+        preferredSize: const Size(double.infinity, 100.0),
+        child: Column(
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.all(11.0),
+              child: Align(
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    CircularProgressIndicator(
+                      value: _progress,
+                      backgroundColor: Theme.of(context).cardColor,
+                      color: Theme.of(context).indicatorColor,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "Progress: ${(_progress * 100).toStringAsFixed(1)}%",
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    Text(
+                      "Total: ${_todos.length}",
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            TabBar(
+              indicatorWeight: 2.0,
+              labelPadding: const EdgeInsets.all(10.0),
+              labelStyle: const TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.5,
+              ),
+              controller: _controller,
+              unselectedLabelColor: Colors.grey[300],
+              labelColor: Colors.grey[200],
+              indicatorColor: Theme.of(context).indicatorColor,
+              tabs: [
+                Text(
+                  "Pending",
+                  style: TextStyle(color: Theme.of(context).shadowColor),
+                ),
+                Text(
+                  "Completed",
+                  style: TextStyle(color: Theme.of(context).shadowColor),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -135,7 +229,13 @@ class _TodoListState extends State<TodoList>
     );
   }
 
-  GridView myGridBuilder(List<Todo> todos) {
+  Widget myGridBuilder(List<Todo> todos) {
+    if (todos.isEmpty) {
+      return emptyWidget(
+        icon: Icons.checklist_outlined,
+        message: "Empty Todos",
+      );
+    }
     return GridView.builder(
       shrinkWrap: true,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -156,8 +256,8 @@ class _TodoListState extends State<TodoList>
   Widget todoContainer(Todo todo, bool isChecked, String? timeSchedule) {
     return GestureDetector(
       onTap: () => _showAddTodoBottomSheet(todo),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 500),
+      onLongPress: () => deleteTodo(todo.id!),
+      child: Container(
         padding: const EdgeInsets.all(10.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
