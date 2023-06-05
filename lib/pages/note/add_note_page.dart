@@ -316,9 +316,6 @@ class _AddNoteState extends State<AddNote> {
                       height: 20.0,
                     ),
                     imageBuilder(),
-                    const Divider(
-                      height: 20,
-                    ),
                     filesBuilder(),
                   ],
                 ),
