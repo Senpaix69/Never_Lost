@@ -46,7 +46,7 @@ InputDecoration decorationPasswordFormField(
       onPressed: callback,
       icon: Icon(
         action ? Icons.visibility_off_rounded : Icons.visibility,
-        color: Theme.of(context).primaryColorDark,
+        color: Theme.of(context).secondaryHeaderColor,
       ),
     ),
   );

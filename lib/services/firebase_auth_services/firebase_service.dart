@@ -307,6 +307,7 @@ class FirebaseService {
     try {
       await GoogleSignIn().signOut();
       await _auth.signOut();
+      await _deleteProfilePicture();
       await NotificationService.cancelALLScheduleNotification();
       await spUserActions(action: SPActions.delete);
       await spRestoreSize(action: SPActions.delete);
@@ -331,6 +332,13 @@ class FirebaseService {
     final userJson = jsonEncode(_user!.toMap());
     await spUserActions(action: SPActions.set, userJson: userJson);
     _userController.add(_user);
+  }
+
+  Future<void> _deleteProfilePicture() async {
+    final file = File('${_user?.profilePic}');
+    if (file.existsSync()) {
+      file.deleteSync();
+    }
   }
 
   void userStr() async {
@@ -392,12 +400,13 @@ class FirebaseService {
       if (response.statusCode == HttpStatus.ok) {
         final appDir = await getApplicationDocumentsDirectory();
         final bytes = await consolidateHttpClientResponseBytes(response);
-        final file = File('${appDir.path}/profile_image.jpg');
+        final file = File('${appDir.path}/profile_${const Uuid().v4()}.jpg');
+        await _deleteProfilePicture();
         await file.writeAsBytes(bytes);
         _user = _user!.copyWith(profilePic: file.path);
-        _userController.add(_user);
         await spUserActions(
             action: SPActions.set, userJson: jsonEncode(_user!.toMap()));
+        _userController.add(_user);
       }
     } catch (e) {
       //todo
