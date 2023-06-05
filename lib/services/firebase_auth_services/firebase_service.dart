@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart'
     show consolidateHttpClientResponseBytes;
 import 'package:neverlost/contants/firebase_contants/firebase_contants.dart';
 import 'package:neverlost/services/firebase_auth_services/fb_user.dart';
+import 'package:neverlost/services/note_services/note.dart';
 import 'package:neverlost/services/note_services/todo.dart';
 import 'package:neverlost/services/notification_service.dart';
 import 'package:neverlost/services/timetable_services/timetable.dart';
@@ -171,7 +172,7 @@ class FirebaseService {
         timetable.copyWith(subject: sub).toMap(),
       );
     }
-    String size = calculateSize(timetables);
+    String size = convertSizeUnit(size: calculateSize(list: timetables));
     await spRestoreSize(action: SPActions.set, size: size);
     final backUpSizeCollection = _firestore.collection(
       'users/${_user!.uid}/backupSize',
@@ -184,7 +185,7 @@ class FirebaseService {
     });
 
     await backUpSizeCollection.add({
-      'size': size,
+      'timetable': size,
     });
   }
 
@@ -265,24 +266,6 @@ class FirebaseService {
       userProfilePicURL: profilePicUrl,
       userProfilePic: copyPath,
     };
-  }
-
-  String calculateSize(List<dynamic> list) {
-    const List<String> units = ['bytes', 'KB', 'MB', 'GB', 'TB'];
-    double size = 0;
-    int unitIndex = 0;
-    for (int i = 0; i < list.length; i++) {
-      final item = list[i].toMap();
-      final jsonString = jsonEncode(item);
-      int bytes = utf8.encode(jsonString).length;
-      size += bytes;
-    }
-    double convertedSize = size.toDouble();
-    while (convertedSize >= 1024 && unitIndex < units.length - 1) {
-      convertedSize /= 1024;
-      unitIndex++;
-    }
-    return '${convertedSize.toStringAsFixed(1)} ${units[unitIndex]}';
   }
 
   Future<String?> restoreDataSize() async {
@@ -412,4 +395,67 @@ class FirebaseService {
       //todo
     }
   }
+}
+
+const List<String> units = ['bytes', 'KB', 'MB', 'GB', 'TB'];
+typedef CallbackAction<T> = void Function(T);
+
+double calculateSize({
+  required List<dynamic> list,
+  Function? callback,
+}) {
+  double size = 0;
+
+  for (final item in list) {
+    final jsonString = jsonEncode(item.toMap());
+    int bytes = utf8.encode(jsonString).length;
+    size += bytes;
+  }
+  if (callback != null) {
+    callback(size.toDouble());
+  }
+  return size.toDouble();
+}
+
+double calculateNoteSize({
+  required List<Note> notes,
+  Function? callback,
+}) {
+  double size = 0;
+  for (final item in notes) {
+    final jsonString = jsonEncode(item.toMap());
+    int bytes = utf8.encode(jsonString).length;
+    size += bytes;
+  }
+
+  for (final note in notes) {
+    for (final image in note.images) {
+      final file = File(image);
+      if (file.existsSync()) {
+        size += file.lengthSync();
+      }
+    }
+    for (final docs in note.files) {
+      final file = File(docs);
+      if (file.existsSync()) {
+        size += file.lengthSync();
+      }
+    }
+  }
+  if (callback != null) {
+    callback(size.toDouble());
+  }
+  return size.toDouble();
+}
+
+String convertSizeUnit({
+  required double size,
+}) {
+  int unitIndex = 0;
+  double convertedSize = size;
+  while (convertedSize >= 1024 && unitIndex < units.length - 1) {
+    convertedSize /= 1024;
+    unitIndex++;
+  }
+  return '${convertedSize.toStringAsFixed(1)} ${units[unitIndex]}';
 }

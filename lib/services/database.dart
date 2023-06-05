@@ -286,6 +286,8 @@ class DatabaseService {
   late final StreamController<List<Note>> _notesController;
   Stream<List<Note>> get allNotes => _notesController.stream;
 
+  List<Note> get cachedNotes => _cachedNotes;
+
   Future<Iterable<TimeTable>> getTimeTableStream() async {
     if (_cachedTimeTables.isNotEmpty) {
       return _cachedTimeTables;

@@ -53,28 +53,26 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     );
   }
 
-  Future<bool> makeBackUp() async {
-    if (_timetables.isEmpty || _todos.isEmpty) {
-      errorDialogue(
-        context: context,
-        title: "No TimeTable Found",
-        message: "There is no timetable found to be saved in backup",
-      );
-      return false;
-    }
+  Future<bool> makeBackUp({required Map<String, bool> userChoice}) async {
     if (!await checkConnection()) {
       notConnectedToInternet();
       return false;
     }
-    showLoading(message: "Backup is in progress...");
-    await _firebase.uploadTimetables(
-      timetables: _timetables,
-    );
-    showLoading(message: "Backup: Processing Data...");
-    await _firebase.uploadTodos(todos: _todos);
+    if (userChoice['timetable']!) {
+      showLoading(message: "Timetables backup is in process...");
+      await _firebase.uploadTimetables(timetables: _timetables);
+    }
+
+    if (userChoice['todo']!) {
+      showLoading(message: "Todos backup is in process...");
+      await _firebase.uploadTodos(todos: _todos);
+    }
+
+    if (userChoice['note']!) {
+      showLoading(message: "Notes backup is in process...");
+    }
     LoadingScreen.instance().hide();
     showSnak(message: "Backup saved successfully!");
-    setState(() {});
     return true;
   }
 
@@ -84,6 +82,12 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       );
 
   void showSnak({required String message}) => showSnackBar(context, message);
+  void showErrorDialog({required String title, required String message}) =>
+      errorDialogue(
+        context: context,
+        message: message,
+        title: title,
+      );
 
   Future<bool> restoreBackup() async {
     if (_restoreSize == null) {
@@ -131,12 +135,10 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     }
     switch (action) {
       case ProfileActions.backup:
-        if (await Navigator.of(context).push(
-              SlideRightRoute(page: const BackupScreen()),
-            ) ??
-            false) {
-          await makeBackUp();
-        }
+        final userChoice = await Navigator.of(context).push(
+          SlideRightRoute(page: const BackupScreen()),
+        );
+        makeBackUp(userChoice: userChoice);
         break;
       case ProfileActions.restore:
         if (await Navigator.of(context).push(

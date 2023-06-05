@@ -103,7 +103,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
                         },
                         style: ButtonStyle(
                             backgroundColor: MaterialStateColor.resolveWith(
-                          (states) => Theme.of(context).primaryColor,
+                          (states) => Theme.of(context).primaryColorDark,
                         )),
                         child: textMessageBold(
                           padding: 3.3,

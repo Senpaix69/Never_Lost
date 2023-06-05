@@ -127,16 +127,17 @@ class _AddNoteState extends State<AddNote> {
   }
 
   Future<void> deleteAllFiles() async {
-    for (int i = 0; i < _files.length; i++) {
-      final file = File(_files[i]);
+    for (final item in _files) {
+      final file = File(item);
       if (file.existsSync()) {
-        await file.delete();
+        file.deleteSync();
       }
     }
-    for (int i = 0; i < _images.length; i++) {
-      final file = File(_images[i]);
+
+    for (final item in _images) {
+      final file = File(item);
       if (file.existsSync()) {
-        await file.delete();
+        file.deleteSync();
       }
     }
   }
@@ -316,6 +317,9 @@ class _AddNoteState extends State<AddNote> {
                       height: 20.0,
                     ),
                     imageBuilder(),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
                     filesBuilder(),
                   ],
                 ),
@@ -408,10 +412,10 @@ class _AddNoteState extends State<AddNote> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
-      tileColor: Theme.of(context).primaryColorLight,
+      tileColor: Theme.of(context).primaryColor,
       leading: Icon(
         Icons.file_open_rounded,
-        color: Theme.of(context).primaryColor,
+        color: Theme.of(context).secondaryHeaderColor,
       ),
       title: Text(
         basename,
@@ -419,9 +423,9 @@ class _AddNoteState extends State<AddNote> {
         overflow: TextOverflow.ellipsis,
       ),
       trailing: IconButton(
-        icon: const Icon(
+        icon: Icon(
           Icons.delete,
-          color: Colors.red,
+          color: Theme.of(context).secondaryHeaderColor,
         ),
         onPressed: () async => await deleteFile(file.path, index, "file"),
       ),
