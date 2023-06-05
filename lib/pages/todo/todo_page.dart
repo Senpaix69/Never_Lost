@@ -110,8 +110,6 @@ class _TodoListState extends State<TodoList>
         height: double.infinity,
         padding: const EdgeInsets.only(
           top: 10.0,
-          left: 10.0,
-          right: 10.0,
         ),
         decoration: null,
         child: StreamBuilder(
@@ -239,20 +237,23 @@ class _TodoListState extends State<TodoList>
         message: "Empty Todos",
       );
     }
-    return GridView.builder(
-      shrinkWrap: true,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 8.0,
-        crossAxisSpacing: 8.0,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      child: GridView.builder(
+        shrinkWrap: true,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          mainAxisSpacing: 8.0,
+          crossAxisSpacing: 8.0,
+        ),
+        itemCount: todos.length,
+        itemBuilder: (context, index) {
+          final todo = todos[index];
+          final timeSchedule = getFormattedTime(todo.date);
+          bool isChecked = todo.complete != 0;
+          return todoContainer(todo, isChecked, timeSchedule);
+        },
       ),
-      itemCount: todos.length,
-      itemBuilder: (context, index) {
-        final todo = todos[index];
-        final timeSchedule = getFormattedTime(todo.date);
-        bool isChecked = todo.complete != 0;
-        return todoContainer(todo, isChecked, timeSchedule);
-      },
     );
   }
 

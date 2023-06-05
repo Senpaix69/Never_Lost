@@ -39,21 +39,30 @@ class _RestoreScreenState extends State<RestoreScreen> {
                 const SizedBox(height: 10.0),
                 const Text(confirmRestore),
                 ListTile(
-                  contentPadding: const EdgeInsets.symmetric(vertical: 0),
-                  leading: Checkbox(
-                    checkColor: Theme.of(context).secondaryHeaderColor,
-                    fillColor: MaterialStateColor.resolveWith(
-                      (states) => Theme.of(context).primaryColorDark,
+                  onTap: () => setState(() => _isAgree = !_isAgree),
+                  leading: Container(
+                    width: 22.0,
+                    height: 22.0,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4.0),
+                      color: _isAgree
+                          ? Theme.of(context).indicatorColor
+                          : Colors.transparent,
+                      border: Border.all(
+                        color: Theme.of(context).indicatorColor,
+                      ),
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(3),
-                    ),
-                    value: _isAgree,
-                    onChanged: (value) => setState(
-                      () => _isAgree = value!,
-                    ),
+                    child: _isAgree
+                        ? Center(
+                            child: Icon(
+                              Icons.check,
+                              size: 16.0,
+                              color: Theme.of(context).primaryColorDark,
+                            ),
+                          )
+                        : null,
                   ),
-                  title: const Text("I agree to all the conditions"),
+                  title: const Text("I agree to all the terms and conditions"),
                 ),
                 const SizedBox(
                   height: 20.0,
@@ -86,8 +95,9 @@ class _RestoreScreenState extends State<RestoreScreen> {
                           } else {
                             errorDialogue(
                               context: context,
-                              message: "Make sure you agree to the terms",
-                              title: "Agree Terms",
+                              message:
+                                  "Make sure you agree are agreed to the terms and conditions",
+                              title: "Terms and Conditions",
                             );
                           }
                         },

@@ -444,7 +444,7 @@ class _AddNoteState extends State<AddNote> {
       title: Text(
         _isNote != null
             ? _isEditing
-                ? "Exit Note"
+                ? "Edit Note"
                 : "Note"
             : "Add Note",
       ),

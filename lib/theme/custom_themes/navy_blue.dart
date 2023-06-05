@@ -34,11 +34,7 @@ class NavyBlue {
     secondaryHeaderColor: Colors.white,
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
       elevation: 0.0,
-      backgroundColor: Color(0xFF0C454B),
-      splashColor: Color(0xFF146C76),
-      focusColor: Color(0xFF146C76),
-      hoverColor: Color(0xFF146C76),
-      foregroundColor: Color(0xFF146C76),
+      backgroundColor: Color(0xFF146C76),
     ),
     timePickerTheme: const TimePickerThemeData(
       backgroundColor: Color(0xFF124B52),
