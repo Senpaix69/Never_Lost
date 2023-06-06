@@ -121,7 +121,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
         bottom: MediaQuery.of(context).viewInsets.bottom + 15,
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: Theme.of(context).primaryColorDark,
         borderRadius: BorderRadius.circular(20.0),
       ),
       padding: const EdgeInsets.all(10.0),
@@ -161,16 +161,15 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
                       : () => handleReminder(),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _date != null
-                        ? Theme.of(context).primaryColorDark
-                        : Theme.of(context).primaryColor,
-                    textStyle: const TextStyle(fontSize: 16),
+                        ? Theme.of(context).primaryColorLight
+                        : Theme.of(context).canvasColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(7.0),
                     ),
                   ),
                 ),
-                InkWell(
-                  onTap: emptyText ? null : () async => await saveTodo(),
+                TextButton(
+                  onPressed: emptyText ? null : () async => await saveTodo(),
                   child: Text(
                     "Done",
                     style: TextStyle(

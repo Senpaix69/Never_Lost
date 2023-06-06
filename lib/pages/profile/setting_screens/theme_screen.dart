@@ -36,42 +36,6 @@ class ThemeScreen extends StatelessWidget {
                 ],
               ),
             ),
-            heading(
-              text: "Default Themes",
-              size: 16,
-              padding: const EdgeInsets.only(
-                left: 10,
-                bottom: 10,
-              ),
-            ),
-            MyCustomTile(
-              icon: Icons.light_mode,
-              onClick: () {},
-              iconBackGroundColor: Colors.deepOrange,
-              title: "Light Theme",
-              trailing: false,
-            ),
-            MyCustomTile(
-              icon: Icons.dark_mode,
-              onClick: () {},
-              iconBackGroundColor: Colors.deepPurpleAccent,
-              title: "Dark Theme",
-              trailing: false,
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Divider(
-                height: 40,
-              ),
-            ),
-            heading(
-              text: "Custom Themes",
-              size: 16,
-              padding: const EdgeInsets.only(
-                left: 10,
-                bottom: 10,
-              ),
-            ),
             MyCustomTile(
               icon: Icons.format_color_fill_rounded,
               onClick: () =>

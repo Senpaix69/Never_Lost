@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:neverlost/pages/profile/setting_screens/about_screen.dart';
+import 'package:neverlost/pages/profile/setting_screens/about_app.dart';
+import 'package:neverlost/pages/profile/setting_screens/about_dev.dart';
 import 'package:neverlost/pages/profile/setting_screens/backup_screen.dart';
 import 'package:neverlost/pages/profile/setting_screens/restore_screen.dart';
 import 'package:neverlost/pages/profile/setting_screens/theme_screen.dart';
@@ -195,7 +196,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
             ),
             MyCustomTile(
               icon: Icons.person_2,
-              onClick: () {},
+              onClick: () => Navigator.of(context).push(
+                SlideRightRoute(page: const AboutDeveloper()),
+              ),
               iconBackGroundColor: Colors.orangeAccent,
               title: "About Developer",
             ),
