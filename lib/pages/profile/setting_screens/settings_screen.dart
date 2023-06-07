@@ -102,8 +102,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     if (!await checkConnection()) {
       return false;
     }
-    showLoading(message: "Restoring data...");
+    showLoading(message: "Fetching timetables...");
     final List<TimeTable> allTimeTables = await _firebase.getAllTimeTables();
+    showLoading(message: "Fetching todos...");
     final List<Todo> allTodos = await _firebase.getAllTodos();
     await _db.cleanTimeTable();
     await _db.cleanTotoTable();
@@ -139,7 +140,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
         final userChoice = await Navigator.of(context).push(
           SlideRightRoute(page: const BackupScreen()),
         );
-        makeBackUp(userChoice: userChoice);
+        if (userChoice != null) {
+          makeBackUp(userChoice: userChoice);
+        }
         break;
       case ProfileActions.restore:
         if (await Navigator.of(context).push(

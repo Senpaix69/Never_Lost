@@ -1,3 +1,4 @@
+import 'dart:io' show File;
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -227,4 +228,23 @@ Future<bool> checkConnection() async {
     return false;
   }
   return true;
+}
+
+Future<void> deleteAllFiles({
+  required List<String> files,
+  required List<String> images,
+}) async {
+  for (final item in files) {
+    final file = File(item);
+    if (file.existsSync()) {
+      file.deleteSync();
+    }
+  }
+
+  for (final item in images) {
+    final file = File(item);
+    if (file.existsSync()) {
+      file.deleteSync();
+    }
+  }
 }

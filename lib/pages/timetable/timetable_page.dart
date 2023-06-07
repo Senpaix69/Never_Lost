@@ -246,7 +246,7 @@ class _TimeTablePageState extends State<TimeTablePage> {
 
   Container actions(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(8.0),
+      margin: const EdgeInsets.all(6.0),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: Theme.of(context).focusColor,

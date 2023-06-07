@@ -6,8 +6,11 @@ import 'package:neverlost/utils.dart'
     show GetArgument, deleteFolder, emptyWidget;
 import 'package:neverlost/widgets/add_folder.dart';
 
+typedef CallbackAction<String> = void Function(String);
+
 class FolderPage extends StatefulWidget {
-  const FolderPage({Key? key}) : super(key: key);
+  final CallbackAction? callback;
+  const FolderPage({Key? key, this.callback}) : super(key: key);
 
   @override
   State<FolderPage> createState() => _FolderPageState();
@@ -48,6 +51,9 @@ class _FolderPageState extends State<FolderPage> {
         note: _note!.copyWith(category: value),
       );
       _note = _note!.copyWith(category: value);
+    }
+    if (widget.callback != null) {
+      widget.callback!(_note!.category);
     }
     setState(() {});
   }

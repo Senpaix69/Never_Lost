@@ -41,7 +41,7 @@ class _BackupScreenState extends State<BackupScreen> {
       final size = convertSizeUnit(size: _backupSize);
       if (await confirmDialogue(
           context: context,
-          message: "You sure wants to backup, this may not pe  $size?",
+          message: "Backup Size: $size\nAre you sure you wants to backup?",
           title: "Backup")) {
         goBack({
           'timetable': _timeTablesAgree,

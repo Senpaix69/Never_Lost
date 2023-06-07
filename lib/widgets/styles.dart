@@ -68,6 +68,43 @@ Text myText({
   );
 }
 
+MaterialButton mySheetIcon({
+  required BuildContext context,
+  required Color backgroundColor,
+  required String title,
+  required IconData icon,
+  required VoidCallback callback,
+}) {
+  return MaterialButton(
+    onPressed: callback,
+    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 0.0),
+    splashColor: Theme.of(context).primaryColor,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+    child: Column(
+      children: <Widget>[
+        CircleAvatar(
+          backgroundColor: backgroundColor,
+          radius: 20.0,
+          child: Icon(
+            icon,
+            color: Theme.of(context).secondaryHeaderColor,
+            size: 23.0,
+          ),
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+        Text(
+          title,
+          style: TextStyle(
+            color: Theme.of(context).secondaryHeaderColor,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
 typedef CallbackAction<T> = void Function(T);
 Container headerContainer({
   required String title,

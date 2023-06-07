@@ -5,10 +5,12 @@ import 'package:neverlost/pages/note/folder_page.dart';
 import 'package:neverlost/services/database.dart';
 import 'package:neverlost/services/note_services/note.dart';
 import 'package:neverlost/utils.dart'
-    show emptyWidget, deleteFolder, removeEmptyFilesAndImages;
+    show deleteAllFiles, deleteFolder, emptyWidget, removeEmptyFilesAndImages;
 import 'package:neverlost/widgets/animate_route.dart'
     show SlideFromBottomTransition, SlideRightRoute;
+import 'package:neverlost/widgets/dialog_boxs.dart' show confirmDialogue;
 import 'package:neverlost/widgets/folder_button.dart';
+import 'package:neverlost/widgets/styles.dart' show mySheetIcon;
 
 class NoteList extends StatefulWidget {
   const NoteList({super.key});
@@ -21,7 +23,6 @@ class _NoteListState extends State<NoteList>
   late final DatabaseService _database;
   late AnimationController _animationController;
   late Animation<double> _animation;
-  Offset _tapPosition = Offset.zero;
   String _folderName = "";
 
   @override
@@ -60,6 +61,18 @@ class _NoteListState extends State<NoteList>
       return list;
     }
     return list.where((note) => note.category == _folderName).toList();
+  }
+
+  Future<void> deleteNote({required Note note}) async {
+    bool isDel = await confirmDialogue(
+      context: context,
+      message: "Do you really want to delete this note?",
+      title: "Delete Note",
+    );
+    if (isDel) {
+      await deleteAllFiles(files: note.files, images: note.images);
+      await _database.deleteNote(id: note.id!);
+    }
   }
 
   @override
@@ -213,30 +226,42 @@ class _NoteListState extends State<NoteList>
                 color: Theme.of(context).cardColor.withAlpha(120),
                 borderRadius: BorderRadius.circular(10.0),
               ),
-              child: GestureDetector(
-                onTapDown: (details) {
-                  _getTapPosition(details);
-                },
-                onLongPress: () {
-                  HapticFeedback.vibrate();
-                  _showContextMenu(context, note);
-                },
-                child: ListTile(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  key: ValueKey(note.id!),
-                  minVerticalPadding: 15,
-                  onTap: () => Navigator.push(
-                    context,
-                    SlideRightRoute(
-                      page: const AddNote(),
-                      arguments: note,
-                    ),
-                  ),
-                  title: listTitle(note),
-                  subtitle: listSubTitle(note),
+              child: ListTile(
+                onLongPress: () => myBottomSheet(
+                  important: note.imp,
+                  moveToCallback: () {
+                    Future.delayed(
+                      const Duration(milliseconds: 200),
+                      () => Navigator.of(context).push(
+                        SlideRightRoute(
+                          page: const FolderPage(),
+                          arguments: note,
+                        ),
+                      ),
+                    );
+                  },
+                  shareCallback: () {},
+                  importantCallback: () async {
+                    await _database.updateNote(
+                      note: note.copyWith(imp: note.imp == 0 ? 1 : 0),
+                    );
+                  },
+                  deleteCallback: () async => await deleteNote(note: note),
                 ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                key: ValueKey(note.id!),
+                minVerticalPadding: 15,
+                onTap: () => Navigator.push(
+                  context,
+                  SlideRightRoute(
+                    page: const AddNote(),
+                    arguments: note,
+                  ),
+                ),
+                title: listTitle(note),
+                subtitle: listSubTitle(note),
               ),
             ),
           ),
@@ -324,63 +349,68 @@ class _NoteListState extends State<NoteList>
     );
   }
 
-  void _getTapPosition(TapDownDetails tapPosition) {
-    final RenderBox renderBox = context.findRenderObject() as RenderBox;
-    setState(
-      () => _tapPosition = renderBox.globalToLocal(tapPosition.globalPosition),
-    );
-  }
-
-  void _showContextMenu(context, Note note) async {
-    final RenderObject? overlay =
-        Overlay.of(context).context.findRenderObject();
-    final result = await showMenu(
-      color: Theme.of(context).primaryColorDark,
+  Future<dynamic> myBottomSheet({
+    int important = 0,
+    required VoidCallback shareCallback,
+    required VoidCallback moveToCallback,
+    required VoidCallback importantCallback,
+    required VoidCallback deleteCallback,
+  }) {
+    HapticFeedback.vibrate();
+    return showModalBottomSheet(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       context: context,
-      position: RelativeRect.fromRect(
-        Rect.fromLTWH(
-          _tapPosition.dx + 10,
-          _tapPosition.dy + 80,
-          10,
-          10,
-        ),
-        overlay!.paintBounds,
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      constraints: const BoxConstraints(minWidth: 170.0, maxWidth: 170.0),
-      items: [
-        PopupMenuItem(
-          value: "folders",
-          child: Text(
-            "Move To",
-            style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(20),
+          height: 130.0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              mySheetIcon(
+                backgroundColor: Colors.blueGrey,
+                context: context,
+                title: "Move To",
+                icon: Icons.drive_file_move,
+                callback: () {
+                  Navigator.of(context).pop();
+                  moveToCallback();
+                },
+              ),
+              mySheetIcon(
+                backgroundColor: Colors.amber,
+                context: context,
+                title: important == 1 ? "Not Imp" : "Important",
+                icon: important == 1 ? Icons.star : Icons.star_border,
+                callback: () {
+                  Navigator.of(context).pop();
+                  importantCallback();
+                },
+              ),
+              mySheetIcon(
+                backgroundColor: const Color(0xFF0077B5),
+                context: context,
+                title: "Share",
+                icon: Icons.share,
+                callback: () {
+                  Navigator.of(context).pop();
+                  shareCallback();
+                },
+              ),
+              mySheetIcon(
+                backgroundColor: const Color(0xFFFF0000),
+                context: context,
+                title: "Delete",
+                icon: Icons.delete,
+                callback: () {
+                  Navigator.of(context).pop();
+                  deleteCallback();
+                },
+              ),
+            ],
           ),
-        ),
-        PopupMenuItem(
-          value: "important",
-          child: Text(
-            note.imp == 0 ? "Important" : "Not Important",
-            style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
-          ),
-        ),
-      ],
-    );
-
-    switch (result) {
-      case "important":
-        await _database.updateNote(
-          note: note.copyWith(imp: note.imp == 0 ? 1 : 0),
         );
-        break;
-      case "folders":
-        Navigator.of(context).push(SlideRightRoute(
-          page: const FolderPage(),
-          arguments: note,
-        ));
-        break;
-      default:
-    }
+      },
+    );
   }
 }

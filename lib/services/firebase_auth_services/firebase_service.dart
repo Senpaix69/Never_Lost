@@ -193,11 +193,13 @@ class FirebaseService {
     final collection = _firestore.collection(
       'users/${_user!.uid}/$collectionTable',
     );
-    await collection.get().then((snapshot) {
-      for (final doc in snapshot.docs) {
-        doc.reference.delete();
-      }
-    });
+    await collection.get().then(
+      (snapshot) {
+        for (final doc in snapshot.docs) {
+          doc.reference.delete();
+        }
+      },
+    );
   }
 
   Future<List<TimeTable>> getAllTimeTables() async {
@@ -278,8 +280,11 @@ class FirebaseService {
           .get()
           .then((snap) => snap.docs.first);
       if (backUpSize.exists) {
-        await spRestoreSize(action: SPActions.set, size: backUpSize['size']);
-        return backUpSize['size'];
+        await spRestoreSize(
+          action: SPActions.set,
+          size: backUpSize['timetable'],
+        );
+        return backUpSize['timetable'];
       }
       return null;
     }

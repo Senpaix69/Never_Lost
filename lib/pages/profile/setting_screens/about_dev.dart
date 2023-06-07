@@ -148,8 +148,8 @@ class AboutDeveloper extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: color.withOpacity(.2),
-              spreadRadius: 10,
-              blurRadius: 6.0,
+              spreadRadius: 6.0,
+              blurRadius: 10.0,
               offset: const Offset(0, 6),
             ),
           ],

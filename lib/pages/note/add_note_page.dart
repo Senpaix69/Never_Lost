@@ -1,15 +1,22 @@
-import 'dart:io';
+import 'dart:io' show File;
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:intl/intl.dart' show DateFormat;
+import 'package:neverlost/pages/note/folder_page.dart';
 import 'package:neverlost/pages/note/image_preview_page.dart';
 import 'package:neverlost/services/database.dart';
-import 'package:neverlost/widgets/animate_route.dart' show FadeRoute;
+import 'package:neverlost/widgets/animate_route.dart';
+import 'package:neverlost/widgets/styles.dart' show mySheetIcon;
 import 'package:open_file_plus/open_file_plus.dart' show OpenFile;
-import 'package:path/path.dart' as path show basename;
 import 'package:neverlost/services/note_services/note.dart';
 import 'package:neverlost/utils.dart'
-    show GetArgument, textValidate, showSnackBar, removeEmptyFilesAndImages;
+    show
+        GetArgument,
+        deleteAllFiles,
+        removeEmptyFilesAndImages,
+        showSnackBar,
+        textValidate;
 import 'package:neverlost/widgets/dialog_boxs.dart' show confirmDialogue;
 import 'package:path_provider/path_provider.dart'
     show getApplicationDocumentsDirectory;
@@ -31,6 +38,8 @@ class _AddNoteState extends State<AddNote> {
   final FocusNode _focusText = FocusNode();
 
   Note? _isNote;
+  Note? _tempNote;
+  bool _isTempNote = false;
   final _formKey = GlobalKey<FormState>();
   bool _isEditing = false;
 
@@ -57,12 +66,14 @@ class _AddNoteState extends State<AddNote> {
             file.extension!.toLowerCase() == 'jpeg') {
           await File(file.path!).copy(copyPath);
           newImages.add(copyPath);
-        } else if (file.extension!.toLowerCase() != 'mp4' &&
-            file.extension!.toLowerCase() != 'mkv') {
+        } else if (file.extension!.toLowerCase() == 'docx' ||
+            file.extension!.toLowerCase() == 'pdf') {
           await File(file.path!).copy(copyPath);
           newFiles.add(copyPath);
         } else {
-          showMessage("You can not select video file");
+          showMessage(
+            "Invalid file type, you can only select {image, pdf, docx}",
+          );
         }
       }
       setState(
@@ -100,47 +111,34 @@ class _AddNoteState extends State<AddNote> {
   Future<void> deleteFile(String path, int index, String type) async {
     bool del = await confirmDialogue(
       context: context,
+      title: path.split('_').last,
       message: "Do you want to delete this file?",
-      title: "Delete File",
     );
     if (!del) return;
-    setState(
-      () {
-        type == "image" ? _images.removeAt(index) : _files.removeAt(index);
-        _isEditing = true;
-      },
-    );
     final file = File(path);
     if (!file.existsSync()) {
       showMessage("Could not delete file");
       return;
     }
-    file.delete();
-    if (_isNote == null) return;
+    await file.delete();
+    type == "image" ? _images.removeAt(index) : _files.removeAt(index);
+    if (_isNote == null) {
+      setState(() {});
+      return;
+    }
     if (type == "image") {
       await _database.updateNote(note: _isNote!.copyWith(images: _images));
       _isNote = _isNote!.copyWith(images: _images);
-      return;
+    } else {
+      await _database.updateNote(note: _isNote!.copyWith(files: _files));
+      _isNote = _isNote!.copyWith(files: _files);
     }
-    await _database.updateNote(note: _isNote!.copyWith(files: _files));
-    _isNote = _isNote!.copyWith(files: _files);
+    _isEditing = true;
+    hideBottomSheet();
+    setState(() {});
   }
 
-  Future<void> deleteAllFiles() async {
-    for (final item in _files) {
-      final file = File(item);
-      if (file.existsSync()) {
-        file.deleteSync();
-      }
-    }
-
-    for (final item in _images) {
-      final file = File(item);
-      if (file.existsSync()) {
-        file.deleteSync();
-      }
-    }
-  }
+  void hideBottomSheet() => Navigator.of(context).pop();
 
   @override
   void initState() {
@@ -179,7 +177,11 @@ class _AddNoteState extends State<AddNote> {
         body: _body.text,
         imp: updateNote ? _isNote!.imp : 0,
         date: updateNote ? _isNote!.date : _date(),
-        category: updateNote ? _isNote!.category : "",
+        category: updateNote
+            ? _isNote!.category
+            : _isTempNote
+                ? _tempNote!.category
+                : "",
         files: updateNote ? _isNote!.files : _files,
         images: updateNote ? _isNote!.images : _images,
       );
@@ -205,8 +207,11 @@ class _AddNoteState extends State<AddNote> {
       title: "Delete Note",
     );
     if (isDel && _isNote != null) {
-      await deleteAllFiles();
+      await deleteAllFiles(files: _files, images: _images);
       await _database.deleteNote(id: _isNote!.id!);
+      if (_isTempNote) {
+        await _database.deleteNote(id: _tempNote!.id!);
+      }
       goBack();
     }
   }
@@ -224,8 +229,11 @@ class _AddNoteState extends State<AddNote> {
         await saveNote();
         return;
       } else if (_isNote == null && (_files.isNotEmpty || _images.isNotEmpty)) {
-        await deleteAllFiles();
+        await deleteAllFiles(files: _files, images: _images);
       }
+    }
+    if (_isTempNote) {
+      await _database.deleteNote(id: _tempNote!.id!);
     }
     goBack();
   }
@@ -269,22 +277,45 @@ class _AddNoteState extends State<AddNote> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    TextFormField(
-                      focusNode: _focusTitle,
-                      onChanged: checkNote,
-                      enableSuggestions: false,
-                      autocorrect: false,
-                      maxLines: null,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Title',
-                      ),
-                      controller: _title,
-                      style: const TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      validator: textValidate,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Expanded(
+                          child: TextFormField(
+                            focusNode: _focusTitle,
+                            onChanged: checkNote,
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            maxLines: null,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Title',
+                            ),
+                            controller: _title,
+                            style: const TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            validator: textValidate,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          _isNote != null
+                              ? _isNote!.category
+                              : _isTempNote
+                                  ? _tempNote!.category
+                                  : "catagory",
+                          style: TextStyle(
+                            color: Theme.of(context).indicatorColor,
+                            fontSize: 12.0,
+                            letterSpacing: 0.6,
+                          ),
+                        ),
+                      ],
                     ),
                     Text(
                       _isNote != null ? _isNote!.date : _date(),
@@ -364,18 +395,26 @@ class _AddNoteState extends State<AddNote> {
 
   InkWell imagesTile(BuildContext context, int index, File file) {
     return InkWell(
-      onTap: () => Navigator.push(
-        context,
-        FadeRoute(
-          page: ImagePreviewScreen(
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ImagePreviewScreen(
             imagePaths: _images,
             currentIndex: index,
           ),
         ),
       ),
-      onLongPress: () async => await deleteFile(file.path, index, "image"),
+      onLongPress: () => myBottomSheet(
+        color1: const Color(0xFF0077B5),
+        text1: "Share",
+        icon1: Icons.share,
+        callback1: () {},
+        color2: const Color(0xFFFF0000),
+        icon2: Icons.delete,
+        text2: "Delete",
+        callback2: () async => await deleteFile(file.path, index, "image"),
+      ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(10),
         child: Image.file(
           file,
           height: 120,
@@ -390,47 +429,126 @@ class _AddNoteState extends State<AddNote> {
     if (_files.isEmpty) {
       return const SizedBox();
     }
-    return ListView.separated(
+    return ListView.builder(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       itemCount: _files.length,
-      separatorBuilder: (context, index) => const Divider(
-        height: 10.0,
-      ),
       itemBuilder: (context, index) {
         final file = File(_files[index]);
-        return filesTile(path.basename(file.path).split('_').last, index, file);
+        return Container(
+          margin: const EdgeInsets.symmetric(
+            vertical: 5.0,
+          ),
+          child: filesTile(file.path.split('_').last, index, file),
+        );
       },
     );
   }
 
   ListTile filesTile(String basename, int index, File file) {
     return ListTile(
+      contentPadding: EdgeInsets.zero,
       key: ValueKey(index),
       minVerticalPadding: 20,
       onTap: () => OpenFile.open(file.path),
+      onLongPress: () => myBottomSheet(
+        color1: const Color(0xFF0077B5),
+        text1: "Share",
+        icon1: Icons.share,
+        callback1: () {},
+        color2: const Color(0xFFFF0000),
+        icon2: Icons.delete,
+        text2: "Delete",
+        callback2: () async => await deleteFile(file.path, index, "file"),
+      ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
       tileColor: Theme.of(context).primaryColor,
-      leading: Icon(
-        Icons.file_open_rounded,
-        color: Theme.of(context).secondaryHeaderColor,
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 15.0),
+        child: Icon(
+          Icons.file_open_rounded,
+          color: Theme.of(context).secondaryHeaderColor,
+        ),
       ),
       title: Text(
         basename,
         softWrap: true,
         overflow: TextOverflow.ellipsis,
       ),
-      trailing: IconButton(
-        icon: Icon(
-          Icons.delete,
-          color: Theme.of(context).secondaryHeaderColor,
-        ),
-        onPressed: () async => await deleteFile(file.path, index, "file"),
-      ),
     );
   }
+
+  Future<dynamic> myBottomSheet({
+    required String text1,
+    required Color color1,
+    required IconData icon1,
+    required String text2,
+    required Color color2,
+    required IconData icon2,
+    required VoidCallback callback1,
+    required VoidCallback callback2,
+  }) {
+    HapticFeedback.vibrate();
+    return showModalBottomSheet(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      context: context,
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(20),
+          height: 130.0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              mySheetIcon(
+                backgroundColor: color1,
+                title: text1,
+                context: context,
+                icon: icon1,
+                callback: () {
+                  Navigator.of(context).pop();
+                  callback1();
+                },
+              ),
+              mySheetIcon(
+                backgroundColor: color2,
+                title: text2,
+                context: context,
+                icon: icon2,
+                callback: () {
+                  Navigator.of(context).pop();
+                  callback2();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void setCatagory({required String catagory, required String stateNote}) {
+    if (stateNote == "tempNote") {
+      _tempNote = _tempNote!.copyWith(category: catagory);
+    } else {
+      _isNote = _isNote!.copyWith(category: catagory);
+    }
+    setState(() {});
+  }
+
+  void goToFolderPage({required Note note, required String stateNote}) =>
+      Navigator.of(context).push(
+        SlideRightRoute(
+          page: FolderPage(
+            callback: (value) => setCatagory(
+              catagory: value,
+              stateNote: stateNote,
+            ),
+          ),
+          arguments: note,
+        ),
+      );
 
   AppBar myAppBar() {
     return AppBar(
@@ -452,7 +570,38 @@ class _AddNoteState extends State<AddNote> {
       elevation: 0.0,
       actions: <Widget>[
         IconButton(
-          onPressed: () => addFile(),
+          onPressed: () async {
+            if (_isNote == null) {
+              _tempNote ??= const Note(
+                title: "temp",
+                body: "temp",
+                date: "temp",
+              );
+              if (!_isTempNote) {
+                _tempNote = await _database.insertNote(note: _tempNote!);
+                _isTempNote = true;
+              }
+              goToFolderPage(note: _tempNote!, stateNote: "tempNote");
+              return;
+            }
+            goToFolderPage(note: _isNote!, stateNote: "note");
+          },
+          icon: const Icon(
+            Icons.drive_file_move,
+            color: Colors.white,
+          ),
+        ),
+        IconButton(
+          onPressed: () => myBottomSheet(
+            text1: "Camera",
+            color1: Colors.blueAccent,
+            icon1: Icons.camera,
+            callback1: () {},
+            text2: "Gallary",
+            color2: Colors.pink,
+            icon2: Icons.photo,
+            callback2: addFile,
+          ),
           icon: const Icon(
             Icons.attachment,
             color: Colors.white,
