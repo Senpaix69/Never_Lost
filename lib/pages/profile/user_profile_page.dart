@@ -29,6 +29,7 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   void notConnectedToInternet() {
+    LoadingScreen.instance().hide();
     errorDialogue(
       context: context,
       title: "No Internet Connection",
@@ -42,11 +43,12 @@ class _UserProfileState extends State<UserProfile> {
       message: "Do you really want to logout?",
       title: "Logout",
     )) {
+      showLoading(message: "Checking connection...");
       if (!await checkConnection()) {
         notConnectedToInternet();
         return;
       }
-
+      showLoading(message: "Logging user out...");
       final success = await FirebaseService.instance().logOut();
       if (success != null) {
         Future.delayed(
@@ -58,6 +60,7 @@ class _UserProfileState extends State<UserProfile> {
           ),
         );
       }
+      LoadingScreen.instance().hide();
     }
   }
 

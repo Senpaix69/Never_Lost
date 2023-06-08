@@ -231,7 +231,9 @@ Future<bool> checkConnection() async {
       connectivityResult == ConnectivityResult.wifi) {
     try {
       final client = HttpClient();
-      final request = await client.getUrl(Uri.parse('https://www.google.com'));
+      final request = await client
+          .getUrl(Uri.parse('https://www.google.com'))
+          .timeout(const Duration(seconds: 4));
       final response = await request.close();
       if (response.statusCode == HttpStatus.ok) {
         return true;

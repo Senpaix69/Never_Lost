@@ -30,7 +30,10 @@ class FirebaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   FBUser? _user;
+  Map<String, String>? _restore;
+
   FBUser? get user => _user;
+  Map<String, String>? get restoreBackupSize => _restore;
 
   // Stream controller for user data
   final StreamController<Object?> _userController =
@@ -59,8 +62,17 @@ class FirebaseService {
     final backUpSize = await collection.get().then((snap) => snap.docs);
     if (backUpSize.isEmpty) {
       await collection.doc(_user!.uid).set(data);
+      await spRestoreSize(action: SPActions.set, size: data);
+      return;
     }
-    await spRestoreSize(action: SPActions.set, size: data);
+    final doc = backUpSize.first.data();
+    final restoreDataSize = {
+      timetableColumn: doc[timetableColumn]! as String,
+      todoColumn: doc[todoColumn]! as String,
+      noteColumn: doc[noteColumn]! as String,
+    };
+    spRestoreSize(action: SPActions.set, size: restoreDataSize);
+    _restore = restoreDataSize;
   }
 
   Future<AuthError?> loginWithEmailPassword({
@@ -300,35 +312,6 @@ class FirebaseService {
     };
   }
 
-  Future<Map<String, String>?> restoreDataSize() async {
-    Map<String, String>? size = await spRestoreSize(action: SPActions.get);
-    if (size == null) {
-      final backUpSize = await _firestore
-          .collection(
-            'users/${_user!.uid}/backupSize',
-          )
-          .get()
-          .then((snap) => snap.docs.first);
-      if (backUpSize.exists) {
-        await spRestoreSize(
-          action: SPActions.set,
-          size: {
-            timetableColumn: backUpSize[timetableColumn],
-            todoColumn: backUpSize[todoColumn],
-            noteColumn: backUpSize[noteColumn],
-          },
-        );
-        return {
-          timetableColumn: backUpSize[timetableColumn],
-          todoColumn: backUpSize[todoColumn],
-          noteColumn: backUpSize[noteColumn],
-        };
-      }
-      return null;
-    }
-    return size;
-  }
-
   Future<AuthError?> logOut() async {
     try {
       await GoogleSignIn().signOut();
@@ -407,6 +390,7 @@ class FirebaseService {
     switch (action) {
       case SPActions.set:
         await prefs.setString(restoreSize, jsonEncode(size));
+        _restore = size;
         return null;
       case SPActions.get:
         final jsonString = prefs.getString(restoreSize);

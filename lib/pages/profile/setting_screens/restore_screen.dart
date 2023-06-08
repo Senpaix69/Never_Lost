@@ -29,13 +29,12 @@ class _RestoreScreenState extends State<RestoreScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _size = await _firebase.restoreDataSize();
-      await setArguments(data: _size);
-    });
+    _size = _firebase.restoreBackupSize;
+    setArguments(data: _size);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {});
   }
 
-  Future<void> setArguments({required Map<String, String>? data}) async {
+  void setArguments({required Map<String, String>? data}) {
     if (data != null) {
       _size = data;
       _todoSize = double.parse(data[todoColumn]!.split(" ").first);
@@ -80,35 +79,29 @@ class _RestoreScreenState extends State<RestoreScreen> {
   }
 
   void setAll() {
-    if (!_selectAll) {
-      if (!_notesAgree || !_todoAgree || !_timeTablesAgree) {
-        setState(
-          () {
-            _restoreSize = _noteSize + _timetableSize + _todoSize;
-            _selectAll = true;
-            if (_noteSize > 0.0) _notesAgree = true;
-            if (_timetableSize > 0.0) _timeTablesAgree = true;
-            if (_todoSize > 0.0) _todoAgree = true;
-          },
-        );
-      }
-      return;
-    }
     setState(() {
-      _restoreSize = 0.0;
-      _selectAll = false;
-      _notesAgree = false;
-      _timeTablesAgree = false;
-      _todoAgree = false;
+      if (!_selectAll) {
+        _notesAgree = _noteSize > 0.0;
+        _timeTablesAgree = _timetableSize > 0.0;
+        _todoAgree = _todoSize > 0.0;
+        _selectAll = _notesAgree || _timeTablesAgree || _todoAgree;
+        _restoreSize = _noteSize + _timetableSize + _todoSize;
+      } else {
+        _restoreSize = 0.0;
+        _notesAgree = false;
+        _timeTablesAgree = false;
+        _todoAgree = false;
+        _selectAll = false;
+      }
     });
   }
 
   void checkSelection() {
-    if (_notesAgree && _timeTablesAgree && _todoAgree) {
-      setState(() => _selectAll = true);
-      return;
-    }
-    setState(() => _selectAll = false);
+    setState(() {
+      _selectAll = (_notesAgree || _noteSize == 0) &&
+          (_timeTablesAgree || _timetableSize == 0) &&
+          (_todoAgree || _todoSize == 0);
+    });
   }
 
   void addBackup({

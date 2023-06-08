@@ -57,19 +57,20 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     showLoading(message: "Checking connection...");
     if (!await checkConnection()) {
       notConnectedToInternet();
+      return;
     }
     if (userChoice[timetableColumn]!) {
-      showLoading(message: "Timetables backup is in process...");
+      showLoading(message: "Timetables backup is in progress\nPlease wait...");
       await _firebase.uploadTimetables(timetables: _timetables);
     }
 
     if (userChoice[todoColumn]!) {
-      showLoading(message: "Todos backup is in process...");
+      showLoading(message: "Todos backup is in progress\nPlease wait......");
       await _firebase.uploadTodos(todos: _todos);
     }
 
     if (userChoice[noteColumn]!) {
-      showLoading(message: "Notes backup is in process...");
+      showLoading(message: "Notes backup is in progress\nPlease wait......");
     }
     LoadingScreen.instance().hide();
     showSnak(message: "Backup saved successfully!");
@@ -92,11 +93,12 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     showLoading(message: "Checking connection...");
     if (!await checkConnection()) {
       notConnectedToInternet();
+      return;
     }
 
     if (userChoice[timetableColumn]!) {
       await _db.cleanTimeTable();
-      showLoading(message: "Fetching timetables...");
+      showLoading(message: "Fetching timetables\nPlease wait...");
       final List<TimeTable> allTimeTables = await _firebase.getAllTimeTables();
       for (final timetable in allTimeTables) {
         await _db.insertTimeTable(
@@ -109,7 +111,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
 
     if (userChoice[todoColumn]!) {
       await _db.cleanTotoTable();
-      showLoading(message: "Fetching todos...");
+      showLoading(message: "Fetching todos\nPlease wait...");
       final List<Todo> allTodos = await _firebase.getAllTodos();
       for (final todo in allTodos) {
         await _db.insertTodo(todo: todo);
@@ -117,7 +119,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     }
 
     if (userChoice[noteColumn]!) {
-      showLoading(message: "Notes backup is in process...");
+      showLoading(message: "Fetching notes\nPlease wait...");
     }
 
     await NotificationService.cancelALLScheduleNotification();

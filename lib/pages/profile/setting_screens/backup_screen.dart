@@ -23,7 +23,7 @@ class _BackupScreenState extends State<BackupScreen> {
   bool _notesAgree = false;
   double _timetableSize = 0.0;
   double _todoSize = 0.0;
-  double _notesSize = 0.0;
+  double _noteSize = 0.0;
   double _backupSize = 0.0;
 
   void goBack(Map<String, bool> value) => Navigator.of(context).pop(value);
@@ -61,35 +61,29 @@ class _BackupScreenState extends State<BackupScreen> {
   }
 
   void setAll() {
-    if (!_selectAll) {
-      if (!_notesAgree || !_todoAgree || !_timeTablesAgree) {
-        setState(
-          () {
-            _backupSize = _notesSize + _timetableSize + _todoSize;
-            _selectAll = true;
-            if (_notesSize > 0.0) _notesAgree = true;
-            if (_timetableSize > 0.0) _timeTablesAgree = true;
-            if (_todoSize > 0.0) _todoAgree = true;
-          },
-        );
-      }
-      return;
-    }
     setState(() {
-      _backupSize = 0.0;
-      _selectAll = false;
-      _notesAgree = false;
-      _timeTablesAgree = false;
-      _todoAgree = false;
+      if (!_selectAll) {
+        _notesAgree = _noteSize > 0.0;
+        _timeTablesAgree = _timetableSize > 0.0;
+        _todoAgree = _todoSize > 0.0;
+        _selectAll = _notesAgree || _timeTablesAgree || _todoAgree;
+        _backupSize = _noteSize + _timetableSize + _todoSize;
+      } else {
+        _backupSize = 0.0;
+        _notesAgree = false;
+        _timeTablesAgree = false;
+        _todoAgree = false;
+        _selectAll = false;
+      }
     });
   }
 
   void checkSelection() {
-    if (_notesAgree && _timeTablesAgree && _todoAgree) {
-      setState(() => _selectAll = true);
-      return;
-    }
-    setState(() => _selectAll = false);
+    setState(() {
+      _selectAll = (_notesAgree || _noteSize == 0) &&
+          (_timeTablesAgree || _timetableSize == 0) &&
+          (_todoAgree || _todoSize == 0);
+    });
   }
 
   void addBackup({
@@ -250,11 +244,11 @@ class _BackupScreenState extends State<BackupScreen> {
                         subtitle: convertSizeUnit(
                           size: calculateNoteSize(
                             notes: _db.cachedNotes,
-                            callback: (value) => _notesSize = value,
+                            callback: (value) => _noteSize = value,
                           ),
                         ),
                         valueCheckBox: () => addBackup(
-                          size: _notesSize,
+                          size: _noteSize,
                           name: "Notes",
                         ),
                       ),
