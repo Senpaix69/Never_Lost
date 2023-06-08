@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neverlost/theme/custom_themes/black_fold.dart';
 import 'package:neverlost/theme/custom_themes/navy_blue.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -9,12 +10,13 @@ class ThemeProvider extends ChangeNotifier {
   final String themePreferenceKey = 'theme';
 
   ThemeProvider() {
-    _themeData = NavyBlue.lightTheme;
+    _themeData = NavyBlue.darkTheme;
     _loadThemeFromPrefs();
   }
 
   ThemeData get themeData => _themeData!;
-  ThemeData get navyBlue => NavyBlue.lightTheme;
+  ThemeData get navyBlue => NavyBlue.darkTheme;
+  ThemeData get blackFold => BlackFold.darkTheme;
 
   void setTheme({required ThemeData theme}) async {
     _themeData = theme;
@@ -26,24 +28,31 @@ class ThemeProvider extends ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? savedTheme = prefs.getString(themePreferenceKey);
 
-    if (savedTheme == navyBlueLight) {
-      _themeData = NavyBlue.lightTheme;
+    if (savedTheme == navyBlueDark) {
+      _themeData = NavyBlue.darkTheme;
+    } else if (savedTheme == blackFoldDark) {
+      _themeData = BlackFold.darkTheme;
     }
-
     notifyListeners();
   }
 
   Future<void> _saveThemeToPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (_themeData == NavyBlue.lightTheme) {
-      await prefs.setString(themePreferenceKey, navyBlueLight);
+    if (_themeData == NavyBlue.darkTheme) {
+      await prefs.setString(themePreferenceKey, navyBlueDark);
       return;
+    }
+    if (_themeData == BlackFold.darkTheme) {
+      await prefs.setString(themePreferenceKey, blackFoldDark);
     }
   }
 
   void getThemeFromSharedPref({String? theme}) {
     if (theme == navyBlueLight) {
-      _themeData = NavyBlue.lightTheme;
+      _themeData = NavyBlue.darkTheme;
+    }
+    if (theme == blackFoldDark) {
+      _themeData = BlackFold.darkTheme;
     }
 
     notifyListeners();

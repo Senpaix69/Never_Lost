@@ -44,6 +44,14 @@ class ThemeScreen extends StatelessWidget {
               title: "Navy Blue",
               trailing: false,
             ),
+            MyCustomTile(
+              icon: Icons.format_color_fill_rounded,
+              onClick: () =>
+                  themeProvider.setTheme(theme: themeProvider.blackFold),
+              iconBackGroundColor: const Color(0xFF424242),
+              title: "Black Fold",
+              trailing: false,
+            ),
           ],
         ),
       ),

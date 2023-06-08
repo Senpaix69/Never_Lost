@@ -6,7 +6,7 @@ const navyBlueDark = "NavyBlue_Dark";
 @immutable
 class NavyBlue {
   static const primaryColor = Color(0xFF124B52);
-  static final ThemeData lightTheme = ThemeData(
+  static final ThemeData darkTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
     primaryColor: const Color(0xFF124B52),
