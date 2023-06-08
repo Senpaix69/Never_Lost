@@ -43,7 +43,7 @@ class Todo {
     };
   }
 
-  static Todo fromMap(Map<String, Object?> map) {
+  factory Todo.fromMap(Map<String, Object?> map) {
     return Todo(
       id: map[todoIdColumn] as int?,
       text: map[todoTextColumn] as String,

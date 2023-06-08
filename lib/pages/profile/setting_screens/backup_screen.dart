@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neverlost/contants/firebase_contants/firebase_contants.dart';
 import 'package:neverlost/contants/profile_contants/backup_contants.dart';
 import 'package:neverlost/services/database.dart';
 import 'package:neverlost/services/firebase_auth_services/firebase_service.dart'
@@ -44,9 +45,9 @@ class _BackupScreenState extends State<BackupScreen> {
           message: "Backup Size: $size\nAre you sure you wants to backup?",
           title: "Backup")) {
         goBack({
-          'timetable': _timeTablesAgree,
-          'todo': _todoAgree,
-          'note': _notesAgree,
+          timetableColumn: _timeTablesAgree,
+          todoColumn: _todoAgree,
+          noteColumn: _notesAgree,
         });
         return;
       }

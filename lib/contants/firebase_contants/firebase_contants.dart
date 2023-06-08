@@ -7,3 +7,6 @@ const userFullname = 'fullname';
 const userVerified = 'verified';
 const userProfilePic = 'profilePic';
 const userProfilePicURL = 'profilePicURL';
+const timetableColumn = 'timetable';
+const todoColumn = 'todo';
+const noteColumn = 'note';

@@ -1,4 +1,4 @@
-import 'dart:io' show File;
+import 'dart:io' show File, HttpClient, HttpStatus;
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -223,11 +223,25 @@ void sortDayTimes(dynamic list) {
 }
 
 Future<bool> checkConnection() async {
-  final connectivityResult = await (Connectivity().checkConnectivity());
+  final connectivityResult = await Connectivity().checkConnectivity();
   if (connectivityResult == ConnectivityResult.none) {
     return false;
   }
-  return true;
+  if (connectivityResult == ConnectivityResult.mobile ||
+      connectivityResult == ConnectivityResult.wifi) {
+    try {
+      final client = HttpClient();
+      final request = await client.getUrl(Uri.parse('https://www.google.com'));
+      final response = await request.close();
+      if (response.statusCode == HttpStatus.ok) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
+  }
+  return false;
 }
 
 Future<void> deleteAllFiles({

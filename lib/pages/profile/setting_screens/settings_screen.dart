@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neverlost/contants/firebase_contants/firebase_contants.dart';
 import 'package:neverlost/pages/profile/setting_screens/about_app.dart';
 import 'package:neverlost/pages/profile/setting_screens/about_dev.dart';
 import 'package:neverlost/pages/profile/setting_screens/backup_screen.dart';
@@ -32,7 +33,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   final FirebaseService _firebase = FirebaseService.instance();
   late final List<TimeTable> _timetables;
   late final List<Todo> _todos;
-  String? _restoreSize;
 
   @override
   void initState() {
@@ -40,13 +40,12 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _timetables = _db.cachedTimeTables;
       _todos = _db.cachedTodos;
-      if (_firebase.user != null) {
-        _restoreSize = await _firebase.restoreDataSize();
-      }
     });
   }
 
   void notConnectedToInternet() {
+    LoadingScreen.instance().hide();
+
     errorDialogue(
       context: context,
       title: "No Internet Connection",
@@ -54,27 +53,26 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     );
   }
 
-  Future<bool> makeBackUp({required Map<String, bool> userChoice}) async {
+  Future<void> makeBackUp({required Map<String, bool> userChoice}) async {
+    showLoading(message: "Checking connection...");
     if (!await checkConnection()) {
       notConnectedToInternet();
-      return false;
     }
-    if (userChoice['timetable']!) {
+    if (userChoice[timetableColumn]!) {
       showLoading(message: "Timetables backup is in process...");
       await _firebase.uploadTimetables(timetables: _timetables);
     }
 
-    if (userChoice['todo']!) {
+    if (userChoice[todoColumn]!) {
       showLoading(message: "Todos backup is in process...");
       await _firebase.uploadTodos(todos: _todos);
     }
 
-    if (userChoice['note']!) {
+    if (userChoice[noteColumn]!) {
       showLoading(message: "Notes backup is in process...");
     }
     LoadingScreen.instance().hide();
     showSnak(message: "Backup saved successfully!");
-    return true;
   }
 
   void showLoading({required String message}) => LoadingScreen.instance().show(
@@ -90,40 +88,42 @@ class _ProfileSettingsState extends State<ProfileSettings> {
         title: title,
       );
 
-  Future<bool> restoreBackup() async {
-    if (_restoreSize == null) {
-      errorDialogue(
-        context: context,
-        title: "No Backup Found",
-        message: "Ensure that you have made a backup, click on backup!",
-      );
-      return false;
-    }
+  Future<void> restoreBackup({required Map<String, bool> userChoice}) async {
+    showLoading(message: "Checking connection...");
     if (!await checkConnection()) {
-      return false;
+      notConnectedToInternet();
     }
-    showLoading(message: "Fetching timetables...");
-    final List<TimeTable> allTimeTables = await _firebase.getAllTimeTables();
-    showLoading(message: "Fetching todos...");
-    final List<Todo> allTodos = await _firebase.getAllTodos();
-    await _db.cleanTimeTable();
-    await _db.cleanTotoTable();
+
+    if (userChoice[timetableColumn]!) {
+      await _db.cleanTimeTable();
+      showLoading(message: "Fetching timetables...");
+      final List<TimeTable> allTimeTables = await _firebase.getAllTimeTables();
+      for (final timetable in allTimeTables) {
+        await _db.insertTimeTable(
+          subject: timetable.subject,
+          professor: timetable.professor,
+          daytimes: timetable.dayTime,
+        );
+      }
+    }
+
+    if (userChoice[todoColumn]!) {
+      await _db.cleanTotoTable();
+      showLoading(message: "Fetching todos...");
+      final List<Todo> allTodos = await _firebase.getAllTodos();
+      for (final todo in allTodos) {
+        await _db.insertTodo(todo: todo);
+      }
+    }
+
+    if (userChoice[noteColumn]!) {
+      showLoading(message: "Notes backup is in process...");
+    }
+
     await NotificationService.cancelALLScheduleNotification();
-    for (int i = 0; i < allTimeTables.length; i++) {
-      final timetable = allTimeTables[i];
-      await _db.insertTimeTable(
-        subject: timetable.subject,
-        professor: timetable.professor,
-        daytimes: timetable.dayTime,
-      );
-    }
-    for (int i = 0; i < allTodos.length; i++) {
-      final todo = allTodos[i];
-      await _db.insertTodo(todo: todo);
-    }
+
     LoadingScreen.instance().hide();
     showSnak(message: "Restoration completed!");
-    return true;
   }
 
   void performProfileActions(ProfileActions action) async {
@@ -141,15 +141,15 @@ class _ProfileSettingsState extends State<ProfileSettings> {
           SlideRightRoute(page: const BackupScreen()),
         );
         if (userChoice != null) {
-          makeBackUp(userChoice: userChoice);
+          await makeBackUp(userChoice: userChoice);
         }
         break;
       case ProfileActions.restore:
-        if (await Navigator.of(context).push(
-              SlideRightRoute(page: const RestoreScreen()),
-            ) ??
-            false) {
-          await restoreBackup();
+        final userChoice = await Navigator.of(context).push(
+          SlideRightRoute(page: const RestoreScreen()),
+        );
+        if (userChoice != null) {
+          await restoreBackup(userChoice: userChoice);
         }
         break;
     }

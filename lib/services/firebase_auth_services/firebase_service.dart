@@ -28,6 +28,7 @@ enum SPActions {
 class FirebaseService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   FBUser? _user;
   FBUser? get user => _user;
 
@@ -45,7 +46,23 @@ class FirebaseService {
       FirebaseService._privateConstructor();
 
   factory FirebaseService.instance() => _instance;
-  // Login
+
+  Future<void> setBackupToCloud() async {
+    final collection = _firestore.collection(
+      'users/${_user!.uid}/backupSize',
+    );
+    final data = {
+      timetableColumn: "0.0 bytes",
+      todoColumn: "0.0 bytes",
+      noteColumn: "0.0 bytes",
+    };
+    final backUpSize = await collection.get().then((snap) => snap.docs);
+    if (backUpSize.isEmpty) {
+      await collection.doc(_user!.uid).set(data);
+    }
+    await spRestoreSize(action: SPActions.set, size: data);
+  }
+
   Future<AuthError?> loginWithEmailPassword({
     required String email,
     required String password,
@@ -61,6 +78,7 @@ class FirebaseService {
 
       final fbuser = userCredential.user;
       setUser(fbuser!, profilePicPath);
+      await setBackupToCloud();
       return null;
     } on FirebaseAuthException catch (e) {
       return AuthError.from(e);
@@ -92,6 +110,8 @@ class FirebaseService {
 
     final fbuser = userCredential.user!;
     setUser(fbuser, null);
+
+    await setBackupToCloud();
     return null;
   }
 
@@ -110,7 +130,6 @@ class FirebaseService {
 
       final userId = userCredential.user!.uid;
       String? profilePic;
-      // Upload profile picture to Firebase Storage
       if (profilePicPath != null) {
         final profilePicData = await _uploadProfilePicture(
           userId: userId,
@@ -140,6 +159,20 @@ class FirebaseService {
     for (final todo in todos) {
       await collection.add(todo.toMap());
     }
+
+    final backUpSizeCollection =
+        _firestore.collection('users/${_user!.uid}/backupSize');
+    String size = convertSizeUnit(size: calculateSize(list: todos));
+    await backUpSizeCollection.doc(_user!.uid).set(
+      {todoColumn: size},
+      SetOptions(merge: true),
+    );
+    final getSize = await spRestoreSize(action: SPActions.get);
+    spRestoreSize(action: SPActions.set, size: {
+      todoColumn: size,
+      timetableColumn: getSize![timetableColumn]!,
+      noteColumn: getSize[noteColumn]!,
+    });
   }
 
   Future<List<Todo>> getAllTodos() async {
@@ -161,9 +194,10 @@ class FirebaseService {
   Future<void> uploadTimetables({
     required List<TimeTable> timetables,
   }) async {
-    final collection = _firestore.collection(
-      'users/${_user!.uid}/timetables',
-    );
+    final collection = _firestore.collection('users/${_user!.uid}/timetables');
+    final backUpSizeCollection =
+        _firestore.collection('users/${_user!.uid}/backupSize');
+
     await deleteBackUp(collectionTable: "timetables");
 
     for (final timetable in timetables) {
@@ -173,19 +207,15 @@ class FirebaseService {
       );
     }
     String size = convertSizeUnit(size: calculateSize(list: timetables));
-    await spRestoreSize(action: SPActions.set, size: size);
-    final backUpSizeCollection = _firestore.collection(
-      'users/${_user!.uid}/backupSize',
+    await backUpSizeCollection.doc(_user!.uid).set(
+      {timetableColumn: size},
+      SetOptions(merge: true),
     );
-
-    await backUpSizeCollection.get().then((snapshot) {
-      for (final doc in snapshot.docs) {
-        doc.reference.delete();
-      }
-    });
-
-    await backUpSizeCollection.add({
-      'timetable': size,
+    final getSize = await spRestoreSize(action: SPActions.get);
+    spRestoreSize(action: SPActions.set, size: {
+      timetableColumn: size,
+      todoColumn: getSize![todoColumn]!,
+      noteColumn: getSize[noteColumn]!,
     });
   }
 
@@ -270,8 +300,8 @@ class FirebaseService {
     };
   }
 
-  Future<String?> restoreDataSize() async {
-    String? size = await spRestoreSize(action: SPActions.get);
+  Future<Map<String, String>?> restoreDataSize() async {
+    Map<String, String>? size = await spRestoreSize(action: SPActions.get);
     if (size == null) {
       final backUpSize = await _firestore
           .collection(
@@ -282,9 +312,17 @@ class FirebaseService {
       if (backUpSize.exists) {
         await spRestoreSize(
           action: SPActions.set,
-          size: backUpSize['timetable'],
+          size: {
+            timetableColumn: backUpSize[timetableColumn],
+            todoColumn: backUpSize[todoColumn],
+            noteColumn: backUpSize[noteColumn],
+          },
         );
-        return backUpSize['timetable'];
+        return {
+          timetableColumn: backUpSize[timetableColumn],
+          todoColumn: backUpSize[todoColumn],
+          noteColumn: backUpSize[noteColumn],
+        };
       }
       return null;
     }
@@ -361,17 +399,26 @@ class FirebaseService {
     }
   }
 
-  Future<String?> spRestoreSize({
+  Future<Map<String, String>?> spRestoreSize({
     required SPActions action,
-    String? size,
+    Map<String, String>? size,
   }) async {
     final prefs = await SharedPreferences.getInstance();
     switch (action) {
       case SPActions.set:
-        await prefs.setString(restoreSize, size!);
+        await prefs.setString(restoreSize, jsonEncode(size));
         return null;
       case SPActions.get:
-        return prefs.getString(restoreSize);
+        final jsonString = prefs.getString(restoreSize);
+        if (jsonString != null) {
+          final data = jsonDecode(jsonString);
+          return {
+            timetableColumn: data[timetableColumn],
+            todoColumn: data[todoColumn],
+            noteColumn: data[noteColumn],
+          };
+        }
+        return null;
       case SPActions.delete:
         await prefs.remove(restoreSize);
         return null;

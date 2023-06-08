@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:neverlost/contants/firebase_contants/firebase_contants.dart';
 import 'package:neverlost/contants/profile_contants/restore_contants.dart';
-import 'package:neverlost/services/database.dart';
 import 'package:neverlost/services/firebase_auth_services/firebase_service.dart'
-    show calculateNoteSize, calculateSize, convertSizeUnit;
+    show FirebaseService, convertSizeUnit;
 import 'package:neverlost/widgets/dialog_boxs.dart'
     show confirmDialogue, errorDialogue;
 
@@ -14,20 +14,40 @@ class RestoreScreen extends StatefulWidget {
 }
 
 class _RestoreScreenState extends State<RestoreScreen> {
-  final DatabaseService _db = DatabaseService();
+  final FirebaseService _firebase = FirebaseService.instance();
   bool _isAgree = false;
   bool _timeTablesAgree = false;
   bool _selectAll = false;
   bool _todoAgree = false;
   bool _notesAgree = false;
+  Map<String, String>? _size;
   double _timetableSize = 0.0;
   double _todoSize = 0.0;
-  double _notesSize = 0.0;
-  double _backupSize = 0.0;
+  double _noteSize = 0.0;
+  double _restoreSize = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _size = await _firebase.restoreDataSize();
+      await setArguments(data: _size);
+    });
+  }
+
+  Future<void> setArguments({required Map<String, String>? data}) async {
+    if (data != null) {
+      _size = data;
+      _todoSize = double.parse(data[todoColumn]!.split(" ").first);
+      _timetableSize = double.parse(data[timetableColumn]!.split(" ").first);
+      _noteSize = double.parse(data[noteColumn]!.split(" ").first);
+      setState(() {});
+    }
+  }
 
   void goBack(Map<String, bool> value) => Navigator.of(context).pop(value);
 
-  void backup() async {
+  void restore() async {
     if (_isAgree) {
       if (!_notesAgree && !_timeTablesAgree && !_todoAgree) {
         errorDialogue(
@@ -38,15 +58,15 @@ class _RestoreScreenState extends State<RestoreScreen> {
         );
         return;
       }
-      final size = convertSizeUnit(size: _backupSize);
+      final size = convertSizeUnit(size: _restoreSize);
       if (await confirmDialogue(
           context: context,
-          message: "Backup Size: $size\nAre you sure you wants to backup?",
-          title: "Backup")) {
+          message: "Restore Size: $size\nAre you sure you wants to backup?",
+          title: "Restore")) {
         goBack({
-          'timetable': _timeTablesAgree,
-          'todo': _todoAgree,
-          'note': _notesAgree,
+          timetableColumn: _timeTablesAgree,
+          todoColumn: _todoAgree,
+          noteColumn: _notesAgree,
         });
         return;
       }
@@ -64,9 +84,9 @@ class _RestoreScreenState extends State<RestoreScreen> {
       if (!_notesAgree || !_todoAgree || !_timeTablesAgree) {
         setState(
           () {
-            _backupSize = _notesSize + _timetableSize + _todoSize;
+            _restoreSize = _noteSize + _timetableSize + _todoSize;
             _selectAll = true;
-            if (_notesSize > 0.0) _notesAgree = true;
+            if (_noteSize > 0.0) _notesAgree = true;
             if (_timetableSize > 0.0) _timeTablesAgree = true;
             if (_todoSize > 0.0) _todoAgree = true;
           },
@@ -75,7 +95,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
       return;
     }
     setState(() {
-      _backupSize = 0.0;
+      _restoreSize = 0.0;
       _selectAll = false;
       _notesAgree = false;
       _timeTablesAgree = false;
@@ -104,10 +124,10 @@ class _RestoreScreenState extends State<RestoreScreen> {
       return;
     }
     bool value;
-    if (name == 'Timetables') {
+    if (name == timetableColumn) {
       _timeTablesAgree = !_timeTablesAgree;
       value = _timeTablesAgree;
-    } else if (name == 'Todos') {
+    } else if (name == todoColumn) {
       _todoAgree = !_todoAgree;
       value = _todoAgree;
     } else {
@@ -116,10 +136,10 @@ class _RestoreScreenState extends State<RestoreScreen> {
     }
     checkSelection();
     if (value) {
-      _backupSize += size;
+      _restoreSize += size;
       return;
     }
-    _backupSize -= size;
+    _restoreSize -= size;
   }
 
   @override
@@ -195,15 +215,12 @@ class _RestoreScreenState extends State<RestoreScreen> {
                       myTile(
                         title: "Available Timetables",
                         value: _timeTablesAgree,
-                        subtitle: convertSizeUnit(
-                          size: calculateSize(
-                            list: _db.cachedTimeTables,
-                            callback: (value) => _timetableSize = value,
-                          ),
-                        ),
+                        subtitle: _size != null
+                            ? _size![timetableColumn]
+                            : "0.0 bytes",
                         valueCheckBox: () => addBackup(
                           size: _timetableSize,
-                          name: "Timetables",
+                          name: timetableColumn,
                         ),
                       ),
                       const SizedBox(
@@ -212,29 +229,21 @@ class _RestoreScreenState extends State<RestoreScreen> {
                       myTile(
                         title: "Available Todos",
                         value: _todoAgree,
-                        subtitle: convertSizeUnit(
-                          size: calculateSize(
-                            list: _db.cachedTodos,
-                            callback: (value) => _todoSize = value,
-                          ),
-                        ),
+                        subtitle:
+                            _size != null ? _size![todoColumn] : "0.0 bytes",
                         valueCheckBox: () => addBackup(
                           size: _todoSize,
-                          name: "Todos",
+                          name: todoColumn,
                         ),
                       ),
                       myTile(
                         title: "Available Notes",
                         value: _notesAgree,
-                        subtitle: convertSizeUnit(
-                          size: calculateNoteSize(
-                            notes: _db.cachedNotes,
-                            callback: (value) => _notesSize = value,
-                          ),
-                        ),
+                        subtitle:
+                            _size != null ? _size![noteColumn] : "0.0 bytes",
                         valueCheckBox: () => addBackup(
-                          size: _notesSize,
-                          name: "Notes",
+                          size: _noteSize,
+                          name: noteColumn,
                         ),
                       ),
                     ],
@@ -254,7 +263,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
                   children: <Widget>[
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () => Navigator.of(context).pop(false),
+                        onPressed: () => Navigator.of(context).pop(null),
                         style: ButtonStyle(
                             backgroundColor: MaterialStateColor.resolveWith(
                           (states) => Theme.of(context).primaryColorLight,
@@ -272,18 +281,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
                     ),
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () {
-                          if (_isAgree) {
-                            Navigator.of(context).pop(true);
-                          } else {
-                            errorDialogue(
-                              context: context,
-                              message:
-                                  "Make sure you agree are agreed to the terms and conditions",
-                              title: "Terms and Conditions",
-                            );
-                          }
-                        },
+                        onPressed: restore,
                         style: ButtonStyle(
                             backgroundColor: MaterialStateColor.resolveWith(
                           (states) => Theme.of(context).primaryColorDark,
