@@ -49,7 +49,23 @@ class ThemeScreen extends StatelessWidget {
               onClick: () =>
                   themeProvider.setTheme(theme: themeProvider.blackFold),
               iconBackGroundColor: const Color(0xFF424242),
-              title: "Black Fold",
+              title: "Grey Fold",
+              trailing: false,
+            ),
+            MyCustomTile(
+              icon: Icons.format_color_fill_rounded,
+              onClick: () =>
+                  themeProvider.setTheme(theme: themeProvider.garden),
+              iconBackGroundColor: Colors.green,
+              title: "Garden",
+              trailing: false,
+            ),
+            MyCustomTile(
+              icon: Icons.format_color_fill_rounded,
+              onClick: () =>
+                  themeProvider.setTheme(theme: themeProvider.bubble),
+              iconBackGroundColor: Colors.deepPurple.shade900,
+              title: "Bubble",
               trailing: false,
             ),
           ],

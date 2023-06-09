@@ -29,9 +29,10 @@ class _RestoreScreenState extends State<RestoreScreen> {
   @override
   void initState() {
     super.initState();
-    _size = _firebase.restoreBackupSize;
-    setArguments(data: _size);
-    WidgetsBinding.instance.addPostFrameCallback((_) async {});
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _size = await _firebase.restoreBackupSize;
+      setArguments(data: _size);
+    });
   }
 
   void setArguments({required Map<String, String>? data}) {

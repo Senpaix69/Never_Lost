@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:neverlost/theme/custom_themes/black_fold.dart';
+import 'package:neverlost/theme/custom_themes/bubble.dart';
+import 'package:neverlost/theme/custom_themes/garden.dart';
+import 'package:neverlost/theme/custom_themes/grey_fold.dart';
 import 'package:neverlost/theme/custom_themes/navy_blue.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-ColorScheme lightColorScheme = ColorScheme.fromSeed(seedColor: Colors.blue);
 
 class ThemeProvider extends ChangeNotifier {
   ThemeData? _themeData;
@@ -16,7 +16,9 @@ class ThemeProvider extends ChangeNotifier {
 
   ThemeData get themeData => _themeData!;
   ThemeData get navyBlue => NavyBlue.darkTheme;
-  ThemeData get blackFold => BlackFold.darkTheme;
+  ThemeData get blackFold => GreyFold.darkTheme;
+  ThemeData get garden => Garden.darkTheme;
+  ThemeData get bubble => Bubble.darkTheme;
 
   void setTheme({required ThemeData theme}) async {
     _themeData = theme;
@@ -30,8 +32,12 @@ class ThemeProvider extends ChangeNotifier {
 
     if (savedTheme == navyBlueDark) {
       _themeData = NavyBlue.darkTheme;
-    } else if (savedTheme == blackFoldDark) {
-      _themeData = BlackFold.darkTheme;
+    } else if (savedTheme == greyFoldDark) {
+      _themeData = GreyFold.darkTheme;
+    } else if (savedTheme == gardenDark) {
+      _themeData = Garden.darkTheme;
+    } else if (savedTheme == bubbleDark) {
+      _themeData = Bubble.darkTheme;
     }
     notifyListeners();
   }
@@ -42,8 +48,16 @@ class ThemeProvider extends ChangeNotifier {
       await prefs.setString(themePreferenceKey, navyBlueDark);
       return;
     }
-    if (_themeData == BlackFold.darkTheme) {
-      await prefs.setString(themePreferenceKey, blackFoldDark);
+    if (_themeData == Garden.darkTheme) {
+      await prefs.setString(themePreferenceKey, gardenDark);
+      return;
+    }
+    if (_themeData == Bubble.darkTheme) {
+      await prefs.setString(themePreferenceKey, bubbleDark);
+      return;
+    }
+    if (_themeData == GreyFold.darkTheme) {
+      await prefs.setString(themePreferenceKey, greyFoldDark);
     }
   }
 
@@ -51,8 +65,14 @@ class ThemeProvider extends ChangeNotifier {
     if (theme == navyBlueLight) {
       _themeData = NavyBlue.darkTheme;
     }
-    if (theme == blackFoldDark) {
-      _themeData = BlackFold.darkTheme;
+    if (theme == greyFoldDark) {
+      _themeData = GreyFold.darkTheme;
+    }
+    if (theme == gardenDark) {
+      _themeData = Garden.darkTheme;
+    }
+    if (theme == bubbleDark) {
+      _themeData = Bubble.darkTheme;
     }
 
     notifyListeners();

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-const blackFoldLight = "blackFold_Light";
-const blackFoldDark = "blackFold_Dark";
+const greyFoldLight = "greyFold_Light";
+const greyFoldDark = "greyFold_Dark";
 
 @immutable
-class BlackFold {
+class GreyFold {
   static const primaryColor = Color(0xFF363636);
   static const primaryColorDark = Color(0xFF262626);
   static const primaryColorLight = Color(0xFF5B5B5B);
@@ -37,7 +37,7 @@ class BlackFold {
     secondaryHeaderColor: Colors.white,
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
       elevation: 0.0,
-      backgroundColor: primaryColorDark,
+      backgroundColor: primaryColor,
     ),
     timePickerTheme: const TimePickerThemeData(
       backgroundColor: primaryColor,

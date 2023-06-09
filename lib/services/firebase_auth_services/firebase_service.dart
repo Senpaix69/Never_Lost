@@ -33,7 +33,10 @@ class FirebaseService {
   Map<String, String>? _restore;
 
   FBUser? get user => _user;
-  Map<String, String>? get restoreBackupSize => _restore;
+  Future<Map<String, String>?> get restoreBackupSize async {
+    _restore ??= await spRestoreSize(action: SPActions.get);
+    return _restore;
+  }
 
   // Stream controller for user data
   final StreamController<Object?> _userController =
