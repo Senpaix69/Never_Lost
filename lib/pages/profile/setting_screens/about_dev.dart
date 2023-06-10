@@ -19,6 +19,9 @@ class AboutDeveloper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("About Developer"),
+      ),
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.symmetric(
@@ -27,26 +30,6 @@ class AboutDeveloper extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Row(
-                children: <Widget>[
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back_ios_new_outlined),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  const Text(
-                    "About Developer",
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 30.0),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Column(
@@ -78,7 +61,7 @@ class AboutDeveloper extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 10.0),
+              const Spacer(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[

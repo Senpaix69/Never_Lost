@@ -16,9 +16,12 @@ class FolderButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(6.0),
+      padding: const EdgeInsets.symmetric(horizontal: 3.0),
       child: ElevatedButton(
         style: ButtonStyle(
+          padding: MaterialStateProperty.resolveWith(
+            (states) => const EdgeInsets.symmetric(horizontal: 10.0),
+          ),
           shape: MaterialStateProperty.resolveWith(
             (states) => RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0),

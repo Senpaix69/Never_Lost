@@ -10,7 +10,8 @@ import 'package:neverlost/widgets/animate_route.dart'
     show SlideFromBottomTransition, SlideRightRoute;
 import 'package:neverlost/widgets/dialog_boxs.dart' show confirmDialogue;
 import 'package:neverlost/widgets/folder_button.dart';
-import 'package:neverlost/widgets/styles.dart' show mySheetIcon;
+import 'package:neverlost/widgets/styles.dart'
+    show decorationFormField, mySheetIcon;
 
 class NoteList extends StatefulWidget {
   const NoteList({super.key});
@@ -22,6 +23,7 @@ class _NoteListState extends State<NoteList>
     with SingleTickerProviderStateMixin {
   late final DatabaseService _database;
   late AnimationController _animationController;
+  late final TextEditingController _controller;
   late Animation<double> _animation;
   String _folderName = "";
 
@@ -38,6 +40,7 @@ class _NoteListState extends State<NoteList>
       curve: Curves.easeOut,
       reverseCurve: Curves.easeIn,
     );
+    _controller = TextEditingController();
     _animationController.forward();
   }
 
@@ -53,13 +56,26 @@ class _NoteListState extends State<NoteList>
   @override
   void dispose() {
     _animationController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   List<Note> filterNotes(List<Note> list) {
-    if (_folderName.isEmpty) {
+    if (_controller.text.isEmpty && _folderName.isEmpty) {
       return list;
     }
+
+    if (_controller.text.isNotEmpty) {
+      final text = _controller.text.toLowerCase();
+      return list
+          .where(
+            (note) => (note.title.toLowerCase().contains(text) ||
+                (note.body.toLowerCase().contains(text) ||
+                    (note.category.toLowerCase().contains(text)))),
+          )
+          .toList();
+    }
+
     return list.where((note) => note.category == _folderName).toList();
   }
 
@@ -77,38 +93,41 @@ class _NoteListState extends State<NoteList>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: folderBuilder(context),
-      body: Container(
-        height: double.infinity,
-        width: double.infinity,
-        padding: const EdgeInsets.only(top: 10.0),
-        decoration: null,
-        child: StreamBuilder(
-          stream: _database.allNotes,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done ||
-                snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: CircularProgressIndicator(
-                  color: Theme.of(context).primaryColor,
-                ),
-              );
-            }
-            final notes = filterNotes(snapshot.data!);
-            if (notes.isEmpty) {
-              return emptyWidget(
-                icon: Icons.library_books_outlined,
-                message: "Empty Notes",
-              );
-            }
-            return Container(
-              decoration: null,
-              height: double.infinity,
-              width: double.infinity,
-              child: myListBuilder(sort(notes: notes)),
-            );
-          },
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: Scaffold(
+        appBar: myAppBar(context),
+        body: Container(
+          height: double.infinity,
+          padding: const EdgeInsets.only(top: 10.0),
+          decoration: null,
+          child: StreamBuilder(
+            stream: _database.allNotes,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done ||
+                  snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(
+                    color: Theme.of(context).primaryColor,
+                  ),
+                );
+              }
+              final notes = filterNotes(snapshot.data!);
+              if (notes.isEmpty) {
+                return emptyWidget(
+                  icon: Icons.library_books_outlined,
+                  message: "Empty Notes",
+                );
+              }
+              // return myListBuilder(sort(notes: notes));
+              return myListBuilder(notes);
+            },
+          ),
         ),
       ),
     );
@@ -127,82 +146,115 @@ class _NoteListState extends State<NoteList>
     }
   }
 
-  PreferredSize folderBuilder(BuildContext context) {
-    return PreferredSize(
-      preferredSize: const Size.fromHeight(60),
-      child: AppBar(
-        elevation: 0.0,
-        backgroundColor: Colors.transparent,
-        flexibleSpace: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.only(
-            left: 8.0,
-            right: 8.0,
-            bottom: 4.0,
-            top: 4.0,
-          ),
-          child: Row(
-            children: <Widget>[
-              FolderButton(
-                selectFolder: () => selectFolder(folder: ''),
-                folderName: '',
-                activeFolder: _folderName,
-              ),
-              StreamBuilder(
-                stream: _database.allFolder,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done ||
-                      snapshot.connectionState == ConnectionState.waiting) {
-                    return const SizedBox();
-                  }
-                  final folders = snapshot.data!;
-                  return ListView.builder(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: folders.length,
-                      itemBuilder: (context, index) {
-                        final folder = folders[index];
-                        return FolderButton(
-                          selectFolder: () => selectFolder(folder: folder.name),
-                          folderName: folder.name,
-                          activeFolder: _folderName,
-                          deleteFolder: () => delFolder(folder: folder),
-                        );
-                      });
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.all(6.0),
-                child: ElevatedButton.icon(
-                  onPressed: () => Navigator.of(context).push(SlideRightRoute(
-                    page: const FolderPage(),
-                  )),
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.resolveWith(
-                      (states) => RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                    ),
-                    backgroundColor: MaterialStateColor.resolveWith(
-                      (states) => Theme.of(context).cardColor,
-                    ),
-                  ),
-                  icon: const Icon(
-                    Icons.create_new_folder_sharp,
-                    color: Colors.white,
-                  ),
-                  label: const Text(
-                    "Add Folder",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+  AppBar myAppBar(BuildContext context) {
+    return AppBar(
+      elevation: 0.0,
+      backgroundColor: Colors.transparent,
+      flexibleSpace: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: TextField(
+          onChanged: (value) => setState(() {}),
+          controller: _controller,
+          decoration: decorationFormField(
+            Icons.search,
+            "Search...",
+            context,
+            suffixIcon: _controller.text.isNotEmpty ? Icons.close : null,
+            callBack: () => setState(() => _controller.text = ""),
           ),
         ),
+      ),
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(106),
+        child: Column(
+          children: <Widget>[
+            folderBuilder(context),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  const Text(
+                    " Notes",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Container(
+                        height: 40.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Theme.of(context).cardColor,
+                        ),
+                        margin: const EdgeInsets.symmetric(horizontal: 3.0),
+                        child: IconButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () =>
+                              Navigator.of(context).push(SlideRightRoute(
+                            page: const FolderPage(),
+                          )),
+                          icon: Icon(
+                            Icons.folder_special_rounded,
+                            color: Theme.of(context).secondaryHeaderColor,
+                          ),
+                        ),
+                      ),
+                      FolderButton(
+                        activeFolder: "",
+                        selectFolder: () {},
+                        folderName: "Filter 🧻",
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget folderBuilder(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Row(
+        children: <Widget>[
+          FolderButton(
+            selectFolder: () => selectFolder(folder: ''),
+            folderName: '',
+            activeFolder: _folderName,
+          ),
+          StreamBuilder(
+            stream: _database.allFolder,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done ||
+                  snapshot.connectionState == ConnectionState.waiting) {
+                return const SizedBox();
+              }
+              final folders = snapshot.data!;
+              return SizedBox(
+                height: 40,
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: folders.length,
+                    itemBuilder: (context, index) {
+                      final folder = folders[index];
+                      return FolderButton(
+                        selectFolder: () => selectFolder(folder: folder.name),
+                        folderName: folder.name,
+                        activeFolder: _folderName,
+                        deleteFolder: () => delFolder(folder: folder),
+                      );
+                    }),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

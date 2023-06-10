@@ -7,6 +7,9 @@ class AboutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("About App"),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
@@ -16,26 +19,6 @@ class AboutScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back_ios_new_outlined),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    const Text(
-                      "About",
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 30.0),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Column(

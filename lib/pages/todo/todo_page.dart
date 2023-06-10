@@ -6,6 +6,7 @@ import 'package:neverlost/services/notification_service.dart';
 import 'package:neverlost/utils.dart' show emptyWidget, getFormattedTime;
 import 'package:neverlost/widgets/bottom_sheet.dart';
 import 'package:neverlost/widgets/dialog_boxs.dart' show confirmDialogue;
+import 'package:neverlost/widgets/styles.dart' show decorationFormField;
 
 class TodoList extends StatefulWidget {
   const TodoList({super.key});
@@ -17,6 +18,8 @@ class _TodoListState extends State<TodoList>
     with SingleTickerProviderStateMixin {
   late final DatabaseService _database;
   late final TabController _controller;
+  late final TextEditingController _controllerText;
+
   List<Todo> _todos = [];
   int _prevLen = 0;
   double _progress = 0.0;
@@ -26,10 +29,18 @@ class _TodoListState extends State<TodoList>
   void initState() {
     super.initState();
     _database = DatabaseService();
+    _controllerText = TextEditingController();
     _controller = TabController(
       length: 2,
       vsync: this,
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _controllerText.dispose();
+    super.dispose();
   }
 
   Future<bool> deleteTodo(int id) async {
@@ -101,47 +112,71 @@ class _TodoListState extends State<TodoList>
     }
   }
 
+  List<Todo> filterTodos(List<Todo> list) {
+    if (_controllerText.text.isEmpty) {
+      return list;
+    }
+
+    final text = _controllerText.text.toLowerCase();
+    return list
+        .where(
+          (todo) => (todo.text.toLowerCase().contains(text)),
+        )
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: myAppBar(context),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        padding: const EdgeInsets.only(
-          top: 10.0,
-        ),
-        decoration: null,
-        child: StreamBuilder(
-          stream: _database.allTodos,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done ||
-                snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(
-                  color: Colors.black,
-                ),
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: Scaffold(
+        appBar: myAppBar(context),
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          padding: const EdgeInsets.only(
+            top: 10.0,
+          ),
+          decoration: null,
+          child: StreamBuilder(
+            stream: _database.allTodos,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done ||
+                  snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.black,
+                  ),
+                );
+              }
+              final todos = snapshot.data!;
+              _todos = todos;
+              setProgress(todos: todos);
+              if (todos.isEmpty) {
+                return emptyWidget(
+                  icon: Icons.checklist_outlined,
+                  message: "Empty Todos",
+                );
+              }
+              return TabBarView(
+                controller: _controller,
+                children: <Widget>[
+                  myGridBuilder(
+                    filterTodos(filteredTodosAsComplete(todos: todos)),
+                  ),
+                  myGridBuilder(
+                    filterTodos(
+                        filteredTodosAsComplete(todos: todos, complete: 1)),
+                  ),
+                ],
               );
-            }
-            final todos = snapshot.data!;
-            _todos = todos;
-            setProgress(todos: todos);
-            if (todos.isEmpty) {
-              return emptyWidget(
-                icon: Icons.checklist_outlined,
-                message: "Empty Todos",
-              );
-            }
-            return TabBarView(
-              controller: _controller,
-              children: <Widget>[
-                myGridBuilder(filteredTodosAsComplete(todos: todos)),
-                myGridBuilder(
-                  filteredTodosAsComplete(todos: todos, complete: 1),
-                ),
-              ],
-            );
-          },
+            },
+          ),
         ),
       ),
     );
@@ -152,9 +187,22 @@ class _TodoListState extends State<TodoList>
       backgroundColor: Colors.transparent,
       automaticallyImplyLeading: false,
       elevation: 0.0,
-      toolbarHeight: 0.0,
+      flexibleSpace: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: TextField(
+          onChanged: (value) => setState(() {}),
+          controller: _controllerText,
+          decoration: decorationFormField(
+            Icons.search,
+            "Search...",
+            context,
+            suffixIcon: _controllerText.text.isNotEmpty ? Icons.close : null,
+            callBack: () => setState(() => _controllerText.text = ""),
+          ),
+        ),
+      ),
       bottom: PreferredSize(
-        preferredSize: const Size(double.infinity, 100.0),
+        preferredSize: const Size(double.infinity, 110.0),
         child: Column(
           children: <Widget>[
             Container(

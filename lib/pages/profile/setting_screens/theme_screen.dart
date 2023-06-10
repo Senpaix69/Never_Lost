@@ -10,32 +10,17 @@ class ThemeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("About Developer"),
+      ),
       body: Container(
-        padding: const EdgeInsets.only(
-          top: 50,
-          bottom: 30,
+        padding: const EdgeInsets.symmetric(
+          vertical: 30,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(bottom: 30),
-              child: Row(
-                children: <Widget>[
-                  IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back_ios_new_outlined,
-                    ),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  heading(text: "Themes", size: 30.0),
-                ],
-              ),
-            ),
             MyCustomTile(
               icon: Icons.format_color_fill_rounded,
               onClick: () =>
@@ -50,22 +35,6 @@ class ThemeScreen extends StatelessWidget {
                   themeProvider.setTheme(theme: themeProvider.blackFold),
               iconBackGroundColor: const Color(0xFF424242),
               title: "Grey Fold",
-              trailing: false,
-            ),
-            MyCustomTile(
-              icon: Icons.format_color_fill_rounded,
-              onClick: () =>
-                  themeProvider.setTheme(theme: themeProvider.garden),
-              iconBackGroundColor: Colors.green,
-              title: "Garden",
-              trailing: false,
-            ),
-            MyCustomTile(
-              icon: Icons.format_color_fill_rounded,
-              onClick: () =>
-                  themeProvider.setTheme(theme: themeProvider.bubble),
-              iconBackGroundColor: Colors.deepPurple.shade900,
-              title: "Bubble",
               trailing: false,
             ),
           ],

@@ -123,7 +123,7 @@ class _BackupScreenState extends State<BackupScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
-            padding: const EdgeInsets.fromLTRB(20, 60, 20, 40),
+            padding: const EdgeInsets.fromLTRB(16, 60, 16, 40),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
@@ -169,7 +169,7 @@ class _BackupScreenState extends State<BackupScreen> {
                     color: Theme.of(context).primaryColorDark,
                     borderRadius: BorderRadius.circular(10.0),
                   ),
-                  margin: const EdgeInsets.all(10.0),
+                  margin: const EdgeInsets.symmetric(vertical: 10.0),
                   padding: const EdgeInsets.all(10.0),
                   child: Column(
                     children: <Widget>[

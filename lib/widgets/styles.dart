@@ -1,13 +1,24 @@
 import 'package:flutter/material.dart';
 
 InputDecoration decorationFormField(
-    IconData prefixIcon, String hintText, BuildContext context) {
+  IconData prefixIcon,
+  String hintText,
+  BuildContext context, {
+  IconData? suffixIcon,
+  VoidCallback? callBack,
+}) {
   return InputDecoration(
     contentPadding: const EdgeInsets.all(15.0),
     prefixIcon: Icon(
       prefixIcon,
       color: Theme.of(context).shadowColor,
     ),
+    suffixIcon: suffixIcon != null
+        ? IconButton(
+            icon: Icon(suffixIcon),
+            onPressed: callBack,
+          )
+        : null,
     hintText: hintText,
     filled: true,
     fillColor: Theme.of(context).cardColor,
