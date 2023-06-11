@@ -11,7 +11,8 @@ import 'package:neverlost/services/note_services/note.dart';
 import 'package:neverlost/services/note_services/todo.dart';
 import 'package:neverlost/services/notification_service.dart';
 import 'package:neverlost/services/timetable_services/timetable.dart';
-import 'package:neverlost/utils.dart' show checkConnection, showSnackBar;
+import 'package:neverlost/utils.dart'
+    show checkConnection, deleteAllFiles, showSnackBar;
 import 'package:neverlost/widgets/animate_route.dart' show SlideRightRoute;
 import 'package:neverlost/widgets/dialog_boxs.dart' show errorDialogue;
 import 'package:neverlost/widgets/loading/loading_screen.dart';
@@ -130,11 +131,11 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     }
 
     if (userChoice[timetableColumn]!) {
-      await _db.cleanTimeTable();
       showLoading(
         title: "Timetables",
         message: "Fetching timetables\nPlease wait...",
       );
+      await _db.cleanTimeTable();
       final List<TimeTable> allTimeTables = await _firebase.getAllTimeTables();
       for (final timetable in allTimeTables) {
         await _db.insertTimeTable(
@@ -146,8 +147,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     }
 
     if (userChoice[todoColumn]!) {
-      await _db.cleanTotoTable();
       showLoading(title: "Todos", message: "Fetching todos\nPlease wait...");
+      await _db.cleanTodoTable();
       final List<Todo> allTodos = await _firebase.getAllTodos();
       for (final todo in allTodos) {
         await _db.insertTodo(todo: todo);
@@ -155,7 +156,45 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     }
 
     if (userChoice[noteColumn]!) {
-      showLoading(title: "Notes", message: "Fetching notes\nPlease wait...");
+      showLoading(title: "Notes", message: "Deleting notes\nPlease wait...");
+      for (final note in _notes) {
+        await deleteAllFiles(files: note.files, images: note.images);
+      }
+      showLoading(title: "Notes", message: "Fetching notes...");
+      await _db.cleanNoteTable();
+      final List<Note> allNotes = await _firebase.getAllNotes();
+      int len = allNotes.length;
+      for (int i = 0; i < len; i++) {
+        final note = allNotes[i];
+        final progress = ((i + 1) / len) * 100;
+        final List<String> files = [];
+        final List<String> images = [];
+        for (final image in note.images) {
+          showLoading(
+            title: "Notes",
+            message:
+                "Downloading: ${getFileName(url: image)}\nProgress: ${progress.toStringAsFixed(2)}%",
+          );
+          final res = await _firebase.downloadFile(fileURL: image);
+          if (res != null) {
+            images.add(res);
+          }
+        }
+        for (final file in note.files) {
+          showLoading(
+            title: "Notes",
+            message:
+                "Downloading: ${getFileName(url: file)}\nProgress: ${progress.toStringAsFixed(2)}%",
+          );
+          final res = await _firebase.downloadFile(fileURL: file);
+          if (res != null) {
+            files.add(res);
+          }
+        }
+        _db.insertNote(
+          note: note.copyWith(files: files, images: images),
+        );
+      }
     }
 
     await NotificationService.cancelALLScheduleNotification();

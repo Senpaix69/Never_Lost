@@ -108,7 +108,7 @@ class DatabaseService {
     // todo catch error
   }
 
-  Future<void> cleanTotoTable() async {
+  Future<void> cleanTodoTable() async {
     final db = await open();
     await db.transaction((txn) async {
       await txn.execute('DROP TABLE IF EXISTS $todoTable');
@@ -116,6 +116,18 @@ class DatabaseService {
     }).then((value) {
       _cachedTodos.clear();
       _todosController.add(_cachedTodos);
+    });
+    // todo catch error
+  }
+
+  Future<void> cleanNoteTable() async {
+    final db = await open();
+    await db.transaction((txn) async {
+      await txn.execute('DROP TABLE IF EXISTS $noteTable');
+      await txn.execute(createNoteTable);
+    }).then((value) {
+      _cachedNotes.clear();
+      _notesController.add(_cachedNotes);
     });
     // todo catch error
   }

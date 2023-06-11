@@ -1,10 +1,8 @@
 import 'dart:async' show StreamController;
 import 'dart:convert' show jsonDecode, jsonEncode, utf8;
-import 'dart:io' show File, HttpClient, HttpStatus;
+import 'dart:io' show File;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter/foundation.dart'
-    show consolidateHttpClientResponseBytes;
 import 'package:neverlost/contants/firebase_contants/firebase_contants.dart';
 import 'package:neverlost/services/firebase_auth_services/fb_user.dart';
 import 'package:neverlost/services/note_services/note.dart';
@@ -13,6 +11,7 @@ import 'package:neverlost/services/notification_service.dart';
 import 'package:neverlost/services/timetable_services/timetable.dart';
 import 'package:neverlost/utils.dart';
 import 'package:path/path.dart' show basename;
+import 'package:http/http.dart' as http;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -285,7 +284,7 @@ class FirebaseService {
       for (final file in note.files) {
         final uploaded = await uploadFile(filePath: file, type: "files");
         if (uploaded != null) {
-          netImages.add(uploaded);
+          netFiles.add(uploaded);
         }
       }
       await collection.add(
@@ -308,6 +307,22 @@ class FirebaseService {
       todoColumn: getSize![todoColumn]!,
       timetableColumn: getSize[timetableColumn]!,
     });
+  }
+
+  Future<List<Note>> getAllNotes() async {
+    try {
+      final querySnapshot = await _firestore
+          .collection("users")
+          .doc(_user!.uid)
+          .collection("notes")
+          .get();
+
+      final allNotes =
+          querySnapshot.docs.map((doc) => Note.fromMap(doc.data())).toList();
+      return allNotes;
+    } catch (e) {
+      return [];
+    }
   }
 
   Future<void> deleteBackUp({required String collectionTable}) async {
@@ -515,17 +530,12 @@ class FirebaseService {
 
   Future<void> downloadProfileImage() async {
     try {
-      final httpClient = HttpClient();
-      final request = await httpClient.getUrl(
-        Uri.parse(_user!.profilePicURL!),
-      );
-      final response = await request.close();
-      if (response.statusCode == HttpStatus.ok) {
+      final response = await http.get(Uri.parse(_user!.profilePicURL!));
+      if (response.statusCode == 200) {
         final appDir = await getApplicationDocumentsDirectory();
-        final bytes = await consolidateHttpClientResponseBytes(response);
         final file = File('${appDir.path}/profile_${const Uuid().v4()}.jpg');
         await _deleteProfilePicture();
-        await file.writeAsBytes(bytes);
+        await file.writeAsBytes(response.bodyBytes);
         _user = _user!.copyWith(profilePic: file.path);
         await spUserActions(
             action: SPActions.set, userJson: jsonEncode(_user!.toMap()));
@@ -533,6 +543,23 @@ class FirebaseService {
       }
     } catch (e) {
       //todo
+    }
+  }
+
+  Future<String?> downloadFile({required String fileURL}) async {
+    try {
+      final fileName = getFileName(url: fileURL);
+      final response = await http.get(Uri.parse(fileURL));
+      if (response.statusCode == 200) {
+        final appDir = await getApplicationDocumentsDirectory();
+        final file = File('${appDir.path}/downloaded/_$fileName');
+        await file.create(recursive: true);
+        await file.writeAsBytes(response.bodyBytes);
+        return file.path;
+      }
+      return null;
+    } catch (e) {
+      return null;
     }
   }
 }
@@ -598,4 +625,11 @@ String convertSizeUnit({
     unitIndex++;
   }
   return '${convertedSize.toStringAsFixed(1)} ${units[unitIndex]}';
+}
+
+String getFileName({required String url}) {
+  final uri = Uri.parse(url);
+  final filePath = uri.path;
+  final decodedFilePath = Uri.decodeComponent(filePath);
+  return basename(decodedFilePath);
 }
