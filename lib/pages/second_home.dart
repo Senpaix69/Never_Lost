@@ -4,6 +4,7 @@ import 'package:neverlost/pages/note/note_page.dart';
 import 'package:neverlost/pages/todo/todo_page.dart';
 import 'package:neverlost/widgets/animate_route.dart';
 import 'package:neverlost/widgets/bottom_sheet.dart';
+import 'package:neverlost/widgets/styles.dart' show decorationFormField;
 
 class SecondHomePage extends StatefulWidget {
   const SecondHomePage({super.key});
@@ -14,13 +15,8 @@ class SecondHomePage extends StatefulWidget {
 class _SecondHomePageState extends State<SecondHomePage> {
   int _selectedIndex = 0;
 
-  final _pages = [
-    const NoteList(),
-    const TodoList(),
-  ];
-
   final PageController _pageController = PageController(initialPage: 0);
-
+  late final TextEditingController _controller;
   void _onPageChanged(int index) {
     setState(() {
       _selectedIndex = index;
@@ -37,8 +33,15 @@ class _SecondHomePageState extends State<SecondHomePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
   void dispose() {
     _pageController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -51,18 +54,41 @@ class _SecondHomePageState extends State<SecondHomePage> {
         elevation: 0.0,
         toolbarHeight: 0,
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(60),
+          preferredSize: const Size.fromHeight(120),
           child: Padding(
-            padding: const EdgeInsets.only(bottom: 16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                leadingWidget(
-                  selected: !selected,
-                  icon: Icons.note,
-                  page: 0,
+            padding: const EdgeInsets.only(
+              bottom: 10.0,
+              left: 10.0,
+              right: 10.0,
+            ),
+            child: Column(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    leadingWidget(
+                      selected: !selected,
+                      icon: Icons.note,
+                      page: 0,
+                    ),
+                    leadingWidget(selected: selected, page: 1),
+                  ],
                 ),
-                leadingWidget(selected: selected, page: 1),
+                const SizedBox(
+                  height: 12.0,
+                ),
+                TextField(
+                  onChanged: (value) => setState(() {}),
+                  controller: _controller,
+                  decoration: decorationFormField(
+                    Icons.search,
+                    "Search...",
+                    context,
+                    suffixIcon:
+                        _controller.text.isNotEmpty ? Icons.close : null,
+                    callBack: () => setState(() => _controller.text = ""),
+                  ),
+                ),
               ],
             ),
           ),
@@ -71,7 +97,10 @@ class _SecondHomePageState extends State<SecondHomePage> {
       body: PageView(
         controller: _pageController,
         onPageChanged: _onPageChanged,
-        children: _pages,
+        children: [
+          NoteList(searchQ: _controller.text),
+          TodoList(searchQ: _controller.text),
+        ],
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,

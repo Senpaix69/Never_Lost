@@ -24,7 +24,7 @@ InputDecoration decorationFormField(
     fillColor: Theme.of(context).cardColor,
     border: const OutlineInputBorder(
       borderRadius: BorderRadius.all(
-        Radius.circular(8.0),
+        Radius.circular(16.0),
       ),
       borderSide: BorderSide.none,
     ),

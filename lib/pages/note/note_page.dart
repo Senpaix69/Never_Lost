@@ -10,11 +10,14 @@ import 'package:neverlost/widgets/animate_route.dart'
     show SlideFromBottomTransition, SlideRightRoute;
 import 'package:neverlost/widgets/dialog_boxs.dart' show confirmDialogue;
 import 'package:neverlost/widgets/folder_button.dart';
-import 'package:neverlost/widgets/styles.dart'
-    show decorationFormField, mySheetIcon;
+import 'package:neverlost/widgets/styles.dart' show mySheetIcon;
 
 class NoteList extends StatefulWidget {
-  const NoteList({super.key});
+  final String searchQ;
+  const NoteList({
+    super.key,
+    required this.searchQ,
+  });
   @override
   State<NoteList> createState() => _NoteListState();
 }
@@ -23,7 +26,6 @@ class _NoteListState extends State<NoteList>
     with SingleTickerProviderStateMixin {
   late final DatabaseService _database;
   late AnimationController _animationController;
-  late final TextEditingController _controller;
   late Animation<double> _animation;
   String _folderName = "";
 
@@ -40,7 +42,6 @@ class _NoteListState extends State<NoteList>
       curve: Curves.easeOut,
       reverseCurve: Curves.easeIn,
     );
-    _controller = TextEditingController();
     _animationController.forward();
   }
 
@@ -56,17 +57,16 @@ class _NoteListState extends State<NoteList>
   @override
   void dispose() {
     _animationController.dispose();
-    _controller.dispose();
     super.dispose();
   }
 
   List<Note> filterNotes(List<Note> list) {
-    if (_controller.text.isEmpty && _folderName.isEmpty) {
+    final text = widget.searchQ.toLowerCase();
+    if (text.isEmpty && _folderName.isEmpty) {
       return list;
     }
 
-    if (_controller.text.isNotEmpty) {
-      final text = _controller.text.toLowerCase();
+    if (text.isNotEmpty) {
       return list
           .where(
             (note) => (note.title.toLowerCase().contains(text) ||
@@ -124,7 +124,6 @@ class _NoteListState extends State<NoteList>
                   message: "Empty Notes",
                 );
               }
-              // return myListBuilder(sort(notes: notes));
               return myListBuilder(notes);
             },
           ),
@@ -149,28 +148,16 @@ class _NoteListState extends State<NoteList>
   AppBar myAppBar(BuildContext context) {
     return AppBar(
       elevation: 0.0,
+      automaticallyImplyLeading: false,
       backgroundColor: Colors.transparent,
-      flexibleSpace: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-        child: TextField(
-          onChanged: (value) => setState(() {}),
-          controller: _controller,
-          decoration: decorationFormField(
-            Icons.search,
-            "Search...",
-            context,
-            suffixIcon: _controller.text.isNotEmpty ? Icons.close : null,
-            callBack: () => setState(() => _controller.text = ""),
-          ),
-        ),
-      ),
       bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(106),
+        preferredSize: const Size.fromHeight(40),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             folderBuilder(context),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -219,7 +206,8 @@ class _NoteListState extends State<NoteList>
   }
 
   Widget folderBuilder(BuildContext context) {
-    return Padding(
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Row(
         children: <Widget>[

@@ -6,10 +6,10 @@ import 'package:neverlost/services/notification_service.dart';
 import 'package:neverlost/utils.dart' show emptyWidget, getFormattedTime;
 import 'package:neverlost/widgets/bottom_sheet.dart';
 import 'package:neverlost/widgets/dialog_boxs.dart' show confirmDialogue;
-import 'package:neverlost/widgets/styles.dart' show decorationFormField;
 
 class TodoList extends StatefulWidget {
-  const TodoList({super.key});
+  final String searchQ;
+  const TodoList({super.key, required this.searchQ});
   @override
   State<TodoList> createState() => _TodoListState();
 }
@@ -18,7 +18,6 @@ class _TodoListState extends State<TodoList>
     with SingleTickerProviderStateMixin {
   late final DatabaseService _database;
   late final TabController _controller;
-  late final TextEditingController _controllerText;
 
   List<Todo> _todos = [];
   int _prevLen = 0;
@@ -29,7 +28,6 @@ class _TodoListState extends State<TodoList>
   void initState() {
     super.initState();
     _database = DatabaseService();
-    _controllerText = TextEditingController();
     _controller = TabController(
       length: 2,
       vsync: this,
@@ -39,7 +37,6 @@ class _TodoListState extends State<TodoList>
   @override
   void dispose() {
     _controller.dispose();
-    _controllerText.dispose();
     super.dispose();
   }
 
@@ -113,11 +110,11 @@ class _TodoListState extends State<TodoList>
   }
 
   List<Todo> filterTodos(List<Todo> list) {
-    if (_controllerText.text.isEmpty) {
+    final text = widget.searchQ.toLowerCase();
+    if (text.isEmpty) {
       return list;
     }
 
-    final text = _controllerText.text.toLowerCase();
     return list
         .where(
           (todo) => (todo.text.toLowerCase().contains(text)),
@@ -187,26 +184,12 @@ class _TodoListState extends State<TodoList>
       backgroundColor: Colors.transparent,
       automaticallyImplyLeading: false,
       elevation: 0.0,
-      flexibleSpace: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-        child: TextField(
-          onChanged: (value) => setState(() {}),
-          controller: _controllerText,
-          decoration: decorationFormField(
-            Icons.search,
-            "Search...",
-            context,
-            suffixIcon: _controllerText.text.isNotEmpty ? Icons.close : null,
-            callBack: () => setState(() => _controllerText.text = ""),
-          ),
-        ),
-      ),
       bottom: PreferredSize(
-        preferredSize: const Size(double.infinity, 110.0),
+        preferredSize: const Size.fromHeight(40),
         child: Column(
           children: <Widget>[
             Container(
-              padding: const EdgeInsets.all(11.0),
+              padding: const EdgeInsets.only(bottom: 10.0),
               child: Align(
                 alignment: Alignment.center,
                 child: Row(
