@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' show immutable;
 
 typedef CloseLoadingScreen = bool Function();
-typedef UpdateLoadingScreen = bool Function(String text);
+typedef UpdateLoadingScreen = bool Function(String text, String title);
 
 @immutable
 class LoadingScreenController {

@@ -8,7 +8,7 @@ InputDecoration decorationFormField(
   VoidCallback? callBack,
 }) {
   return InputDecoration(
-    contentPadding: const EdgeInsets.all(15.0),
+    contentPadding: const EdgeInsets.all(10.0),
     prefixIcon: Icon(
       prefixIcon,
       color: Theme.of(context).shadowColor,
@@ -21,7 +21,7 @@ InputDecoration decorationFormField(
         : null,
     hintText: hintText,
     filled: true,
-    fillColor: Theme.of(context).cardColor,
+    fillColor: Theme.of(context).cardColor.withAlpha(100),
     border: const OutlineInputBorder(
       borderRadius: BorderRadius.all(
         Radius.circular(16.0),
@@ -39,17 +39,17 @@ InputDecoration decorationPasswordFormField(
   VoidCallback callback,
 ) {
   return InputDecoration(
-    contentPadding: const EdgeInsets.all(15.0),
+    contentPadding: const EdgeInsets.all(10.0),
     prefixIcon: Icon(
       prefixIcon,
       color: Theme.of(context).shadowColor,
     ),
     hintText: hintText,
     filled: true,
-    fillColor: Theme.of(context).cardColor,
+    fillColor: Theme.of(context).cardColor.withAlpha(100),
     border: const OutlineInputBorder(
       borderRadius: BorderRadius.all(
-        Radius.circular(8.0),
+        Radius.circular(16.0),
       ),
       borderSide: BorderSide.none,
     ),

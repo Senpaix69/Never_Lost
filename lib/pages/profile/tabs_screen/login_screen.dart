@@ -53,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _loginUser() async {
-    _loading.show(context: context, text: "Login in...");
+    _loading.show(title: "User", context: context, text: "Login in...");
     final connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
       notConnectedToInternet();
@@ -102,7 +102,11 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
   Future<void> resetPassword() async {
-    _loading.show(context: context, text: "Please wait...");
+    _loading.show(
+      title: "Email Sending",
+      context: context,
+      text: "Please wait...",
+    );
     final success = await _firebase.resetPassword(email: _email.text.trim());
     if (success == null) {
       _loading.hide();

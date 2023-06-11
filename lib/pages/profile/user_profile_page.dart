@@ -43,12 +43,15 @@ class _UserProfileState extends State<UserProfile> {
       message: "Do you really want to logout?",
       title: "Logout",
     )) {
-      showLoading(message: "Checking connection...");
+      showLoading(
+        title: "Connectivity Check",
+        message: "Checking connection...",
+      );
       if (!await checkConnection()) {
         notConnectedToInternet();
         return;
       }
-      showLoading(message: "Logging user out...");
+      showLoading(title: "User", message: "Logging user out...");
       final success = await FirebaseService.instance().logOut();
       if (success != null) {
         Future.delayed(
@@ -228,9 +231,11 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
-  void showLoading({required String message}) => LoadingScreen.instance().show(
+  void showLoading({required String message, required String title}) =>
+      LoadingScreen.instance().show(
         context: context,
         text: message,
+        title: title,
       );
 
   void _pickImage() async {
@@ -240,7 +245,7 @@ class _UserProfileState extends State<UserProfile> {
     );
 
     if (pickedFile != null) {
-      showLoading(message: "Saving....");
+      showLoading(title: "Profile", message: "Saving....");
       await _firebase.updateProfilePic(
         profilePicPath: pickedFile.files.first.path!,
       );

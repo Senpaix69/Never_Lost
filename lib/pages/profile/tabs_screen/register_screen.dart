@@ -61,8 +61,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _createUser() async {
     LoadingScreen.instance().show(
+      title: "User",
       context: context,
-      text: "Registering...",
+      text: "Registering user...",
     );
     final connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {

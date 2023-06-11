@@ -54,30 +54,53 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   }
 
   Future<void> makeBackUp({required Map<String, bool> userChoice}) async {
-    showLoading(message: "Checking connection...");
+    showLoading(message: "Checking connection...", title: "Connectivity Check");
     if (!await checkConnection()) {
       notConnectedToInternet();
       return;
     }
     if (userChoice[timetableColumn]!) {
-      showLoading(message: "Timetables backup is in progress\nPlease wait...");
-      await _firebase.uploadTimetables(timetables: _timetables);
+      showLoading(
+        title: "Timetables",
+        message: "Timetables backup is in progress\nPlease wait...",
+      );
+      await _firebase.uploadTimetables(
+        timetables: _timetables,
+        callback: (value) => showLoading(
+          title: "Timetables",
+          message: "Timetables $value",
+        ),
+      );
     }
 
     if (userChoice[todoColumn]!) {
-      showLoading(message: "Todos backup is in progress\nPlease wait......");
-      await _firebase.uploadTodos(todos: _todos);
+      showLoading(
+        title: "Todos",
+        message: "Todos backup is in progress\nPlease wait......",
+      );
+      await _firebase.uploadTodos(
+        todos: _todos,
+        callback: (value) => showLoading(
+          title: "Todos",
+          message: "Todos $value",
+        ),
+      );
     }
 
     if (userChoice[noteColumn]!) {
-      showLoading(message: "Notes backup is in progress\nPlease wait......");
+      showLoading(
+        title: "Notes",
+        message: "Notes backup is in progress\nPlease wait......",
+      );
     }
     LoadingScreen.instance().hide();
     showSnak(message: "Backup saved successfully!");
   }
 
-  void showLoading({required String message}) => LoadingScreen.instance().show(
+  void showLoading({required String message, required String title}) =>
+      LoadingScreen.instance().show(
         context: context,
+        title: title,
         text: message,
       );
 
@@ -90,7 +113,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       );
 
   Future<void> restoreBackup({required Map<String, bool> userChoice}) async {
-    showLoading(message: "Checking connection...");
+    showLoading(message: "Checking connection...", title: "Connectivity Check");
     if (!await checkConnection()) {
       notConnectedToInternet();
       return;
@@ -98,7 +121,10 @@ class _ProfileSettingsState extends State<ProfileSettings> {
 
     if (userChoice[timetableColumn]!) {
       await _db.cleanTimeTable();
-      showLoading(message: "Fetching timetables\nPlease wait...");
+      showLoading(
+        title: "Timetables",
+        message: "Fetching timetables\nPlease wait...",
+      );
       final List<TimeTable> allTimeTables = await _firebase.getAllTimeTables();
       for (final timetable in allTimeTables) {
         await _db.insertTimeTable(
@@ -111,7 +137,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
 
     if (userChoice[todoColumn]!) {
       await _db.cleanTotoTable();
-      showLoading(message: "Fetching todos\nPlease wait...");
+      showLoading(title: "Todos", message: "Fetching todos\nPlease wait...");
       final List<Todo> allTodos = await _firebase.getAllTodos();
       for (final todo in allTodos) {
         await _db.insertTodo(todo: todo);
@@ -119,7 +145,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     }
 
     if (userChoice[noteColumn]!) {
-      showLoading(message: "Fetching notes\nPlease wait...");
+      showLoading(title: "Notes", message: "Fetching notes\nPlease wait...");
     }
 
     await NotificationService.cancelALLScheduleNotification();

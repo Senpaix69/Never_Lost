@@ -168,7 +168,7 @@ class _NoteListState extends State<NoteList>
                       style: const TextStyle(
                         overflow: TextOverflow.ellipsis,
                         fontWeight: FontWeight.bold,
-                        fontSize: 24.0,
+                        fontSize: 20.0,
                       ),
                     ),
                   ),
@@ -178,7 +178,7 @@ class _NoteListState extends State<NoteList>
                         height: 40.0,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10.0),
-                          color: Theme.of(context).cardColor,
+                          color: Theme.of(context).primaryColorLight,
                         ),
                         margin: const EdgeInsets.symmetric(horizontal: 3.0),
                         child: IconButton(
@@ -194,7 +194,7 @@ class _NoteListState extends State<NoteList>
                         ),
                       ),
                       FolderButton(
-                        activeFolder: "",
+                        activeFolder: true,
                         selectFolder: () {},
                         folderName: "Filter 🧻",
                       ),
@@ -219,7 +219,7 @@ class _NoteListState extends State<NoteList>
             FolderButton(
               selectFolder: () => selectFolder(folder: ''),
               folderName: '',
-              activeFolder: _folderName,
+              activeFolder: _folderName == '',
             ),
             StreamBuilder(
               stream: _database.allFolder,
@@ -240,7 +240,7 @@ class _NoteListState extends State<NoteList>
                         return FolderButton(
                           selectFolder: () => selectFolder(folder: folder.name),
                           folderName: folder.name,
-                          activeFolder: _folderName,
+                          activeFolder: _folderName == folder.name,
                           deleteFolder: () => delFolder(folder: folder),
                         );
                       }),

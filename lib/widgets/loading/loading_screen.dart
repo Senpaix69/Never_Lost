@@ -12,12 +12,14 @@ class LoadingScreen {
   void show({
     required BuildContext context,
     required String text,
+    required String title,
   }) {
-    if (_controller?.update(text) ?? false) {
+    if ((_controller?.update(text, title) ?? false)) {
       return;
     }
     _controller = _showOverlay(
       context: context,
+      title: title,
       text: text,
     );
   }
@@ -30,9 +32,12 @@ class LoadingScreen {
   LoadingScreenController _showOverlay({
     required BuildContext context,
     required String text,
+    required String title,
   }) {
     final textStream = StreamController<String>();
     textStream.add(text);
+    final titleStream = StreamController<String>();
+    titleStream.add(title);
 
     final state = Overlay.of(context);
     final renderBox = context.findRenderObject() as RenderBox;
@@ -49,7 +54,8 @@ class LoadingScreen {
                 maxWidth: size.width * 0.8,
                 minWidth: size.width * 0.5,
               ),
-              padding: const EdgeInsets.all(16.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColorDark,
                 borderRadius: BorderRadius.circular(10.0),
@@ -61,6 +67,26 @@ class LoadingScreen {
                   children: <Widget>[
                     const SizedBox(
                       height: 10.0,
+                    ),
+                    StreamBuilder(
+                      stream: titleStream.stream,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Text(
+                            snapshot.data!,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        }
+                        return const SizedBox();
+                      },
+                    ),
+                    const SizedBox(
+                      height: 30.0,
                     ),
                     const CircularProgressIndicator(
                       color: Colors.white,
@@ -84,6 +110,9 @@ class LoadingScreen {
                         return const SizedBox();
                       },
                     ),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
                   ],
                 ),
               ),
@@ -99,8 +128,9 @@ class LoadingScreen {
         overlay.remove();
         return true;
       },
-      update: (text) {
+      update: (text, title) {
         textStream.add(text);
+        titleStream.add(title);
         return true;
       },
     );

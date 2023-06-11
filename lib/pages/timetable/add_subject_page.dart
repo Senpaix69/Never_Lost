@@ -151,7 +151,7 @@ class _AddSubjectState extends State<AddSubject> {
 
   void _toggleHeight() {
     setState(() {
-      _height = _height == 0 ? 220 : 0;
+      _height = _height == 0 ? 200 : 0;
     });
   }
 

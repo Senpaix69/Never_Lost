@@ -166,12 +166,23 @@ class FirebaseService {
     }
   }
 
-  Future<void> uploadTodos({required List<Todo> todos}) async {
+  Future<void> uploadTodos({
+    required List<Todo> todos,
+    required Function? callback,
+  }) async {
+    bool isProgress = callback != null;
+    int len = todos.length;
+    double progress = 0.0;
     final collection = _firestore.collection(
       'users/${_user!.uid}/todos',
     );
     await deleteBackUp(collectionTable: "todos");
-    for (final todo in todos) {
+    for (int i = 0; i < len; i++) {
+      if (isProgress) {
+        progress = (i + 1) / len * 100;
+        callback("Progress: ${progress.toStringAsFixed(2)}%");
+      }
+      final todo = todos[i];
       await collection.add(todo.toMap());
     }
 
@@ -208,14 +219,23 @@ class FirebaseService {
 
   Future<void> uploadTimetables({
     required List<TimeTable> timetables,
+    required Function? callback,
   }) async {
+    bool isProgress = callback != null;
+    int len = timetables.length;
+    double progress = 0.0;
     final collection = _firestore.collection('users/${_user!.uid}/timetables');
     final backUpSizeCollection =
         _firestore.collection('users/${_user!.uid}/backupSize');
 
     await deleteBackUp(collectionTable: "timetables");
 
-    for (final timetable in timetables) {
+    for (int i = 0; i < len; i++) {
+      if (isProgress) {
+        progress = (i + 1) / len * 100;
+        callback("Progress: ${progress.toStringAsFixed(2)}%");
+      }
+      final timetable = timetables[i];
       final sub = timetable.subject.copyWith(sched: 0);
       await collection.add(
         timetable.copyWith(subject: sub).toMap(),
@@ -265,7 +285,6 @@ class FirebaseService {
   }
 
   Future<String> copyFile({required String filepath}) async {
-    // copy the image
     final file = File(filepath);
     final appDir = await getApplicationDocumentsDirectory();
     final copyPath = '${appDir.path}/${basename(file.path)}';
@@ -290,6 +309,25 @@ class FirebaseService {
       action: SPActions.set,
       userJson: jsonEncode(_user!.toMap()),
     );
+  }
+
+  Future<bool> uploadFile({
+    required String filePath,
+    required String type,
+  }) async {
+    final FirebaseStorage storage = FirebaseStorage.instance;
+    final String fileName = filePath.split('_').last;
+    final String storagePath = '$userId/$type/$fileName';
+    try {
+      final file = File(filePath);
+      if (file.existsSync()) {
+        await storage.ref(storagePath).putFile(file);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
   }
 
   Future<Map<String, String>> _uploadProfilePicture({

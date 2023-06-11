@@ -148,7 +148,7 @@ class _SecondHomePageState extends State<SecondHomePage> {
             shape: BoxShape.rectangle,
             color: !selected
                 ? Theme.of(context).primaryColorLight
-                : Theme.of(context).primaryColor,
+                : Theme.of(context).scaffoldBackgroundColor,
             border: Border.all(
               width: 2.0,
               color: !selected

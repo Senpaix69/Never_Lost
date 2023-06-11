@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class FolderButton extends StatelessWidget {
   final String folderName;
-  final String activeFolder;
+  final bool activeFolder;
   final VoidCallback selectFolder;
   final VoidCallback? deleteFolder;
   const FolderButton({
@@ -27,12 +27,12 @@ class FolderButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(10.0),
             ),
           ),
-          backgroundColor: folderName == activeFolder
+          backgroundColor: activeFolder
               ? MaterialStateColor.resolveWith(
                   (states) => Theme.of(context).primaryColorLight,
                 )
               : MaterialStateColor.resolveWith(
-                  (states) => Theme.of(context).cardColor,
+                  (states) => Theme.of(context).scaffoldBackgroundColor,
                 ),
         ),
         onLongPress: deleteFolder,
@@ -41,9 +41,7 @@ class FolderButton extends StatelessWidget {
           folderName.isEmpty ? 'All' : folderName,
           style: TextStyle(
             color: Theme.of(context).secondaryHeaderColor,
-            fontWeight: folderName == activeFolder
-                ? FontWeight.bold
-                : FontWeight.normal,
+            fontWeight: activeFolder ? FontWeight.bold : FontWeight.normal,
           ),
         ),
       ),
