@@ -152,20 +152,24 @@ class _NoteListState extends State<NoteList>
       backgroundColor: Colors.transparent,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(40),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            folderBuilder(context),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Row(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              folderBuilder(context),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  const Text(
-                    " Notes",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20.0,
+                  Expanded(
+                    child: Text(
+                      _folderName.isEmpty ? "All Notes" : _folderName,
+                      style: const TextStyle(
+                        overflow: TextOverflow.ellipsis,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24.0,
+                      ),
                     ),
                   ),
                   Row(
@@ -198,51 +202,53 @@ class _NoteListState extends State<NoteList>
                   ),
                 ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget folderBuilder(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Row(
-        children: <Widget>[
-          FolderButton(
-            selectFolder: () => selectFolder(folder: ''),
-            folderName: '',
-            activeFolder: _folderName,
-          ),
-          StreamBuilder(
-            stream: _database.allFolder,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done ||
-                  snapshot.connectionState == ConnectionState.waiting) {
-                return const SizedBox();
-              }
-              final folders = snapshot.data!;
-              return SizedBox(
-                height: 40,
-                child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: folders.length,
-                    itemBuilder: (context, index) {
-                      final folder = folders[index];
-                      return FolderButton(
-                        selectFolder: () => selectFolder(folder: folder.name),
-                        folderName: folder.name,
-                        activeFolder: _folderName,
-                        deleteFolder: () => delFolder(folder: folder),
-                      );
-                    }),
-              );
-            },
-          ),
-        ],
+    return Padding(
+      padding: const EdgeInsets.only(right: 2.0),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: <Widget>[
+            FolderButton(
+              selectFolder: () => selectFolder(folder: ''),
+              folderName: '',
+              activeFolder: _folderName,
+            ),
+            StreamBuilder(
+              stream: _database.allFolder,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done ||
+                    snapshot.connectionState == ConnectionState.waiting) {
+                  return const SizedBox();
+                }
+                final folders = snapshot.data!;
+                return SizedBox(
+                  height: 40,
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: folders.length,
+                      itemBuilder: (context, index) {
+                        final folder = folders[index];
+                        return FolderButton(
+                          selectFolder: () => selectFolder(folder: folder.name),
+                          folderName: folder.name,
+                          activeFolder: _folderName,
+                          deleteFolder: () => delFolder(folder: folder),
+                        );
+                      }),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

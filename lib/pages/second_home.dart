@@ -65,7 +65,7 @@ class _SecondHomePageState extends State<SecondHomePage> {
               children: <Widget>[
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
+                  children: <Widget>[
                     leadingWidget(
                       selected: !selected,
                       icon: Icons.note,
@@ -147,13 +147,13 @@ class _SecondHomePageState extends State<SecondHomePage> {
             borderRadius: BorderRadius.circular(7.0),
             shape: BoxShape.rectangle,
             color: !selected
-                ? Theme.of(context).primaryColor
-                : Theme.of(context).cardColor,
+                ? Theme.of(context).primaryColorLight
+                : Theme.of(context).primaryColor,
             border: Border.all(
               width: 2.0,
               color: !selected
-                  ? Theme.of(context).primaryColor
-                  : Theme.of(context).cardColor,
+                  ? Theme.of(context).primaryColorLight
+                  : Theme.of(context).primaryColor,
             ),
           ),
           child: Center(

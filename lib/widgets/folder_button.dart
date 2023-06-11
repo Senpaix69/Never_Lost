@@ -29,7 +29,7 @@ class FolderButton extends StatelessWidget {
           ),
           backgroundColor: folderName == activeFolder
               ? MaterialStateColor.resolveWith(
-                  (states) => Theme.of(context).primaryColor,
+                  (states) => Theme.of(context).primaryColorLight,
                 )
               : MaterialStateColor.resolveWith(
                   (states) => Theme.of(context).cardColor,
