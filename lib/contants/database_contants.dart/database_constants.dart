@@ -13,6 +13,10 @@ const tables = [
     'createStatement': createDayTimeTable,
   },
   {
+    'name': todoTable,
+    'createStatement': createTodoTable,
+  },
+  {
     'name': professorTable,
     'createStatement': createProfessorTable,
   },
@@ -88,7 +92,9 @@ const noteBodyColumn = 'note_body';
 const noteCategoryColumn = 'note_category';
 const noteDateColumn = 'note_date';
 const noteFilesColumn = 'note_files';
+const noteNetFilesColumn = 'note_netFiles';
 const noteImagesColumn = 'note_images';
+const noteNetImagesColumn = 'note_netImages';
 const noteImpColumn = 'note_imp';
 const createNoteTable = '''
 CREATE TABLE IF NOT EXISTS "$noteTable" (
@@ -99,7 +105,9 @@ CREATE TABLE IF NOT EXISTS "$noteTable" (
   "$noteCategoryColumn" TEXT,
   "$noteDateColumn" TEXT NOT NULL,
   "$noteFilesColumn" TEXT NOT NULL,
+  "$noteNetFilesColumn" TEXT NOT NULL,
   "$noteImagesColumn" TEXT NOT NULL,
+  "$noteNetImagesColumn" TEXT NOT NULL,
   PRIMARY KEY("$noteIdColumn" AUTOINCREMENT)
 );''';
 

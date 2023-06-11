@@ -81,6 +81,7 @@ class DatabaseService {
     _catchAllTodos();
     catchAllFolders();
     _database = db;
+    // await cleanDatabase();
   }
 
   Future<void> close() async {

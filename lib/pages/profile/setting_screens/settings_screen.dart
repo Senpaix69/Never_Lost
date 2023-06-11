@@ -7,6 +7,7 @@ import 'package:neverlost/pages/profile/setting_screens/restore_screen.dart';
 import 'package:neverlost/pages/profile/setting_screens/theme_screen.dart';
 import 'package:neverlost/services/database.dart';
 import 'package:neverlost/services/firebase_auth_services/firebase_service.dart';
+import 'package:neverlost/services/note_services/note.dart';
 import 'package:neverlost/services/note_services/todo.dart';
 import 'package:neverlost/services/notification_service.dart';
 import 'package:neverlost/services/timetable_services/timetable.dart';
@@ -33,6 +34,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   final FirebaseService _firebase = FirebaseService.instance();
   late final List<TimeTable> _timetables;
   late final List<Todo> _todos;
+  late final List<Note> _notes;
 
   @override
   void initState() {
@@ -40,6 +42,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _timetables = _db.cachedTimeTables;
       _todos = _db.cachedTodos;
+      _notes = _db.cachedNotes;
     });
   }
 
@@ -91,6 +94,13 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       showLoading(
         title: "Notes",
         message: "Notes backup is in progress\nPlease wait......",
+      );
+      await _firebase.uploadNotes(
+        notes: _notes,
+        callback: (value) => showLoading(
+          title: "Notes",
+          message: "Notes $value",
+        ),
       );
     }
     LoadingScreen.instance().hide();

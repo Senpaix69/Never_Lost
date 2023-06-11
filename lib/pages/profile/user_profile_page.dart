@@ -245,6 +245,15 @@ class _UserProfileState extends State<UserProfile> {
     );
 
     if (pickedFile != null) {
+      showLoading(
+        message: "Checking connection please wait...",
+        title: "Connectivity Check",
+      );
+      if (await checkConnection()) {
+        LoadingScreen.instance().hide();
+        notConnectedToInternet();
+        return;
+      }
       showLoading(title: "Profile", message: "Saving....");
       await _firebase.updateProfilePic(
         profilePicPath: pickedFile.files.first.path!,

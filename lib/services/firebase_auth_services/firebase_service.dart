@@ -11,6 +11,7 @@ import 'package:neverlost/services/note_services/note.dart';
 import 'package:neverlost/services/note_services/todo.dart';
 import 'package:neverlost/services/notification_service.dart';
 import 'package:neverlost/services/timetable_services/timetable.dart';
+import 'package:neverlost/utils.dart';
 import 'package:path/path.dart' show basename;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path_provider/path_provider.dart';
@@ -168,7 +169,7 @@ class FirebaseService {
 
   Future<void> uploadTodos({
     required List<Todo> todos,
-    required Function? callback,
+    required CallbackAction? callback,
   }) async {
     bool isProgress = callback != null;
     int len = todos.length;
@@ -182,7 +183,7 @@ class FirebaseService {
         progress = (i + 1) / len * 100;
         callback("Progress: ${progress.toStringAsFixed(2)}%");
       }
-      final todo = todos[i];
+      final todo = todos[i].copyWith(reminder: 0);
       await collection.add(todo.toMap());
     }
 
@@ -219,7 +220,7 @@ class FirebaseService {
 
   Future<void> uploadTimetables({
     required List<TimeTable> timetables,
-    required Function? callback,
+    required CallbackAction? callback,
   }) async {
     bool isProgress = callback != null;
     int len = timetables.length;
@@ -251,6 +252,61 @@ class FirebaseService {
       timetableColumn: size,
       todoColumn: getSize![todoColumn]!,
       noteColumn: getSize[noteColumn]!,
+    });
+  }
+
+  Future<void> uploadNotes({
+    required List<Note> notes,
+    required CallbackAction? callback,
+  }) async {
+    bool isProgress = callback != null;
+    int len = notes.length;
+    double progress = 0.0;
+    final collection = _firestore.collection('users/${_user!.uid}/notes');
+    final backUpSizeCollection =
+        _firestore.collection('users/${_user!.uid}/backupSize');
+
+    await deleteBackUp(collectionTable: "notes");
+
+    for (int i = 0; i < len; i++) {
+      final List<String> netFiles = [];
+      final List<String> netImages = [];
+      if (isProgress) {
+        progress = (i + 1) / len * 100;
+        callback("Progress: ${progress.toStringAsFixed(2)}%");
+      }
+      final note = notes[i];
+      for (final image in note.images) {
+        final uploaded = await uploadFile(filePath: image, type: "images");
+        if (uploaded != null) {
+          netImages.add(uploaded);
+        }
+      }
+      for (final file in note.files) {
+        final uploaded = await uploadFile(filePath: file, type: "files");
+        if (uploaded != null) {
+          netImages.add(uploaded);
+        }
+      }
+      await collection.add(
+        note
+            .copyWith(
+              files: netFiles,
+              images: netImages,
+            )
+            .toMap(),
+      );
+    }
+    String size = convertSizeUnit(size: calculateNoteSize(notes: notes));
+    await backUpSizeCollection.doc(_user!.uid).set(
+      {noteColumn: size},
+      SetOptions(merge: true),
+    );
+    final getSize = await spRestoreSize(action: SPActions.get);
+    spRestoreSize(action: SPActions.set, size: {
+      noteColumn: size,
+      todoColumn: getSize![todoColumn]!,
+      timetableColumn: getSize[timetableColumn]!,
     });
   }
 
@@ -288,7 +344,13 @@ class FirebaseService {
     final file = File(filepath);
     final appDir = await getApplicationDocumentsDirectory();
     final copyPath = '${appDir.path}/${basename(file.path)}';
-    await File(filepath).copy(copyPath);
+    List<int>? compressedImageData = await compressImage(
+      filePath: file.path,
+      quality: 50,
+    );
+    if (compressedImageData != null) {
+      await File(copyPath).writeAsBytes(compressedImageData);
+    }
     return copyPath;
   }
 
@@ -311,22 +373,23 @@ class FirebaseService {
     );
   }
 
-  Future<bool> uploadFile({
+  Future<String?> uploadFile({
     required String filePath,
     required String type,
   }) async {
     final FirebaseStorage storage = FirebaseStorage.instance;
     final String fileName = filePath.split('_').last;
-    final String storagePath = '$userId/$type/$fileName';
+    final String storagePath = '${_user!.uid}/$type/$fileName';
     try {
       final file = File(filePath);
       if (file.existsSync()) {
-        await storage.ref(storagePath).putFile(file);
-        return true;
+        final storageRef = storage.ref(storagePath);
+        await storageRef.putFile(file);
+        return storageRef.getDownloadURL();
       }
-      return false;
+      return null;
     } catch (e) {
-      return false;
+      return null;
     }
   }
 
@@ -479,7 +542,7 @@ typedef CallbackAction<T> = void Function(T);
 
 double calculateSize({
   required List<dynamic> list,
-  Function? callback,
+  CallbackAction? callback,
 }) {
   double size = 0;
 
@@ -496,7 +559,7 @@ double calculateSize({
 
 double calculateNoteSize({
   required List<Note> notes,
-  Function? callback,
+  CallbackAction? callback,
 }) {
   double size = 0;
   for (final item in notes) {
