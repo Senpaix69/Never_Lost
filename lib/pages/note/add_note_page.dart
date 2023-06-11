@@ -6,13 +6,14 @@ import 'package:intl/intl.dart' show DateFormat;
 import 'package:neverlost/pages/note/folder_page.dart';
 import 'package:neverlost/pages/note/image_preview_page.dart';
 import 'package:neverlost/services/database.dart';
-import 'package:neverlost/widgets/animate_route.dart';
+import 'package:neverlost/widgets/animate_route.dart' show SlideRightRoute;
 import 'package:neverlost/widgets/styles.dart' show mySheetIcon;
 import 'package:open_file_plus/open_file_plus.dart' show OpenFile;
 import 'package:neverlost/services/note_services/note.dart';
 import 'package:neverlost/utils.dart'
     show
         GetArgument,
+        compressImage,
         deleteAllFiles,
         removeEmptyFilesAndImages,
         showSnackBar,
@@ -64,8 +65,16 @@ class _AddNoteState extends State<AddNote> {
         if (file.extension!.toLowerCase() == 'png' ||
             file.extension!.toLowerCase() == 'jpg' ||
             file.extension!.toLowerCase() == 'jpeg') {
-          await File(file.path!).copy(copyPath);
-          newImages.add(copyPath);
+          List<int>? compressedImageData = await compressImage(
+            filePath: file.path!,
+            quality: 30,
+          );
+          if (compressedImageData != null) {
+            await File(copyPath).writeAsBytes(compressedImageData);
+            newImages.add(copyPath);
+          } else {
+            showMessage("File: ${file.name} couldn't load.");
+          }
         } else if (file.extension!.toLowerCase() == 'docx' ||
             file.extension!.toLowerCase() == 'pdf') {
           await File(file.path!).copy(copyPath);
@@ -134,11 +143,8 @@ class _AddNoteState extends State<AddNote> {
       _isNote = _isNote!.copyWith(files: _files);
     }
     _isEditing = true;
-    hideBottomSheet();
     setState(() {});
   }
-
-  void hideBottomSheet() => Navigator.of(context).pop();
 
   @override
   void initState() {

@@ -1,4 +1,5 @@
 import 'dart:io' show File, HttpClient, HttpStatus;
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -262,5 +263,20 @@ Future<void> deleteAllFiles({
     if (file.existsSync()) {
       file.deleteSync();
     }
+  }
+}
+
+Future<List<int>?> compressImage({
+  required String filePath,
+  int quality = 60,
+}) async {
+  try {
+    final result = await FlutterImageCompress.compressWithFile(
+      filePath,
+      quality: quality,
+    );
+    return result;
+  } catch (e) {
+    return null;
   }
 }
