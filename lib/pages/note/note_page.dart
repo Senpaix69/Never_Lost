@@ -109,7 +109,7 @@ class _NoteListState extends State<NoteList>
         return false;
       }
       if (_filter["attachment"]! &&
-          (note.files.isEmpty && note.images.isEmpty)) {
+          !(note.files.isEmpty && note.images.isEmpty)) {
         return false;
       }
       return true;
