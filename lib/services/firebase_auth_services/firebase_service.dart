@@ -28,6 +28,7 @@ enum SPActions {
 class FirebaseService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
 
   FBUser? _user;
   Map<String, String>? _restore;
@@ -254,6 +255,18 @@ class FirebaseService {
     });
   }
 
+  Future<void> deleteUserDocumentary({required String doc}) async {
+    try {
+      final ref = _storage.ref('${_user!.uid}/$doc/');
+      final result = await ref.listAll();
+      for (final childRef in result.items) {
+        await childRef.delete();
+      }
+    } catch (e) {
+      //todo
+    }
+  }
+
   Future<void> uploadNotes({
     required List<Note> notes,
     required CallbackAction? callback,
@@ -266,6 +279,8 @@ class FirebaseService {
         _firestore.collection('users/${_user!.uid}/backupSize');
 
     await deleteBackUp(collectionTable: "notes");
+    await deleteUserDocumentary(doc: "files");
+    await deleteUserDocumentary(doc: "images");
 
     for (int i = 0; i < len; i++) {
       final List<String> netFiles = [];
@@ -392,13 +407,12 @@ class FirebaseService {
     required String filePath,
     required String type,
   }) async {
-    final FirebaseStorage storage = FirebaseStorage.instance;
     final String fileName = filePath.split('_').last;
     final String storagePath = '${_user!.uid}/$type/$fileName';
     try {
       final file = File(filePath);
       if (file.existsSync()) {
-        final storageRef = storage.ref(storagePath);
+        final storageRef = _storage.ref(storagePath);
         await storageRef.putFile(file);
         return storageRef.getDownloadURL();
       }
@@ -416,11 +430,9 @@ class FirebaseService {
     final fileName = '${const Uuid().v4()}_${basename(file.path)}';
 
     final copyPath = await copyFile(filepath: profilePicPath);
-
-    final storageRef = FirebaseStorage.instance
-        .ref()
-        .child('$userId/profile_pictures')
-        .child(fileName);
+    deleteUserDocumentary(doc: "profile_pictures");
+    final storageRef =
+        _storage.ref().child('$userId/profile_pictures').child(fileName);
     final uploadTask = storageRef.putFile(file);
     await uploadTask.whenComplete(() => null);
 

@@ -75,7 +75,7 @@ class _FolderPageState extends State<FolderPage> {
       body: Container(
         height: double.infinity,
         width: double.infinity,
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 80.0),
         child: StreamBuilder<List<Folder>>(
           stream: _database.allFolder,
           builder: (context, snapshot) {

@@ -249,7 +249,7 @@ class _UserProfileState extends State<UserProfile> {
         message: "Checking connection please wait...",
         title: "Connectivity Check",
       );
-      if (await checkConnection()) {
+      if (!await checkConnection()) {
         LoadingScreen.instance().hide();
         notConnectedToInternet();
         return;

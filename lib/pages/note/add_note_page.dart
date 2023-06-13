@@ -202,6 +202,9 @@ class _AddNoteState extends State<AddNote> {
       }
       _focusTitle.unfocus();
       _focusText.unfocus();
+      if (_isTempNote) {
+        await _database.deleteNote(id: _tempNote!.id!);
+      }
       setState(() => _isEditing = false);
     }
   }
