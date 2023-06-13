@@ -1,3 +1,4 @@
+import 'dart:convert' show jsonDecode;
 import 'package:flutter/material.dart';
 import 'package:neverlost/pages/note/add_note_page.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
@@ -10,7 +11,9 @@ import 'package:neverlost/widgets/animate_route.dart'
     show SlideFromBottomTransition, SlideRightRoute;
 import 'package:neverlost/widgets/dialog_boxs.dart' show confirmDialogue;
 import 'package:neverlost/widgets/folder_button.dart';
+import 'package:neverlost/widgets/my_filter_sheet.dart';
 import 'package:neverlost/widgets/styles.dart' show mySheetIcon;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NoteList extends StatefulWidget {
   final String searchQ;
@@ -28,6 +31,9 @@ class _NoteListState extends State<NoteList>
   late AnimationController _animationController;
   late Animation<double> _animation;
   String _folderName = "";
+  late final SharedPreferences _sp;
+  Map<String, bool> _filter = {'attachment': false, 'imp': false};
+  Map<String, bool> _sort = {'asc': true, 'desc': false};
 
   @override
   void initState() {
@@ -43,6 +49,31 @@ class _NoteListState extends State<NoteList>
       reverseCurve: Curves.easeIn,
     );
     _animationController.forward();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await setData();
+    });
+  }
+
+  Future<void> setData() async {
+    _sp = await SharedPreferences.getInstance();
+    final filter = _sp.getString("note_filter");
+    if (filter != null) {
+      final data = jsonDecode(filter);
+      _filter = {'attachment': data['attachment'], 'imp': data['imp']};
+    }
+    final sort = _sp.getString("note_sort");
+    if (sort != null) {
+      final data = jsonDecode(sort);
+      _sort = {'asc': data['asc'], 'desc': data['desc']};
+    }
+    setState(() {});
+  }
+
+  void getData(Map<String, bool> filter, Map<String, bool> sort) {
+    setState(() {
+      _filter = filter;
+      _sort = sort;
+    });
   }
 
   List<Note> sort({
@@ -62,9 +93,6 @@ class _NoteListState extends State<NoteList>
 
   List<Note> filterNotes(List<Note> list) {
     final text = widget.searchQ.toLowerCase();
-    if (text.isEmpty && _folderName.isEmpty) {
-      return list;
-    }
 
     if (text.isNotEmpty) {
       return list
@@ -76,7 +104,26 @@ class _NoteListState extends State<NoteList>
           .toList();
     }
 
-    return list.where((note) => note.category == _folderName).toList();
+    List<Note> filteredList = list.where((note) {
+      if (_filter["imp"]! && !(note.imp == 1)) {
+        return false;
+      }
+      if (_filter["attachment"]! &&
+          (note.files.isEmpty && note.images.isEmpty)) {
+        return false;
+      }
+      return true;
+    }).toList();
+
+    filteredList.sort((a, b) {
+      if (_sort["asc"]!) {
+        return a.date.compareTo(b.date);
+      } else {
+        return b.date.compareTo(a.date);
+      }
+    });
+
+    return filteredList.where((note) => note.category == _folderName).toList();
   }
 
   Future<void> deleteNote({required Note note}) async {
@@ -145,6 +192,16 @@ class _NoteListState extends State<NoteList>
     }
   }
 
+  String getFilterName() {
+    if (_filter['imp']!) {
+      return "Important ⭐";
+    }
+    if (_filter['attachment']!) {
+      return "Attachment 🏷";
+    }
+    return "Filter 🧻";
+  }
+
   AppBar myAppBar(BuildContext context) {
     return AppBar(
       elevation: 0.0,
@@ -195,8 +252,8 @@ class _NoteListState extends State<NoteList>
                       ),
                       FolderButton(
                         activeFolder: true,
-                        selectFolder: () {},
-                        folderName: "Filter 🧻",
+                        selectFolder: () => myFilterSheet(),
+                        folderName: getFilterName(),
                       ),
                     ],
                   ),
@@ -457,6 +514,18 @@ class _NoteListState extends State<NoteList>
           ),
         );
       },
+    );
+  }
+
+  Future<dynamic> myFilterSheet() {
+    HapticFeedback.vibrate();
+    return showModalBottomSheet(
+      showDragHandle: true,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      context: context,
+      builder: (_) => MyFilterSheet(
+        callback: (filter, sort) => getData(filter, sort),
+      ),
     );
   }
 }
