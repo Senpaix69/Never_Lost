@@ -162,20 +162,22 @@ class _MyFilterSheetState extends State<MyFilterSheet> {
   }
 }
 
-TextButton myFilterButton({
+ElevatedButton myFilterButton({
   required bool isActive,
   required BuildContext context,
   required String title,
   required VoidCallback action,
 }) {
-  return TextButton(
-    style: isActive
-        ? ButtonStyle(
-            backgroundColor: MaterialStateColor.resolveWith(
+  return ElevatedButton(
+    style: ButtonStyle(
+      backgroundColor: isActive
+          ? MaterialStateColor.resolveWith(
               (states) => Theme.of(context).primaryColorLight,
+            )
+          : MaterialStateColor.resolveWith(
+              (states) => Theme.of(context).scaffoldBackgroundColor,
             ),
-          )
-        : null,
+    ),
     onPressed: action,
     child: Text(
       title,

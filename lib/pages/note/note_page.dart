@@ -76,15 +76,6 @@ class _NoteListState extends State<NoteList>
     });
   }
 
-  List<Note> sort({
-    required List<Note> notes,
-  }) {
-    List<Note> sortedNotes = notes.toList();
-    sortedNotes.sort((a, b) => b.date.compareTo(a.date));
-    sortedNotes.sort((a, b) => b.imp.compareTo(a.imp));
-    return sortedNotes;
-  }
-
   @override
   void dispose() {
     _animationController.dispose();
@@ -96,24 +87,26 @@ class _NoteListState extends State<NoteList>
 
     if (text.isNotEmpty) {
       return list
-          .where(
-            (note) => (note.title.toLowerCase().contains(text) ||
-                (note.body.toLowerCase().contains(text) ||
-                    (note.category.toLowerCase().contains(text)))),
-          )
+          .where((note) =>
+              note.title.toLowerCase().contains(text) ||
+              note.body.toLowerCase().contains(text) ||
+              note.category.toLowerCase().contains(text))
           .toList();
     }
 
     List<Note> filteredList = list.where((note) {
-      if (_filter["imp"]! && !(note.imp == 1)) {
+      if (_filter["imp"]! && note.imp == 0) {
         return false;
       }
       if (_filter["attachment"]! &&
-          !(note.files.isEmpty && note.images.isEmpty)) {
+          (note.files[0].isEmpty && note.images[0].isEmpty)) {
         return false;
       }
       return true;
     }).toList();
+
+    filteredList =
+        filteredList.where((note) => note.category == _folderName).toList();
 
     filteredList.sort((a, b) {
       if (_sort["asc"]!) {
@@ -123,7 +116,7 @@ class _NoteListState extends State<NoteList>
       }
     });
 
-    return filteredList.where((note) => note.category == _folderName).toList();
+    return filteredList;
   }
 
   Future<void> deleteNote({required Note note}) async {
