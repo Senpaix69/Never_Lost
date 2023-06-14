@@ -29,57 +29,59 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: null,
-        child: Stack(
-          children: <Widget>[
-            Container(
-              decoration: const BoxDecoration(
-                color: Colors.black,
-              ),
-              alignment: Alignment.center,
-              child: PhotoViewGallery.builder(
-                itemCount: widget.imagePaths.length,
-                builder: (BuildContext context, int index) {
-                  return PhotoViewGalleryPageOptions(
-                    imageProvider: FileImage(
-                      File(widget.imagePaths[index]),
-                    ),
-                    heroAttributes: PhotoViewHeroAttributes(
-                      tag: widget.imagePaths[index],
-                      transitionOnUserGestures: true,
-                    ),
-                  );
-                },
-                pageController:
-                    PageController(initialPage: widget.currentIndex),
-                onPageChanged: (index) => setState(() => _index = index),
-              ),
-            ),
-            Positioned(
-              top: 30.0,
-              left: 10.0,
-              child: IconButton(
-                icon: const Icon(
-                  Icons.close,
-                  color: Colors.white,
+    return SafeArea(
+      child: Scaffold(
+        body: Container(
+          decoration: null,
+          child: Stack(
+            children: <Widget>[
+              Container(
+                decoration: const BoxDecoration(
+                  color: Colors.black,
                 ),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ),
-            Positioned(
-              top: 30.0,
-              right: 10.0,
-              child: IconButton(
-                icon: const Icon(
-                  Icons.download,
-                  color: Colors.white,
+                alignment: Alignment.center,
+                child: PhotoViewGallery.builder(
+                  itemCount: widget.imagePaths.length,
+                  builder: (BuildContext context, int index) {
+                    return PhotoViewGalleryPageOptions(
+                      imageProvider: FileImage(
+                        File(widget.imagePaths[index]),
+                      ),
+                      heroAttributes: PhotoViewHeroAttributes(
+                        tag: widget.imagePaths[index],
+                        transitionOnUserGestures: true,
+                      ),
+                    );
+                  },
+                  pageController:
+                      PageController(initialPage: widget.currentIndex),
+                  onPageChanged: (index) => setState(() => _index = index),
                 ),
-                onPressed: () => OpenFile.open(widget.imagePaths[_index]),
               ),
-            ),
-          ],
+              Positioned(
+                top: 30.0,
+                left: 10.0,
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.close,
+                    color: Colors.white,
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ),
+              Positioned(
+                top: 30.0,
+                right: 10.0,
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.download,
+                    color: Colors.white,
+                  ),
+                  onPressed: () => OpenFile.open(widget.imagePaths[_index]),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -84,7 +84,6 @@ class _NoteListState extends State<NoteList>
 
   List<Note> filterNotes(List<Note> list) {
     final text = widget.searchQ.toLowerCase();
-
     if (text.isNotEmpty) {
       return list
           .where((note) =>
@@ -95,25 +94,22 @@ class _NoteListState extends State<NoteList>
     }
 
     List<Note> filteredList = list.where((note) {
-      if (_filter["imp"]! && note.imp == 0) {
-        return false;
-      }
-      if (_filter["attachment"]! &&
-          (note.files[0].isEmpty && note.images[0].isEmpty)) {
-        return false;
-      }
-      return true;
+      final impFilter = _filter["imp"]!;
+      final attachmentFilter = _filter["attachment"]!;
+      final hasImp = note.imp == 1;
+      final hasAttachment = note.files.isNotEmpty || note.images.isNotEmpty;
+
+      return (!impFilter || hasImp) && (!attachmentFilter || hasAttachment);
     }).toList();
 
-    filteredList =
-        filteredList.where((note) => note.category == _folderName).toList();
+    if (_folderName.isNotEmpty) {
+      filteredList =
+          filteredList.where((note) => note.category == _folderName).toList();
+    }
 
     filteredList.sort((a, b) {
-      if (_sort["asc"]!) {
-        return a.date.compareTo(b.date);
-      } else {
-        return b.date.compareTo(a.date);
-      }
+      final isAscending = _sort["asc"]!;
+      return isAscending ? a.date.compareTo(b.date) : b.date.compareTo(a.date);
     });
 
     return filteredList;
