@@ -277,7 +277,7 @@ class _BackupScreenState extends State<BackupScreen> {
                         child: textMessageBold(
                           padding: 3.3,
                           message: "Cancel",
-                          size: 16,
+                          size: 14,
                           color: Theme.of(context).shadowColor,
                         ),
                       ),
@@ -295,7 +295,7 @@ class _BackupScreenState extends State<BackupScreen> {
                         child: textMessageBold(
                           padding: 3.3,
                           message: "Backup Now",
-                          size: 16,
+                          size: 14,
                           color: Colors.white,
                         ),
                       ),

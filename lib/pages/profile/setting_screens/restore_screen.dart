@@ -265,7 +265,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
                         child: textMessageBold(
                           padding: 3.3,
                           message: "Cancel",
-                          size: 16,
+                          size: 14,
                           color: Theme.of(context).shadowColor,
                         ),
                       ),
@@ -283,7 +283,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
                         child: textMessageBold(
                           padding: 3.3,
                           message: "Restore Backup",
-                          size: 16,
+                          size: 14,
                           color: Colors.white,
                         ),
                       ),

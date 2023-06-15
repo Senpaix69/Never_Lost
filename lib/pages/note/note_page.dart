@@ -97,7 +97,9 @@ class _NoteListState extends State<NoteList>
       final impFilter = _filter["imp"]!;
       final attachmentFilter = _filter["attachment"]!;
       final hasImp = note.imp == 1;
-      final hasAttachment = note.files.isNotEmpty || note.images.isNotEmpty;
+      final hasAttachment =
+          (note.files.isNotEmpty && note.files[0].isNotEmpty) ||
+              (note.images.isNotEmpty && note.images[0].isNotEmpty);
 
       return (!impFilter || hasImp) && (!attachmentFilter || hasAttachment);
     }).toList();
@@ -142,7 +144,7 @@ class _NoteListState extends State<NoteList>
           height: double.infinity,
           padding: const EdgeInsets.only(top: 10.0),
           decoration: null,
-          child: StreamBuilder(
+          child: StreamBuilder<List<Note>>(
             stream: _database.allNotes,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done ||

@@ -21,6 +21,7 @@ import 'package:neverlost/utils.dart'
 import 'package:neverlost/widgets/dialog_boxs.dart' show confirmDialogue;
 import 'package:path_provider/path_provider.dart'
     show getApplicationDocumentsDirectory;
+import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class AddNote extends StatefulWidget {
@@ -100,6 +101,35 @@ class _AddNoteState extends State<AddNote> {
           ),
         );
         _isNote = _isNote!.copyWith(images: _images, files: _files);
+      }
+    }
+  }
+
+  void pickImage() async {
+    final XFile? photo =
+        await ImagePicker().pickImage(source: ImageSource.camera);
+    if (photo != null) {
+      final appDir = await getApplicationDocumentsDirectory();
+      final fileName = '${DateTime.now().toIso8601String()}_${photo.name}';
+      final copyPath = '${appDir.path}/$fileName';
+      List<int>? compressedImageData = await compressImage(
+        filePath: photo.path,
+        quality: 30,
+      );
+      if (compressedImageData != null) {
+        await File(copyPath).writeAsBytes(compressedImageData);
+        _images.add(copyPath);
+        _isEditing = true;
+        await _database.updateNote(
+          note: _isNote!.copyWith(
+            images: _images,
+            files: _files,
+          ),
+        );
+        _isNote = _isNote!.copyWith(images: _images);
+        setState(() {});
+      } else {
+        showMessage("File: ${photo.name} couldn't load.");
       }
     }
   }
@@ -605,7 +635,7 @@ class _AddNoteState extends State<AddNote> {
             text1: "Camera",
             color1: Colors.blueAccent,
             icon1: Icons.camera,
-            callback1: () {},
+            callback1: pickImage,
             text2: "Gallary",
             color2: Colors.pink,
             icon2: Icons.photo,

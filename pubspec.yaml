@@ -38,6 +38,7 @@ dependencies:
   flutter_image_compress: ^2.0.3
   http: ^0.13.6
   share: ^2.0.4
+  image_picker: ^0.8.9
 
 dev_dependencies:
   flutter_test:
