@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:neverlost/contants/profile_contants/about_app_constants.dart';
+import 'package:neverlost/constants/profile_contants/about_app_constants.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});

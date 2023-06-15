@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:neverlost/contants/firebase_contants/firebase_contants.dart';
+import 'package:neverlost/constants/firebase_contants/firebase_contants.dart';
 import 'package:neverlost/pages/profile/setting_screens/about_app.dart';
 import 'package:neverlost/pages/profile/setting_screens/about_dev.dart';
 import 'package:neverlost/pages/profile/setting_screens/backup_screen.dart';

@@ -3,7 +3,7 @@ import 'dart:convert' show jsonDecode, jsonEncode, utf8;
 import 'dart:io' show File;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:neverlost/contants/firebase_contants/firebase_contants.dart';
+import 'package:neverlost/constants/firebase_contants/firebase_contants.dart';
 import 'package:neverlost/services/firebase_auth_services/fb_user.dart';
 import 'package:neverlost/services/note_services/note.dart';
 import 'package:neverlost/services/note_services/todo.dart';

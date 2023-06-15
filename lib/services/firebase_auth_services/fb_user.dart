@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart' show immutable;
-import 'package:neverlost/contants/firebase_contants/firebase_contants.dart';
+import 'package:neverlost/constants/firebase_contants/firebase_contants.dart';
 
 @immutable
 class FBUser {

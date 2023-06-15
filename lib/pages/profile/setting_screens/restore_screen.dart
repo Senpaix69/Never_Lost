@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:neverlost/contants/firebase_contants/firebase_contants.dart';
-import 'package:neverlost/contants/profile_contants/restore_contants.dart';
+import 'package:neverlost/constants/firebase_contants/firebase_contants.dart';
+import 'package:neverlost/constants/profile_contants/restore_contants.dart';
 import 'package:neverlost/services/firebase_auth_services/firebase_service.dart'
     show FirebaseService, convertSizeUnit;
 import 'package:neverlost/widgets/dialog_boxs.dart'

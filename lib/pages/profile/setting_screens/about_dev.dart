@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:neverlost/contants/profile_contants/about_dev_constants.dart';
+import 'package:neverlost/constants/profile_contants/about_dev_constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutDeveloper extends StatelessWidget {

@@ -1,4 +1,4 @@
-import 'package:neverlost/contants/database_contants.dart/database_constants.dart';
+import 'package:neverlost/constants/database_contants.dart/database_constants.dart';
 import 'package:neverlost/services/note_services/folder.dart';
 import 'package:neverlost/services/note_services/note.dart';
 import 'package:neverlost/services/note_services/todo.dart';
