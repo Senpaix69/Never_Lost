@@ -1,5 +1,6 @@
 import 'dart:io' show File;
 import 'package:flutter/material.dart';
+import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:neverlost/pages/timetable/add_subject_page.dart';
 import 'package:neverlost/services/database.dart';
 import 'package:neverlost/services/firebase_auth_services/fb_user.dart';
@@ -141,20 +142,27 @@ class _TimeTablePageState extends State<TimeTablePage> {
                     return defaultUser(context);
                   }
                   bool isProfile = user.profilePic != null;
-                  return CircleAvatar(
-                    backgroundColor: Theme.of(context).focusColor,
-                    backgroundImage: isProfile
-                        ? FileImage(
-                            File(
-                              user.profilePic!,
-                            ),
-                          )
-                        : null,
-                    child: !isProfile
-                        ? const Icon(
-                            Icons.person_2,
-                          )
-                        : null,
+                  return GestureDetector(
+                    onTap: () {
+                      if (!ZoomDrawer.of(context)!.isOpen()) {
+                        ZoomDrawer.of(context)!.open();
+                      }
+                    },
+                    child: CircleAvatar(
+                      backgroundColor: Theme.of(context).focusColor,
+                      backgroundImage: isProfile
+                          ? FileImage(
+                              File(
+                                user.profilePic!,
+                              ),
+                            )
+                          : null,
+                      child: !isProfile
+                          ? const Icon(
+                              Icons.person_2,
+                            )
+                          : null,
+                    ),
                   );
               }
             },

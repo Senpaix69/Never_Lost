@@ -39,6 +39,7 @@ dependencies:
   http: ^0.13.6
   share: ^2.0.4
   image_picker: ^0.8.9
+  flutter_zoom_drawer: ^3.1.1
 
 dev_dependencies:
   flutter_test:
