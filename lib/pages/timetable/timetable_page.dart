@@ -1,10 +1,7 @@
-import 'dart:io' show File;
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:neverlost/pages/timetable/add_subject_page.dart';
 import 'package:neverlost/services/database.dart';
-import 'package:neverlost/services/firebase_auth_services/fb_user.dart';
-import 'package:neverlost/services/firebase_auth_services/firebase_service.dart';
 import 'package:neverlost/utils.dart'
     show isCurrentSlot, isNextSlot, sortTimeTables, weekdays, emptyWidget;
 import 'package:neverlost/widgets/animate_route.dart' show SlideRightRoute;
@@ -21,7 +18,6 @@ class TimeTablePage extends StatefulWidget {
 
 class _TimeTablePageState extends State<TimeTablePage> {
   late final DatabaseService _database;
-  final FirebaseService _firebase = FirebaseService.instance();
   late final PageController _pageController;
   final int _today = DateTime.now().weekday - 1;
   int _currentPage = DateTime.now().weekday - 1;
@@ -98,7 +94,6 @@ class _TimeTablePageState extends State<TimeTablePage> {
     _database.open();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _firebase.userStr();
       await requestPermission();
     });
   }
@@ -126,47 +121,9 @@ class _TimeTablePageState extends State<TimeTablePage> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: StreamBuilder(
-            stream: _firebase.userStream,
-            builder: (context, snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.none:
-                case ConnectionState.waiting:
-                case ConnectionState.done:
-                  return defaultUser(context);
-                case ConnectionState.active:
-                  final user = snapshot.data as FBUser?;
-                  if (user == null) {
-                    return defaultUser(context);
-                  }
-                  bool isProfile = user.profilePic != null;
-                  return GestureDetector(
-                    onTap: () {
-                      if (!ZoomDrawer.of(context)!.isOpen()) {
-                        ZoomDrawer.of(context)!.open();
-                      }
-                    },
-                    child: CircleAvatar(
-                      backgroundColor: Theme.of(context).focusColor,
-                      backgroundImage: isProfile
-                          ? FileImage(
-                              File(
-                                user.profilePic!,
-                              ),
-                            )
-                          : null,
-                      child: !isProfile
-                          ? const Icon(
-                              Icons.person_2,
-                            )
-                          : null,
-                    ),
-                  );
-              }
-            },
-          ),
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () => ZoomDrawer.of(context)!.toggle(),
         ),
         elevation: 0.0,
         title: const Text(
