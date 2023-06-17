@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:neverlost/constants/firebase_contants/firebase_contants.dart';
 import 'package:neverlost/services/firebase_auth_services/fb_user.dart';
+import 'package:neverlost/services/note_services/folder.dart';
 import 'package:neverlost/services/note_services/note.dart';
 import 'package:neverlost/services/note_services/todo.dart';
 import 'package:neverlost/services/notification_service.dart';
@@ -213,6 +214,31 @@ class FirebaseService {
       final allTodos =
           querySnapshot.docs.map((doc) => Todo.fromMap(doc.data())).toList();
       return allTodos;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  Future<void> uploadFolders({required List<Folder> folders}) async {
+    final collection = _firestore.collection('users/${_user!.uid}/folders');
+    await deleteBackUp(collectionTable: "folders");
+
+    for (final folder in folders) {
+      await collection.add(folder.toMap());
+    }
+  }
+
+  Future<List<Folder>> getAllFolders() async {
+    try {
+      final querySnapshot = await _firestore
+          .collection("users")
+          .doc(_user!.uid)
+          .collection("folders")
+          .get();
+
+      final allFold =
+          querySnapshot.docs.map((doc) => Folder.fromMap(doc.data())).toList();
+      return allFold;
     } catch (e) {
       return [];
     }

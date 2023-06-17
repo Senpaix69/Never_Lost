@@ -7,6 +7,7 @@ import 'package:neverlost/pages/profile/setting_screens/restore_screen.dart';
 import 'package:neverlost/pages/profile/setting_screens/theme_screen.dart';
 import 'package:neverlost/services/database.dart';
 import 'package:neverlost/services/firebase_auth_services/firebase_service.dart';
+import 'package:neverlost/services/note_services/folder.dart';
 import 'package:neverlost/services/note_services/note.dart';
 import 'package:neverlost/services/note_services/todo.dart';
 import 'package:neverlost/services/notification_service.dart';
@@ -36,15 +37,15 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   late final List<TimeTable> _timetables;
   late final List<Todo> _todos;
   late final List<Note> _notes;
+  late final List<Folder> _folders;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _timetables = _db.cachedTimeTables;
-      _todos = _db.cachedTodos;
-      _notes = _db.cachedNotes;
-    });
+    _timetables = _db.cachedTimeTables;
+    _todos = _db.cachedTodos;
+    _notes = _db.cachedNotes;
+    _folders = _db.cachedFolders;
   }
 
   void notConnectedToInternet() {
@@ -63,6 +64,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       notConnectedToInternet();
       return;
     }
+    await _firebase.uploadFolders(folders: _folders);
     if (userChoice[timetableColumn]!) {
       showLoading(
         title: "Timetables",
@@ -129,7 +131,11 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       notConnectedToInternet();
       return;
     }
-
+    await _db.cleanFolderTable();
+    final List<Folder> allFolders = await _firebase.getAllFolders();
+    for (final folder in allFolders) {
+      await _db.addFolder(name: folder.name);
+    }
     if (userChoice[timetableColumn]!) {
       showLoading(
         title: "Timetables",

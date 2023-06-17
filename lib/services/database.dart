@@ -132,6 +132,18 @@ class DatabaseService {
     // todo catch error
   }
 
+  Future<void> cleanFolderTable() async {
+    final db = await open();
+    await db.transaction((txn) async {
+      await txn.execute('DROP TABLE IF EXISTS $folderTable');
+      await txn.execute(createFolderTable);
+    }).then((value) {
+      _cachedFolders.clear();
+      _foldersController.add(_cachedFolders);
+    });
+    // todo catch error
+  }
+
   Future<void> cleanDatabase() async {
     final db = await open();
     await db.transaction((txn) async {
@@ -461,6 +473,7 @@ class DatabaseService {
   List<Folder> _cachedFolders = [];
   late final StreamController<List<Folder>> _foldersController;
   Stream<List<Folder>> get allFolder => _foldersController.stream;
+  List<Folder> get cachedFolders => _cachedFolders;
 
   Future<void> addFolder({required String name}) async {
     final db = await open();
