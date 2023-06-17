@@ -62,7 +62,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.neverlost"
-        minSdkVersion 23
+        minSdkVersion 19
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
